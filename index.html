@@ -52,9 +52,10 @@
     /* iPhone frame wrapper */
     .iphone-frame {
       position: relative;
-      width: 220px;
-      height: 450px;
+      width: 240px;
+      height: 491px;
       flex-shrink: 0;
+      isolation: isolate;
     }
     .iphone-shell {
       position: absolute; inset: 0;
@@ -211,10 +212,14 @@
     }
     .hero-title em::after {
       content: '';
-      position: absolute; bottom: 2px; left: 0; right: 0;
-      height: 10px; background: var(--yellow);
+      position: absolute;
+      bottom: 0px; left: -3px; right: -2px;
+      height: 12px;
+      background: #FFD600;
+      opacity: 0.55;
       z-index: -1;
-      transform: skewX(-2deg);
+      border-radius: 2px 3px 4px 1px / 3px 2px 3px 4px;
+      transform: rotate(-0.4deg) skewX(-1deg);
     }
 
     .hero-sub {
@@ -405,7 +410,12 @@
     .step-content p { font-size: 13px; color: var(--muted-navy); line-height: 1.7; }
 
     /* ── SCREENS ─────────────────────────── */
-    .screens-bg { background: var(--navy); padding: 80px 24px; text-align: center; }
+    .screens-bg { background: var(--navy); padding: 80px 24px; text-align: center; position: relative; }
+    .screen-scroll-wrapper {
+      position: relative;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    }
     .screens-bg .section-title { color: var(--white); }
     .screens-bg .section-desc { color: #94A6BC; }
     .screens-bg .section-label { background: var(--yellow); color: var(--navy); }
@@ -415,7 +425,7 @@
       overflow-x: auto;
       padding: 40px 0 20px;
       scroll-snap-type: x mandatory;
-      scroll-padding-left: 40px;
+      scroll-padding: 0 50%;
       -webkit-overflow-scrolling: touch;
     }
     .screen-scroll-inner {
@@ -424,12 +434,17 @@
       margin: 0 auto;
       padding: 0 40px;
     }
+    @media (max-width: 600px) {
+      .screen-scroll-inner {
+        padding: 0 calc(50% - 120px);
+      }
+    }
     .screen-scroll::-webkit-scrollbar { display: none; }
 
     .screen-card {
       flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 220px;
+      scroll-snap-align: center;
+      width: 240px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -682,7 +697,7 @@
     <div class="hero-badge"><span></span> 지금 출시</div>
     <div class="hero-app-icon" style="background:none;box-shadow:0 12px 40px rgba(255,214,0,0.4),0 4px 16px rgba(0,0,0,0.1);border-radius:20px;overflow:hidden;width:80px;height:80px;flex-shrink:0;"><img style="width:80px;height:80px;object-fit:contain;display:block;" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAQABAADASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAkIBQcE/8QALRABAAACCAYCAwEAAwAAAAAAAAMGBRYYVVaV0tMBBAcXk5Q2pDF0sgIREiH/xAAZAQEBAQEBAQAAAAAAAAAAAAAABwYIBQT/xABCEQEAAAEFBxMCBgIDAQAAAAAAAQIEFheRAwUGERVSUwcSE0NEUVRjZIGDkqGjwcLR4eKx0hQxMjNhcUFCIiNiIf/aAAwDAQACEQMRAD8A92Ackt6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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0D68XcLQs7XfQPrxdx5CKvQy8PBZNjwMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwynO9JF69aFna76B9eLuFoWdrvoH14u48hChl4eCybDKc70kXr1oWdrvoH14u4WhZ2u+gfXi7jyEKGXh4LJsMpzvSRevWhZ2u+gfXi7haFna76B9eLuPIQoZeHgsmwyn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" alt="밑줄긋기 로고" style="width:80px;height:80px;border-radius:20px;display:block;box-shadow:0 12px 40px rgba(255,214,0,0.4),0 4px 16px rgba(0,0,0,0.1);"></div>
     <h1 class="hero-title">
-      책 속 문장을<br/><em>당신의 기록으로</em>
+      책 속 문장을<br/><em>당신의 기록</em>으로
     </h1>
     <p class="hero-sub">
       책 페이지를 촬영하고 밑줄을 그으면<br/>
@@ -885,7 +900,7 @@
 
     <!-- 일러스트: 데스크탑 4열, 모바일 가로 스크롤 카드 -->
     <style>
-      .how-illust-desktop { display: block; width: 100%; max-width: 800px; margin: 40px auto 48px; }
+      .how-illust-desktop { display: flex; align-items: flex-start; justify-content: center; width: 100%; max-width: 800px; margin: 0 auto; }
       .how-illust-mobile  { display: none; }
       .how-scroll-track {
         display: flex; gap: 16px;
@@ -903,7 +918,7 @@
         border: 1px solid #E5E7EB;
         border-radius: 16px;
         padding: 24px 20px 20px;
-        display: flex; flex-direction: column; align-items: center; gap: 12px;
+        display: flex; flex-direction: column; align-items: center; gap: 0;
         text-align: center;
         box-shadow: 0 2px 12px rgba(27,42,74,0.07);
       }
@@ -913,27 +928,36 @@
         font-size: 13px; font-weight: 700;
         font-family: 'Noto Sans KR', sans-serif;
         display: flex; align-items: center; justify-content: center;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+      .how-scroll-card-icon {
+        height: 100px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 20px;
+        flex-shrink: 0;
       }
       .how-scroll-card-title {
         font-size: 15px; font-weight: 700; color: #1B2A4A;
         font-family: 'Noto Sans KR', sans-serif;
+        margin-bottom: 8px;
       }
       .how-scroll-card-desc {
         font-size: 13px; color: #5C6E85; line-height: 1.6;
         font-family: 'Noto Sans KR', sans-serif;
       }
       @media (max-width: 600px) {
-        .how-illust-desktop { display: none; }
-        .how-illust-mobile  { display: block; }
+        .how-illust-desktop { display: none !important; }
+        .how-illust-mobile  { display: block !important; }
       }
     </style>
     <!-- 데스크탑 SVG 일러스트 -->
-    <div class="how-illust-desktop" style="display:flex;align-items:flex-start;justify-content:center;gap:0;padding:40px 0 48px;">
+    <div class="how-illust-desktop" style="align-items:flex-start;justify-content:center;gap:0;padding:40px 0 48px;">
       <div style="display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:0;">
         <!-- 번호 -->
         <div style="width:32px;height:32px;border-radius:50%;background:#1B2A4A;color:#FFD600;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">1</div>
         <!-- 아이콘 원 -->
-        <div style="width:140px;height:140px;border-radius:50%;background:rgba(255,214,0,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+        <div style="width:140px;height:140px;border-radius:50%;background:rgba(255,214,0,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:20px;padding-top:16px;">
           <svg width="96" height="96" viewBox="0 0 36 36" fill="none">
     <rect x="7" y="3" width="18" height="24" rx="3" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <line x1="10" y1="3" x2="10" y2="27" stroke="#1B2A4A" stroke-width="1.3" opacity="0.25"/>
@@ -1009,7 +1033,7 @@
         <div style="width:32px;height:32px;border-radius:50%;background:#1B2A4A;color:#FFD600;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">4</div>
         <!-- 아이콘 원 -->
         <div style="width:140px;height:140px;border-radius:50%;background:rgba(255,214,0,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-          <svg width="112" height="112" viewBox="0 0 36 36" fill="none">
+          <svg width="102" height="102" viewBox="0 0 36 36" fill="none">
     <rect x="7" y="9" width="20" height="21" rx="4" fill="none" stroke="#1B2A4A" stroke-width="1.5" opacity="0.3" transform="rotate(-5 17 19.5)"/>
     <rect x="7" y="7" width="20" height="21" rx="4" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <rect x="7" y="7" width="20" height="8" rx="4" fill="#FFD600" opacity="0.9"/>
@@ -1033,7 +1057,7 @@
       <div class="how-scroll-track">
         <div class="how-scroll-card">
           <div class="how-scroll-card-num">1</div>
-          <svg width="72" height="72" viewBox="0 0 36 36" fill="none">
+          <div class="how-scroll-card-icon"><svg width="72" height="72" viewBox="0 0 36 36" fill="none">
     <rect x="7" y="3" width="18" height="24" rx="3" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <line x1="10" y1="3" x2="10" y2="27" stroke="#1B2A4A" stroke-width="1.3" opacity="0.25"/>
     <line x1="13" y1="10" x2="22" y2="10" stroke="#1B2A4A" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
@@ -1043,13 +1067,13 @@
     <line x1="27" y1="12" x2="27" y2="24" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/>
     <line x1="30" y1="12" x2="30" y2="24" stroke="#1B2A4A" stroke-width="1.8" stroke-linecap="round"/>
     <line x1="33" y1="12" x2="33" y2="24" stroke="#1B2A4A" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
+  </svg></div>
           <div class="how-scroll-card-title">책 등록</div>
           <div class="how-scroll-card-desc">ISBN 바코드를 스캔하거나<br/>제목으로 검색하세요.</div>
         </div>
         <div class="how-scroll-card">
           <div class="how-scroll-card-num">2</div>
-          <svg width="60" height="60" viewBox="-2 -1 42 40" fill="none">
+          <div class="how-scroll-card-icon"><svg width="76" height="76" viewBox="-2 -1 42 40" fill="none">
     <rect x="3" y="11" width="30" height="20" rx="4" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <path d="M12 11V9.5C12 8.1 13.1 7 14.5 7H21.5C22.9 7 24 8.1 24 9.5V11" stroke="#1B2A4A" stroke-width="1.7" stroke-linecap="round"/>
     <circle cx="18" cy="21" r="5.5" fill="none" stroke="#1B2A4A" stroke-width="1.6"/>
@@ -1057,13 +1081,13 @@
     <circle cx="15.5" cy="18.5" r="1.2" fill="#FFD600"/>
     <rect x="5" y="13.5" width="6" height="4" rx="1.5" fill="#FFD600" opacity="0.9"/>
     <circle cx="29" cy="13" r="1.5" fill="none" stroke="#1B2A4A" stroke-width="1.2"/>
-  </svg>
+  </svg></div>
           <div class="how-scroll-card-title">페이지 촬영</div>
           <div class="how-scroll-card-desc">카메라로 페이지를 찍거나<br/>갤러리에서 선택합니다.</div>
         </div>
         <div class="how-scroll-card">
           <div class="how-scroll-card-num">3</div>
-          <svg width="72" height="72" viewBox="0 0 36 36" fill="none">
+          <div class="how-scroll-card-icon"><svg width="72" height="72" viewBox="0 0 36 36" fill="none">
     <rect x="6" y="4" width="20" height="26" rx="3" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <line x1="10" y1="10" x2="22" y2="10" stroke="#1B2A4A" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
     <line x1="10" y1="15" x2="20" y2="15" stroke="#1B2A4A" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
@@ -1072,13 +1096,13 @@
     <path d="M26 29 Q31 22 29 17" fill="none" stroke="#1B2A4A" stroke-width="1.7" stroke-linecap="round"/>
     <circle cx="29" cy="17" r="3" fill="#FFD600" stroke="#1B2A4A" stroke-width="1.2"/>
     <path d="M10 22 Q15 19.5 26 22" fill="none" stroke="#FFD600" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.5 2"/>
-  </svg>
+  </svg></div>
           <div class="how-scroll-card-title">밑줄 드래그</div>
           <div class="how-scroll-card-desc">손가락으로 원하는 문장<br/>위를 드래그하세요.</div>
         </div>
         <div class="how-scroll-card">
           <div class="how-scroll-card-num">4</div>
-          <svg width="84" height="84" viewBox="0 0 36 36" fill="none">
+          <div class="how-scroll-card-icon"><svg width="84" height="84" viewBox="0 0 36 36" fill="none">
     <rect x="7" y="9" width="20" height="21" rx="4" fill="none" stroke="#1B2A4A" stroke-width="1.5" opacity="0.3" transform="rotate(-5 17 19.5)"/>
     <rect x="7" y="7" width="20" height="21" rx="4" fill="none" stroke="#1B2A4A" stroke-width="1.8"/>
     <rect x="7" y="7" width="20" height="8" rx="4" fill="#FFD600" opacity="0.9"/>
@@ -1089,7 +1113,7 @@
     <text x="15" y="26.5" text-anchor="middle" fill="#1B2A4A" font-size="4" font-weight="700" font-family="sans-serif">p.48</text>
     <circle cx="24" cy="24" r="5" fill="none" stroke="#1B2A4A" stroke-width="1.6"/>
     <path d="M21.5 24 L23.5 26 L27 21.5" fill="none" stroke="#FFD600" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+  </svg></div>
           <div class="how-scroll-card-title">기록 카드 저장</div>
           <div class="how-scroll-card-desc">문장·페이지·메모가<br/>카드로 저장됩니다.</div>
         </div>
@@ -1214,7 +1238,7 @@
       "좋은 문장은 다시 만나고 싶습니다.
     </p>
     <p style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,4vw,26px);font-weight:700;line-height:1.6;letter-spacing:-0.3px;margin:0;">
-      <span style="background:linear-gradient(transparent 55%,rgba(255,214,0,0.5) 55%);color:#ffffff;padding-bottom:2px;">밑줄긋기</span><span style="color:#ffffff;">가 기억해드립니다."</span>
+      <span style="position:relative;display:inline-block;color:#ffffff;"><span style="position:relative;z-index:1;">밑줄긋기</span><span style="position:absolute;bottom:0px;left:-3px;right:-2px;height:11px;background:#FFD600;opacity:0.55;border-radius:2px 3px 4px 1px / 3px 2px 3px 4px;transform:rotate(-0.4deg) skewX(-1deg);"></span></span><span style="color:#ffffff;">가 기억해드립니다."</span>
     </p>
   </div>
 
