@@ -17,6 +17,7 @@
     - pip install supabase
 """
 
+import datetime
 import json
 import os
 import re
@@ -249,6 +250,7 @@ def main():
     mode = "refresh(매칭 성공 시에만 갱신)" if refresh else ("force(전체 덮어쓰기)" if force else "신규만")
     print(f"모드: {mode} / 이번에 처리할 제목: {len(todo)}개\n")
 
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
     matched_cnt, batch, BATCH = 0, [], 100
     for i, title in enumerate(todo, 1):
         rep = reps[title]
@@ -259,7 +261,7 @@ def main():
             if i % 50 == 0 or i == len(todo):
                 print(f"  {i}/{len(todo)} 처리 (매칭 {matched_cnt})")
             continue
-        row = {"title": title, "matched": bool(nv)}
+        row = {"title": title, "matched": bool(nv), "updated_at": now_iso}
         if nv:
             matched_cnt += 1
             row.update({
