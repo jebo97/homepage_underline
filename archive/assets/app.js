@@ -37,6 +37,14 @@ function bookHref(title) {
 function yearHref(year) {
   return `year.html?y=${year}`;
 }
+function authorHref(name) {
+  return `author.html?name=${encodeURIComponent(name)}`;
+}
+// 저자명을 저자 페이지 링크로. 빈 값이면 "저자 미상" 텍스트.
+function authorLink(name, cls = "") {
+  if (!name) return `<span${cls ? ` class="${cls}"` : ""}>저자 미상</span>`;
+  return `<a${cls ? ` class="${cls}"` : ""} href="${esc(authorHref(name))}">${esc(name)}</a>`;
+}
 function stripTags(s) {
   return String(s ?? "").replace(/<[^>]+>/g, "");
 }
@@ -74,7 +82,10 @@ function renderNav() {
   if (!el) return;
   el.className = "nav";
   el.innerHTML = `<div class="nav-inner">
-    <a class="nav-brand" href="index.html">베스트셀러 아카이브</a>
+    <div class="nav-links">
+      <a class="nav-brand" href="index.html">베스트셀러 아카이브</a>
+      <a class="nav-link" href="authors.html">저자 명예의 전당</a>
+    </div>
     ${searchFormHTML("small")}
   </div>`;
 }
@@ -464,7 +475,7 @@ async function renderBook() {
         <header style="padding:5rem 0 4rem">
           <a class="back-link" href="javascript:history.back()">← 뒤로가기</a>
           <h1 class="book-title-lg">${esc(title)}</h1>
-          <p class="highlight-meta">${esc(author ?? "저자 미상")}${publisher ? ` · ${esc(publisher)}` : ""}</p>
+          <p class="highlight-meta">${authorLink(author, "alink")}${publisher ? ` · ${esc(publisher)}` : ""}</p>
           <span class="book-badge">당시 기록 기준</span>
         </header>
         ${naverHTML}
@@ -490,9 +501,7 @@ async function searchBooks(query) {
       .select("title, author, publisher, year")
       .eq("category", "종합")
       .or(`title.ilike.${pattern},author.ilike.${pattern}`)
-      .order("year", { ascending: true })
-      .order("week", { ascending: true })
-      .order("rank", { ascending: true })
+      .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지); 결과는 아래서 재정렬
   );
   const map = new Map();
   for (const r of rows) {
@@ -550,6 +559,171 @@ async function renderSearch() {
 }
 
 // ====================================================================
+// 저자 명예의 전당
+// ====================================================================
+const AUTHOR_SORTS = {
+  chartin: { col: "chartin_weeks", label: "차트인 주수" },
+  one: { col: "one_weeks", label: "1위 주수" },
+  books: { col: "book_count", label: "작품 수" },
+};
+
+async function renderAuthors() {
+  const root = document.getElementById("page-root");
+  const by = new URLSearchParams(location.search).get("by") || "chartin";
+  const sort = AUTHOR_SORTS[by] ?? AUTHOR_SORTS.chartin;
+
+  const { data, error } = await supabase
+    .from("author_stats")
+    .select("*")
+    .order(sort.col, { ascending: false })
+    .order("one_weeks", { ascending: false })
+    .limit(50);
+
+  const toggles = Object.entries(AUTHOR_SORTS).map(([k, v]) =>
+    k === by
+      ? `<span class="pill" style="border-color:var(--accent);color:var(--accent)">${v.label}</span>`
+      : `<a class="pill" href="authors.html?by=${k}">${v.label}</a>`
+  ).join("");
+
+  const rows = (data ?? []);
+  const listHTML = rows.length > 0
+    ? `<ol class="top10">${rows.map((a, i) => `
+        <li>
+          <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
+          <div class="info">
+            <a href="${esc(authorHref(a.author))}">${esc(a.author)}</a>
+            <p>대표작 · <a href="${esc(bookHref(a.top_title))}" style="color:inherit">${esc(a.top_title)}</a> · ${a.book_count}권 · ${a.first_year}–${a.last_year}</p>
+          </div>
+          <span class="weeks" style="text-align:right">
+            <span style="color:var(--accent)">${a[sort.col]}</span>${sort.col === "book_count" ? "권" : "주"}
+          </span>
+        </li>`).join("")}</ol>`
+    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "집계 데이터가 아직 없습니다."}</p>`;
+
+  root.innerHTML = `
+    <main>
+      <div class="wrap wrap-3xl">
+        <header style="padding:5rem 0 2rem">
+          <a class="back-link" href="index.html">← 메인으로</a>
+          <h1 class="page-title" style="font-size:2.25rem;margin:3rem 0 0.75rem">저자 명예의 전당</h1>
+          <p class="subtitle" style="margin-top:0.75rem">교보문고 종합 베스트셀러(2006–2025) 기준 누적 기록</p>
+          <div class="year-nav" style="margin-top:2rem;flex-wrap:wrap">${toggles}</div>
+        </header>
+        <section style="padding-bottom:6rem">
+          <p class="section-note" style="padding-left:0;margin-bottom:1.5rem">‘${esc(sort.label)}’ 기준 상위 50명 · 이름을 누르면 저자별 기록을 볼 수 있습니다</p>
+          ${listHTML}
+        </section>
+      </div>
+      ${ctaFooterHTML({ narrow: true, text: "당신의 인생 작가를 기록해보세요", label: "App Store에서 다운로드", href: APP_STORE_URL })}
+    </main>`;
+}
+
+// ====================================================================
+// 저자 페이지
+// ====================================================================
+async function renderAuthor() {
+  const root = document.getElementById("page-root");
+  const name = new URLSearchParams(location.search).get("name") || "";
+  if (!name) {
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 명예의 전당</a></p></div></main>`;
+    return;
+  }
+  document.title = `${name} · 베스트셀러 아카이브`;
+
+  const all = await fetchAll(() =>
+    supabase.from("bestsellers")
+      .select("title, year, category, rank, week")
+      .eq("author", name)
+      .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지)
+  );
+  if (all.length === 0) {
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="authors.html">← 명예의 전당</a></p></div></main>`;
+    return;
+  }
+
+  const general = all.filter((r) => r.category === "종합");
+  const chartinWeeks = general.length;
+  const oneWeeks = general.filter((r) => r.rank === 1).length;
+  const years = (general.length ? general : all).map((r) => r.year);
+  const firstYear = Math.min(...years);
+  const lastYear = Math.max(...years);
+
+  // 작품별 종합 차트인 주수
+  const byTitle = new Map();
+  for (const r of general) byTitle.set(r.title, (byTitle.get(r.title) ?? 0) + 1);
+  const books = [...byTitle.entries()]
+    .map(([title, weeks]) => ({ title, weeks }))
+    .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title));
+  const bookCount = books.length;
+
+  // 연도별 종합 차트인 주수
+  const yearMap = new Map();
+  for (const r of general) yearMap.set(r.year, (yearMap.get(r.year) ?? 0) + 1);
+  const yearly = [...yearMap.entries()].map(([year, weeks]) => ({ year, weeks })).sort((a, b) => a.year - b.year);
+  const maxY = Math.max(1, ...yearly.map((y) => y.weeks));
+
+  // 분야별 차트인 주수 (종합 제외)
+  const catMap = new Map();
+  for (const r of all) {
+    if (r.category === "종합") continue;
+    const c = normalizeCategory(r.category);
+    catMap.set(c, (catMap.get(c) ?? 0) + 1);
+  }
+  const byCategory = [...catMap.entries()].map(([category, weeks]) => ({ category, weeks }))
+    .sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
+
+  const booksHTML = books.length > 0 ? `
+    <section class="section-pad" style="padding-top:5rem">
+      <h2 class="section-heading" style="margin-bottom:2.5rem">작품 (종합 차트인 기준)</h2>
+      <ol class="top10">${books.map((b, i) => `
+        <li>
+          <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
+          <div class="info"><a href="${esc(bookHref(b.title))}">${esc(b.title)}</a></div>
+          <span class="weeks">${b.weeks}주</span>
+        </li>`).join("")}</ol>
+    </section>` : "";
+
+  const yearlyHTML = yearly.length > 0 ? `
+    <section class="section-pad" style="padding-top:5rem">
+      <h2 class="section-heading" style="margin-bottom:2.5rem">연도별 종합 차트인</h2>
+      <div class="bars">${yearly.map(({ year, weeks }) => `
+        <a class="bar-row" href="${esc(yearHref(year))}">
+          <span class="bar-year">${year}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
+          <span class="bar-weeks">${weeks}주</span>
+        </a>`).join("")}</div>
+    </section>` : "";
+
+  const catHTML = byCategory.length > 0 ? `
+    <section class="section-pad" style="padding:5rem 0">
+      <h2 class="section-heading" style="margin-bottom:2.5rem">분야별 차트인</h2>
+      <div class="cat-list">${byCategory.map(({ category, weeks }) => `
+        <div class="cat-row"><span class="cn">${esc(category)}</span><span class="cw">${weeks}주</span></div>`).join("")}</div>
+    </section>` : "";
+
+  root.innerHTML = `
+    <main>
+      <div class="wrap wrap-3xl">
+        <header style="padding:5rem 0 3rem">
+          <a class="back-link" href="authors.html">← 저자 명예의 전당</a>
+          <h1 class="book-title-lg">${esc(name)}</h1>
+          <p class="highlight-meta">${bookCount}권 · ${firstYear}–${lastYear} 활동</p>
+        </header>
+        <div class="stat3">
+          <div class="box"><div class="big">${chartinWeeks}<span class="u">주</span></div><div class="cap">종합 차트인</div></div>
+          <div class="box"><div class="big">${oneWeeks}<span class="u">주</span></div><div class="cap">종합 1위</div></div>
+          <div class="box"><div class="big">${bookCount}<span class="u">권</span></div><div class="cap">차트인 작품</div></div>
+        </div>
+        ${booksHTML}
+        ${yearlyHTML}
+        ${catHTML}
+        <p class="disclaimer">저자 표기는 차트 등재 당시 데이터 기준이며, 동명이인·공저 표기 차이로 일부 다르게 묶일 수 있습니다.</p>
+      </div>
+      ${ctaFooterHTML({ narrow: true, text: "이 작가의 책, 밑줄긋기로 기록해보세요", label: "밑줄긋기 앱에서 기록하기", href: HOME_URL })}
+    </main>`;
+}
+
+// ====================================================================
 // 라우터
 // ====================================================================
 async function main() {
@@ -561,6 +735,8 @@ async function main() {
     else if (page === "year") await renderYear();
     else if (page === "book") await renderBook();
     else if (page === "search") await renderSearch();
+    else if (page === "authors") await renderAuthors();
+    else if (page === "author") await renderAuthor();
   } catch (e) {
     console.error(e);
     const root = document.getElementById("page-root");
