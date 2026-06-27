@@ -534,7 +534,7 @@
     }
 
     .flow-grid { display: grid; gap: 14px; margin-top: 34px; }
-    .flow-card { position: relative; padding: 30px 22px 22px; overflow: hidden; }
+    .flow-card { position: relative; padding: 22px 22px 24px; overflow: hidden; }
     .flow-card::after {
       content: "";
       position: absolute;
@@ -575,10 +575,15 @@
     }
     .flow-card p { margin: 0; color: #667085; font-size: 15px; }
     .flow-card img {
-      width: 72px;
-      height: 72px;
+      width: 100%;
+      height: 158px;
       object-fit: contain;
-      margin: 0 0 14px;
+      margin: 0 0 18px;
+      padding: 6px;
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse at center, rgba(255, 214, 0, 0.12), transparent 70%),
+        rgba(255, 253, 248, 0.68);
     }
 
     .coming-intro { max-width: 760px; }
@@ -860,12 +865,12 @@
             <p class="lead">문장숲의 이야기를 따라가다 보면, 밑줄긋기의 기능도 자연스럽게 이해할 수 있어요.</p>
           </div>
           <div class="flow-grid">
-            <article class="flow-card reveal"><img src="/characters/note.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">1</span><span class="function-label">책 등록</span></div><h3>책의 숲길 열기</h3><p>ISBN 바코드 스캔이나 책 검색으로 기록할 책을 등록합니다.</p></article>
-            <article class="flow-card reveal"><img src="/characters/highliter.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">2</span><span class="function-label">페이지 촬영</span></div><h3>문장빛 찾기</h3><p>책 페이지를 촬영하면 노아가 마음에 닿은 문장을 찾을 준비를 합니다.</p></article>
-            <article class="flow-card reveal"><img src="/characters/seed.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">3</span><span class="function-label">밑줄 긋기</span></div><h3>문장씨앗 깨우기</h3><p>손가락으로 문장 위에 밑줄을 그으면 문장씨앗이 깨어납니다.</p></article>
-            <article class="flow-card reveal"><img src="/characters/line.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">4</span><span class="function-label">OCR 추출</span></div><h3>문장의 목소리 듣기</h3><p>OCR이 밑줄 친 문장의 글자를 자동으로 읽어옵니다.</p></article>
-            <article class="flow-card reveal"><img src="/characters/card.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">5</span><span class="function-label">메모 / 태그</span></div><h3>씨앗에 흙 덮기</h3><p>페이지 번호, 메모, 해시태그를 더해 문장을 더 오래 기억할 수 있게 합니다.</p></article>
-            <article class="flow-card reveal"><img src="/characters/garden.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">6</span><span class="function-label">독서노트</span></div><h3>문장정원에서 다시 만나기</h3><p>저장된 밑줄은 독서노트에서 책별, 태그별로 다시 꺼내볼 수 있습니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-01.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">1</span><span class="function-label">책 등록</span></div><h3>책의 숲길 열기</h3><p>ISBN 바코드 스캔이나 책 검색으로 기록할 책을 등록합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-02.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">2</span><span class="function-label">페이지 촬영</span></div><h3>문장빛 찾기</h3><p>책 페이지를 촬영하면 노아가 마음에 닿은 문장을 찾을 준비를 합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-03.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">3</span><span class="function-label">밑줄 긋기</span></div><h3>문장씨앗 깨우기</h3><p>손가락으로 문장 위에 밑줄을 그으면 문장씨앗이 깨어납니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-04.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">4</span><span class="function-label">OCR 추출</span></div><h3>문장의 목소리 듣기</h3><p>OCR이 밑줄 친 문장의 글자를 자동으로 읽어옵니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-05.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">5</span><span class="function-label">메모 / 태그</span></div><h3>씨앗에 흙 덮기</h3><p>페이지 번호, 메모, 해시태그를 더해 문장을 더 오래 기억할 수 있게 합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/use-06.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">6</span><span class="function-label">독서노트</span></div><h3>문장정원에서 다시 만나기</h3><p>저장된 밑줄은 독서노트에서 책별, 태그별로 다시 꺼내볼 수 있습니다.</p></article>
           </div>
         </div>
       </section>
