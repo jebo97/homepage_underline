@@ -331,13 +331,22 @@
     .character-image:has(img:not([style*="display: none"]))::after {
       display: none;
     }
-    .hero-visual img,
-    .character-image img {
+    .hero-visual img {
       position: relative;
       z-index: 1;
       width: 100%;
       height: 100%;
       object-fit: contain;
+    }
+    .character-image img {
+      position: relative;
+      z-index: 1;
+      width: auto;
+      height: auto;
+      max-width: 72%;
+      max-height: 520px;
+      object-fit: contain;
+      margin: auto;
     }
 
     .story-grid { display: grid; gap: 34px; align-items: start; }
@@ -400,6 +409,7 @@
     .character-card.reverse .character-image { order: 0; }
     .character-image {
       min-height: 330px;
+      padding: 28px;
       border-radius: 26px;
     }
     .role {
@@ -569,6 +579,18 @@
       .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .cta-panel { padding: 58px; }
+      .character-image { min-height: 540px; }
+    }
+
+    @media (max-width: 767px) {
+      .character-image {
+        min-height: 360px;
+        padding: 22px;
+      }
+      .character-image img {
+        max-width: 78%;
+        max-height: 390px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
