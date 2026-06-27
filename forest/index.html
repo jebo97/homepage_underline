@@ -34,6 +34,7 @@
       --color-paper-deep: #F4E6CA;
       --color-cream: #FFFDF8;
       --sheet-border: rgba(217, 163, 23, 0.42);
+      --cta-image: url("/characters/forest-cta-noa-gyeol.png");
       --shadow-card: 0 18px 50px rgba(27, 42, 74, 0.08);
       --shadow-forest: 0 28px 70px rgba(70, 92, 69, 0.16);
     }
@@ -201,7 +202,7 @@
     .hero {
       position: relative;
       overflow: hidden;
-      padding: 84px 0 108px;
+      padding: 76px 0 92px;
     }
     .hero::before {
       content: "";
@@ -233,7 +234,7 @@
     .hero-grid {
       position: relative;
       display: grid;
-      gap: 44px;
+      gap: 36px;
       align-items: center;
     }
     .hero-badge {
@@ -276,8 +277,11 @@
       box-shadow: var(--shadow-forest);
     }
     .hero-visual {
-      min-height: 380px;
-      border-radius: 34px;
+      min-height: 390px;
+      border-radius: 30px;
+    }
+    .hero-visual.has-photo {
+      background: #fff7e8;
     }
     .hero-visual::before {
       content: "";
@@ -352,7 +356,7 @@
       z-index: 1;
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
     .character-image img {
       position: relative;
@@ -409,7 +413,7 @@
         rgba(255, 255, 255, 0.78);
       box-shadow: var(--shadow-card);
     }
-    .keyword-card { position: relative; padding: 30px 22px 22px; }
+    .keyword-card { position: relative; padding: 24px 22px 22px; text-align: center; }
     .keyword-card::before,
     .flow-card::before,
     .coming-card::before {
@@ -424,67 +428,17 @@
     }
     .keyword-card strong { display: block; margin-bottom: 8px; color: var(--color-navy); font-size: 18px; }
     .keyword-card p { margin: 0; color: #667085; font-size: 14px; line-height: 1.65; }
-
-    .archive-section { padding-top: 40px; }
-    .archive-panel {
-      position: relative;
+    .keyword-icon {
       display: grid;
-      gap: 28px;
-      align-items: center;
-      padding: 18px;
-      border: 1px solid var(--sheet-border);
-      border-radius: 30px;
-      background:
-        linear-gradient(135deg, rgba(255, 248, 234, 0.94), rgba(255, 253, 248, 0.78)),
-        var(--color-paper);
-      box-shadow: var(--shadow-forest);
-      overflow: hidden;
+      place-items: center;
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 14px;
     }
-    .archive-panel::before {
-      content: "WORLD ARCHIVE";
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      z-index: 2;
-      padding: 6px 13px;
-      border-radius: 8px 8px 3px 3px;
-      background: var(--color-ink);
-      color: var(--color-white);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-    }
-    .archive-image {
-      min-height: 320px;
-      border: 1px solid rgba(217, 163, 23, 0.34);
-      border-radius: 24px;
-      background: #fbf1dc;
-      overflow: hidden;
-    }
-    .archive-image img {
-      width: 100%;
-      height: 100%;
-      min-height: 320px;
-      object-fit: cover;
-    }
-    .archive-copy { padding: 36px 12px 10px; }
-    .archive-copy p { color: #4e596d; }
-    .archive-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 0;
-      margin: 22px 0 0;
-      list-style: none;
-    }
-    .archive-tags li {
-      padding: 7px 11px;
-      border: 1px solid rgba(217, 163, 23, 0.34);
-      border-radius: 999px;
-      background: rgba(255, 248, 234, 0.74);
-      color: var(--color-ink);
-      font-size: 13px;
-      font-weight: 800;
+    .keyword-icon img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     .character-section { padding: 76px 0; }
@@ -624,6 +578,12 @@
       font-size: 12px;
     }
     .flow-card p { margin: 0; color: #667085; font-size: 15px; }
+    .flow-card img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      margin: 0 0 14px;
+    }
 
     .coming-intro { max-width: 760px; }
     .coming-grid { display: grid; gap: 14px; margin-top: 34px; }
@@ -637,13 +597,57 @@
     }
     .coming-card:hover { transform: translateY(-5px); opacity: 0.92; }
     .silhouette {
-      width: 64px;
-      height: 64px;
+      position: relative;
+      width: 86px;
+      height: 96px;
       margin-bottom: 18px;
-      border-radius: 50%;
+      opacity: 0.72;
+      filter: blur(0.2px);
       background:
-        radial-gradient(circle at 50% 36%, rgba(27, 42, 74, 0.34) 0 18px, transparent 19px),
-        linear-gradient(180deg, rgba(27, 42, 74, 0.18), rgba(27, 42, 74, 0.06));
+        radial-gradient(circle at 50% 35%, rgba(16, 36, 73, 0.35) 0 27px, transparent 28px),
+        radial-gradient(ellipse at 50% 82%, rgba(16, 36, 73, 0.28) 0 35px, transparent 36px);
+    }
+    .silhouette::before,
+    .silhouette::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      width: 26px;
+      height: 36px;
+      border-radius: 60% 60% 40% 40%;
+      background: rgba(16, 36, 73, 0.26);
+    }
+    .silhouette::before { left: 16px; transform: rotate(-22deg); }
+    .silhouette::after { right: 16px; transform: rotate(22deg); }
+    .silhouette.bird::before {
+      left: 28px;
+      top: 0;
+      width: 18px;
+      height: 32px;
+      border-radius: 50%;
+      transform: rotate(-16deg);
+    }
+    .silhouette.bird::after {
+      right: 18px;
+      top: 36px;
+      width: 24px;
+      height: 12px;
+      border-radius: 999px 999px 0 0;
+      transform: rotate(20deg);
+    }
+    .silhouette.rabbit::before,
+    .silhouette.rabbit::after {
+      top: -10px;
+      width: 18px;
+      height: 58px;
+      border-radius: 999px;
+    }
+    .silhouette.fox::before,
+    .silhouette.fox::after {
+      top: 1px;
+      width: 30px;
+      height: 42px;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
     }
     .coming-badge {
       position: absolute;
@@ -658,16 +662,31 @@
     }
 
     .cta-panel {
-      padding: 40px 24px;
+      position: relative;
+      padding: 46px 24px;
       border: 1px solid var(--sheet-border);
       border-radius: 32px;
       background:
+        linear-gradient(90deg, rgba(16, 36, 73, 0.84), rgba(16, 36, 73, 0.42) 48%, rgba(16, 36, 73, 0.08)),
+        var(--cta-image),
         radial-gradient(ellipse at 18% 10%, rgba(255, 214, 0, 0.24), transparent 28%),
         radial-gradient(ellipse at 86% 92%, rgba(69, 100, 82, 0.18), transparent 30%),
         linear-gradient(135deg, rgba(255, 214, 0, 0.16), rgba(255, 255, 255, 0.86) 46%, rgba(69, 100, 82, 0.12)),
         var(--color-white);
+      background-size: cover;
+      background-position: center;
       box-shadow: var(--shadow-forest);
-      text-align: center;
+      text-align: left;
+      overflow: hidden;
+    }
+    .cta-panel .section-kicker,
+    .cta-panel h2,
+    .cta-panel p { position: relative; z-index: 1; }
+    .cta-panel h2,
+    .cta-panel p { color: var(--color-white); text-shadow: 0 2px 10px rgba(16, 36, 73, 0.22); }
+    .cta-panel .lead { max-width: 560px; }
+    .cta-panel .btn-secondary {
+      background: rgba(255, 253, 248, 0.9);
     }
     .cta-panel p { margin-bottom: 28px; }
     .cta-actions { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
@@ -692,8 +711,7 @@
       .section { padding: 108px 0; }
       .hero-grid,
       .story-grid,
-      .character-card,
-      .archive-panel { grid-template-columns: 1fr 1fr; }
+      .character-card { grid-template-columns: 1fr 1fr; }
       .hero-actions,
       .cta-actions { flex-direction: row; align-items: center; }
       .keyword-grid,
@@ -707,7 +725,7 @@
       .header-inner { min-height: 78px; }
       .hero { padding: 112px 0 126px; }
       .hero-grid { grid-template-columns: 0.95fr 1.05fr; }
-      .hero-visual { min-height: 520px; }
+      .hero-visual { min-height: 560px; }
       .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .cta-panel { padding: 58px; }
@@ -727,6 +745,16 @@
         max-width: 100%;
         max-height: 330px;
       }
+      .hero-visual { min-height: 378px; }
+      .cta-panel {
+        text-align: center;
+        background:
+          linear-gradient(180deg, rgba(16, 36, 73, 0.82), rgba(16, 36, 73, 0.36) 58%, rgba(16, 36, 73, 0.1)),
+          var(--cta-image);
+        background-size: cover;
+        background-position: center;
+      }
+      .cta-panel .lead { margin-left: auto; margin-right: auto; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -771,14 +799,14 @@
               <a href="#characters" class="btn btn-secondary">노아와 결 만나기</a>
             </div>
           </div>
-          <div class="hero-visual reveal" data-placeholder="노아와 결 이미지 영역">
+          <div class="hero-visual has-photo reveal" data-placeholder="노아와 결 이미지 영역">
             <div class="forest-orbit" aria-hidden="true">
               <span class="forest-leaf"></span>
               <span class="forest-leaf"></span>
               <span class="forest-leaf"></span>
               <span class="sentence-path"></span>
             </div>
-            <img src="/characters/noa-gyeol.png" alt="노아와 결" onerror="this.style.display='none'" />
+            <img src="/characters/hero-noa-gyeol.png" alt="문장숲에서 책을 함께 보는 노아와 결" onerror="this.style.display='none'" />
           </div>
         </div>
       </section>
@@ -796,32 +824,10 @@
             </div>
           </div>
           <div class="keyword-grid reveal">
-            <article class="keyword-card"><strong>문장씨앗</strong><p>밑줄을 긋는 순간 깨어나는 작은 기록</p></article>
-            <article class="keyword-card"><strong>노란 결</strong><p>마음이 멈춘 자리에 생기는 빛</p></article>
-            <article class="keyword-card"><strong>문장정원</strong><p>저장된 밑줄들이 자라는 나만의 공간</p></article>
-            <article class="keyword-card"><strong>태그 오솔길</strong><p>태그는 문장숲의 길이에요.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section archive-section" aria-label="문장숲 아카이브">
-        <div class="container">
-          <div class="archive-panel reveal">
-            <div class="archive-image">
-              <img src="/characters/forest-friends.png" alt="문장숲에서 문장을 돌보는 친구들" />
-            </div>
-            <div class="archive-copy">
-              <span class="section-kicker">Character Archive</span>
-              <h2>문장숲의 친구들은 기록을 함께 돌봐요</h2>
-              <p class="lead">노아가 마음에 닿은 문장을 발견하면, 결은 그 문장이 오래 머물 수 있도록 조용히 정리합니다.</p>
-              <p>문장숲에는 각자의 도구와 성격을 가진 친구들이 살고 있어요. 누군가는 감정을 살피고, 누군가는 문장을 정리하고, 누군가는 오래 기다리던 기록을 다시 데려옵니다.</p>
-              <ul class="archive-tags">
-                <li>문장빛</li>
-                <li>인덱스 노트</li>
-                <li>문장카드</li>
-                <li>기억의 길</li>
-              </ul>
-            </div>
+            <article class="keyword-card"><div class="keyword-icon"><img src="/characters/seed.png" alt="" aria-hidden="true" /></div><strong>문장씨앗</strong><p>밑줄을 긋는 순간 깨어나는 작은 기록</p></article>
+            <article class="keyword-card"><div class="keyword-icon"><img src="/characters/line.png" alt="" aria-hidden="true" /></div><strong>노란 결</strong><p>마음이 멈춘 자리에 생기는 빛</p></article>
+            <article class="keyword-card"><div class="keyword-icon"><img src="/characters/garden.png" alt="" aria-hidden="true" /></div><strong>문장정원</strong><p>저장된 밑줄들이 자라는 나만의 공간</p></article>
+            <article class="keyword-card"><div class="keyword-icon"><img src="/characters/path.png" alt="" aria-hidden="true" /></div><strong>태그 오솔길</strong><p>태그는 문장숲의 길이에요.</p></article>
           </div>
         </div>
       </section>
@@ -886,12 +892,12 @@
             <p class="lead">문장숲의 이야기를 따라가다 보면, 밑줄긋기의 기능도 자연스럽게 이해할 수 있어요.</p>
           </div>
           <div class="flow-grid">
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">1</span><span class="function-label">책 등록</span></div><h3>책의 숲길 열기</h3><p>ISBN 바코드 스캔이나 책 검색으로 기록할 책을 등록합니다.</p></article>
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">2</span><span class="function-label">페이지 촬영</span></div><h3>문장빛 찾기</h3><p>책 페이지를 촬영하면 노아가 마음에 닿은 문장을 찾을 준비를 합니다.</p></article>
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">3</span><span class="function-label">밑줄 긋기</span></div><h3>문장씨앗 깨우기</h3><p>손가락으로 문장 위에 밑줄을 그으면 문장씨앗이 깨어납니다.</p></article>
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">4</span><span class="function-label">OCR 추출</span></div><h3>문장의 목소리 듣기</h3><p>OCR이 밑줄 친 문장의 글자를 자동으로 읽어옵니다.</p></article>
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">5</span><span class="function-label">메모 / 태그</span></div><h3>씨앗에 흙 덮기</h3><p>페이지 번호, 메모, 해시태그를 더해 문장을 더 오래 기억할 수 있게 합니다.</p></article>
-            <article class="flow-card reveal"><div class="step-label"><span class="step-number">6</span><span class="function-label">독서노트</span></div><h3>문장정원에서 다시 만나기</h3><p>저장된 밑줄은 독서노트에서 책별, 태그별로 다시 꺼내볼 수 있습니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/note.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">1</span><span class="function-label">책 등록</span></div><h3>책의 숲길 열기</h3><p>ISBN 바코드 스캔이나 책 검색으로 기록할 책을 등록합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/highliter.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">2</span><span class="function-label">페이지 촬영</span></div><h3>문장빛 찾기</h3><p>책 페이지를 촬영하면 노아가 마음에 닿은 문장을 찾을 준비를 합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/seed.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">3</span><span class="function-label">밑줄 긋기</span></div><h3>문장씨앗 깨우기</h3><p>손가락으로 문장 위에 밑줄을 그으면 문장씨앗이 깨어납니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/line.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">4</span><span class="function-label">OCR 추출</span></div><h3>문장의 목소리 듣기</h3><p>OCR이 밑줄 친 문장의 글자를 자동으로 읽어옵니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/card.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">5</span><span class="function-label">메모 / 태그</span></div><h3>씨앗에 흙 덮기</h3><p>페이지 번호, 메모, 해시태그를 더해 문장을 더 오래 기억할 수 있게 합니다.</p></article>
+            <article class="flow-card reveal"><img src="/characters/garden.png" alt="" aria-hidden="true" /><div class="step-label"><span class="step-number">6</span><span class="function-label">독서노트</span></div><h3>문장정원에서 다시 만나기</h3><p>저장된 밑줄은 독서노트에서 책별, 태그별로 다시 꺼내볼 수 있습니다.</p></article>
           </div>
         </div>
       </section>
@@ -905,10 +911,10 @@
             <p class="lead">문장에 감정의 이름을 붙여주는 친구, 밑줄을 바탕으로 독후감을 정리해주는 친구, 나누고 싶은 문장을 예쁜 카드에 담아주는 친구, 오래전에 저장한 문장을 다시 데려와주는 친구가 곧 문장숲에 찾아옵니다.</p>
           </div>
           <div class="coming-grid">
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette bird" aria-hidden="true"></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
             <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>온</h3><p><strong>문장 해석자</strong></p><p class="muted">밑줄과 메모를 바탕으로 독후감을 정리하는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장이 아니라,<br>조용히 기다리고 있던 문장입니다.</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette rabbit" aria-hidden="true"></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette fox" aria-hidden="true"></div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장이 아니라,<br>조용히 기다리고 있던 문장입니다.</p></article>
           </div>
         </div>
       </section>
