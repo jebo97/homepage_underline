@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>문장숲 - 밑줄긋기 세계관</title>
+  <meta name="description" content="밑줄긋기의 세계관 문장숲. 마음에 닿은 한 문장이 나만의 독서 기록으로 자라나는 이야기를 소개합니다." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="문장숲 - 밑줄긋기 세계관" />
+  <meta property="og:description" content="밑줄 하나가, 나만의 문장숲이 됩니다." />
+  <meta property="og:url" content="https://mjgg.airpage.org/forest" />
+  <meta property="og:image" content="/og-image.png" />
+  <link rel="shortcut icon" href="/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-yellow: #FFD600;
+      --color-navy: #1B2A4A;
+      --color-bg: #FAF9F7;
+      --color-text: #1A1A1A;
+      --color-subtext: #888888;
+      --color-white: #FFFFFF;
+      --color-line: #E8E2D8;
+      --color-green: #456452;
+      --color-cream: #FFFDF8;
+      --shadow-card: 0 18px 50px rgba(27, 42, 74, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.75;
+      word-break: keep-all;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .page-shell { min-height: 100vh; background: linear-gradient(180deg, #fffdf8 0%, var(--color-bg) 34%, #f6f2eb 100%); }
+    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .section { padding: 84px 0; }
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--color-green);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .section-kicker::before {
+      content: "";
+      width: 26px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--color-yellow);
+      box-shadow: 0 0 0 6px rgba(255, 214, 0, 0.16);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 { font-family: "Noto Serif KR", serif; color: var(--color-navy); letter-spacing: 0; }
+    h1 { margin-bottom: 22px; font-size: clamp(42px, 10vw, 78px); line-height: 1.12; }
+    h2 { margin-bottom: 22px; font-size: clamp(30px, 6vw, 48px); line-height: 1.24; }
+    h3 { margin-bottom: 10px; color: var(--color-navy); font-size: 22px; line-height: 1.35; }
+    .lead { color: #4e596d; font-size: 18px; line-height: 1.9; }
+    .muted { color: var(--color-subtext); }
+    .highlight { background: linear-gradient(transparent 58%, rgba(255, 214, 0, 0.48) 58%); }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(232, 226, 216, 0.86);
+      background: rgba(250, 249, 247, 0.9);
+      backdrop-filter: blur(14px);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 72px;
+      padding: 12px 0;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--color-navy);
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--color-yellow);
+      box-shadow: inset 0 -5px 0 rgba(27, 42, 74, 0.08);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #59637a;
+    }
+    .nav-links a {
+      padding: 8px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+    }
+    .nav-links a:hover { background: rgba(255, 214, 0, 0.22); color: var(--color-navy); }
+    .nav-cta {
+      background: var(--color-navy);
+      color: var(--color-white) !important;
+      font-weight: 700;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--color-yellow);
+      color: var(--color-navy);
+      box-shadow: 0 14px 30px rgba(255, 214, 0, 0.28);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(255, 214, 0, 0.36); }
+    .btn-secondary {
+      border: 1px solid var(--color-line);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--color-navy);
+    }
+    .btn-secondary:hover { transform: translateY(-3px); border-color: rgba(27, 42, 74, 0.24); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 84px 0 96px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 214, 0, 0.22), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(69, 100, 82, 0.11), transparent 30%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      gap: 44px;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding: 8px 14px;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--color-green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .hero-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-yellow); }
+    .hero-copy { max-width: 620px; }
+    .hero-copy .lead { max-width: 520px; margin-bottom: 30px; }
+    .hero-actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+    .hero-visual,
+    .character-image {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(232, 226, 216, 0.9);
+      background:
+        linear-gradient(135deg, rgba(255, 214, 0, 0.26), rgba(255, 255, 255, 0.7) 42%, rgba(69, 100, 82, 0.12)),
+        repeating-linear-gradient(115deg, rgba(27, 42, 74, 0.04) 0 1px, transparent 1px 16px);
+      box-shadow: var(--shadow-card);
+    }
+    .hero-visual {
+      min-height: 380px;
+      border-radius: 34px;
+    }
+    .hero-visual::after,
+    .character-image::after {
+      content: attr(data-placeholder);
+      position: absolute;
+      color: rgba(27, 42, 74, 0.58);
+      font-weight: 800;
+      text-align: center;
+    }
+    .hero-visual img,
+    .character-image img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .story-grid { display: grid; gap: 34px; align-items: start; }
+    .story-text {
+      padding: 34px 0;
+      color: #3f4a5d;
+      font-size: 17px;
+    }
+    .keyword-grid { display: grid; gap: 14px; }
+    .keyword-card,
+    .flow-card,
+    .coming-card {
+      border: 1px solid var(--color-line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow-card);
+    }
+    .keyword-card { padding: 22px; }
+    .keyword-card strong { display: block; margin-bottom: 8px; color: var(--color-navy); font-size: 18px; }
+    .keyword-card p { margin: 0; color: #667085; font-size: 14px; line-height: 1.65; }
+
+    .character-section { padding: 76px 0; }
+    .character-card {
+      display: grid;
+      gap: 28px;
+      align-items: center;
+      padding: 22px;
+      border: 1px solid var(--color-line);
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: var(--shadow-card);
+    }
+    .character-card.reverse .character-image { order: 0; }
+    .character-image {
+      min-height: 330px;
+      border-radius: 26px;
+    }
+    .role {
+      display: inline-flex;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 214, 0, 0.22);
+      color: var(--color-green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .feature-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 22px 0;
+      list-style: none;
+    }
+    .feature-list li {
+      padding: 7px 10px;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      background: var(--color-cream);
+      color: #586275;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .quote-card {
+      margin: 0;
+      padding: 22px;
+      border-left: 6px solid var(--color-yellow);
+      border-radius: 18px;
+      background: #fffaf0;
+      color: var(--color-navy);
+      font-family: "Noto Serif KR", serif;
+      font-size: 20px;
+      line-height: 1.7;
+    }
+
+    .flow-grid { display: grid; gap: 14px; margin-top: 34px; }
+    .flow-card { padding: 22px; }
+    .step-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+      color: var(--color-green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: var(--color-yellow);
+      color: var(--color-navy);
+    }
+    .function-label {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(27, 42, 74, 0.07);
+      color: #59637a;
+      font-size: 12px;
+    }
+    .flow-card p { margin: 0; color: #667085; font-size: 15px; }
+
+    .coming-intro { max-width: 760px; }
+    .coming-grid { display: grid; gap: 14px; margin-top: 34px; }
+    .coming-card {
+      position: relative;
+      padding: 22px;
+      border-style: dashed;
+      opacity: 0.78;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .coming-card:hover { transform: translateY(-5px); opacity: 0.92; }
+    .silhouette {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 18px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(27, 42, 74, 0.34) 0 18px, transparent 19px),
+        linear-gradient(180deg, rgba(27, 42, 74, 0.18), rgba(27, 42, 74, 0.06));
+    }
+    .coming-badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(27, 42, 74, 0.08);
+      color: #647085;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .cta-panel {
+      padding: 40px 24px;
+      border: 1px solid var(--color-line);
+      border-radius: 32px;
+      background:
+        linear-gradient(135deg, rgba(255, 214, 0, 0.22), rgba(255, 255, 255, 0.86) 46%, rgba(69, 100, 82, 0.12)),
+        var(--color-white);
+      box-shadow: var(--shadow-card);
+      text-align: center;
+    }
+    .cta-panel p { margin-bottom: 28px; }
+    .cta-actions { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+
+    .site-footer {
+      padding: 46px 0;
+      background: #101d33;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .site-footer strong { display: block; margin-bottom: 8px; color: var(--color-white); }
+    .site-footer p { margin-bottom: 0; color: rgba(255, 255, 255, 0.56); }
+    .footer-copy { margin-top: 22px !important; font-size: 12px; color: rgba(255, 255, 255, 0.38) !important; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    @media (min-width: 768px) {
+      .section { padding: 108px 0; }
+      .hero-grid,
+      .story-grid,
+      .character-card { grid-template-columns: 1fr 1fr; }
+      .hero-actions,
+      .cta-actions { flex-direction: row; align-items: center; }
+      .keyword-grid,
+      .flow-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .coming-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .character-card { padding: 30px; }
+      .character-card.reverse .character-image { order: 2; }
+    }
+
+    @media (min-width: 1024px) {
+      .header-inner { min-height: 78px; }
+      .hero { padding: 112px 0 126px; }
+      .hero-grid { grid-template-columns: 0.95fr 1.05fr; }
+      .hero-visual { min-height: 520px; }
+      .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .cta-panel { padding: 58px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="밑줄긋기 홈으로 이동">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>밑줄긋기</span>
+        </a>
+        <nav class="nav-links" aria-label="문장숲 메뉴">
+          <a href="#world">문장숲</a>
+          <a href="#characters">노아와 결</a>
+          <a href="#how">사용 방법</a>
+          <a class="nav-cta" href="#start">앱 시작하기</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy reveal">
+            <div class="hero-badge">밑줄긋기 세계관</div>
+            <h1>밑줄 하나가,<br><span class="highlight">나만의 문장숲</span>이 됩니다.</h1>
+            <p class="lead">
+              책을 읽다 마음에 닿은 문장을 만나면,<br>
+              노란 밑줄을 그어 문장숲에 심어보세요.
+              밑줄긋기의 작은 친구들이 당신의 문장을 오래 머물게 도와줍니다.
+            </p>
+            <div class="hero-actions">
+              <!-- TODO: 실제 앱스토어, 플레이스토어 또는 앱 실행 URL로 교체 -->
+              <a href="#" class="btn btn-primary">내 문장숲 시작하기</a>
+              <a href="#characters" class="btn btn-secondary">노아와 결 만나기</a>
+            </div>
+          </div>
+          <div class="hero-visual reveal" data-placeholder="노아와 결 이미지 영역">
+            <img src="/images/noa-gyeol-hero.png" alt="노아와 결" onerror="this.style.display='none'" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="world">
+        <div class="container story-grid">
+          <div class="reveal">
+            <span class="section-kicker">Sentence Forest</span>
+            <h2>문장숲은 어떤 곳인가요?</h2>
+            <div class="story-text">
+              <p>사람이 책을 읽다가 어떤 문장 앞에서 잠시 멈추는 순간, 그 문장에는 아주 얇은 노란 결이 생깁니다.</p>
+              <p>그 결은 그냥 지나가면 사라지지만, 손가락으로 밑줄을 긋는 순간 작은 문장씨앗이 되어 문장숲에 자리를 잡습니다.</p>
+              <p>문장씨앗은 메모를 만나 흙을 얻고, 태그를 만나 길을 얻고, 다시 읽히는 순간 조금씩 자라납니다.</p>
+              <p>문장숲은 책을 많이 읽은 사람만 들어오는 곳이 아닙니다. 마음에 닿은 한 문장을 소중히 여기는 사람이라면 누구나 자기만의 문장숲을 만들 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="keyword-grid reveal">
+            <article class="keyword-card"><strong>문장씨앗</strong><p>밑줄을 긋는 순간 깨어나는 작은 기록</p></article>
+            <article class="keyword-card"><strong>노란 결</strong><p>마음이 멈춘 자리에 생기는 빛</p></article>
+            <article class="keyword-card"><strong>문장정원</strong><p>저장된 밑줄들이 자라는 나만의 공간</p></article>
+            <article class="keyword-card"><strong>태그 오솔길</strong><p>태그는 문장숲의 길이에요.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="character-section" id="characters">
+        <div class="container">
+          <article class="character-card reveal">
+            <div class="character-image" data-placeholder="노아 캐릭터 이미지">
+              <img src="/images/noa.png" alt="노아 캐릭터" onerror="this.style.display='none'" />
+            </div>
+            <div>
+              <span class="role">문장 감응자</span>
+              <h2>노아</h2>
+              <p>노아는 마음에 닿은 문장을 가장 먼저 알아차리는 고양이입니다. 사용자가 책을 읽다가 잠시 멈추는 순간, 노아의 안경에는 노란 문장빛이 반짝입니다.</p>
+              <p>노아는 밑줄을 재촉하지 않습니다. 책을 끝까지 읽으라고 말하지도 않습니다.</p>
+              <p>그저 조용히 묻습니다. “방금, 마음이 조금 멈췄죠?”</p>
+              <ul class="feature-list">
+                <li>책 페이지 촬영</li><li>손가락으로 밑줄 긋기</li><li>문장 선택</li><li>첫 밑줄 저장 경험</li><li>온보딩 안내</li>
+              </ul>
+              <blockquote class="quote-card">“다 읽지 않아도 괜찮아요.<br>오늘 마음에 남은 한 문장이 있다면 충분해요.”</blockquote>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="character-section">
+        <div class="container">
+          <article class="character-card reverse reveal">
+            <div class="character-image" data-placeholder="결 캐릭터 이미지">
+              <img src="/images/gyeol.png" alt="결 캐릭터" onerror="this.style.display='none'" />
+            </div>
+            <div>
+              <span class="role">문장결 정리자</span>
+              <h2>결</h2>
+              <p>결은 문장과 문장 사이의 마음의 흐름을 읽는 친구입니다. 노아가 발견한 문장을 조심히 받아 독서노트 안에 오래 꺼내볼 수 있도록 정리합니다.</p>
+              <p>저장된 문장은 그냥 데이터가 아닙니다. 어떤 문장에 멈췄는지, 어떤 말에 위로받았는지, 어떤 생각을 오래 붙잡고 싶었는지 보여주는 작은 마음의 흔적입니다.</p>
+              <p>결은 그 흔적들을 차곡차곡 모아 당신만의 문장정원을 만들어갑니다.</p>
+              <ul class="feature-list">
+                <li>OCR로 추출된 문장 확인</li><li>독서노트 저장</li><li>책별 밑줄 카드 정리</li><li>태그별 기록 연결</li><li>밑줄 통계 확장</li>
+              </ul>
+              <blockquote class="quote-card">“기록은 쌓이는 게 아니라,<br>당신만의 결을 만드는 거예요.”</blockquote>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="how">
+        <div class="container">
+          <div class="reveal">
+            <span class="section-kicker">How It Works</span>
+            <h2>밑줄긋기는 이렇게 사용해요</h2>
+            <p class="lead">문장숲의 이야기를 따라가다 보면, 밑줄긋기의 기능도 자연스럽게 이해할 수 있어요.</p>
+          </div>
+          <div class="flow-grid">
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">1</span><span class="function-label">책 등록</span></div><h3>책의 숲길 열기</h3><p>ISBN 바코드 스캔이나 책 검색으로 기록할 책을 등록합니다.</p></article>
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">2</span><span class="function-label">페이지 촬영</span></div><h3>문장빛 찾기</h3><p>책 페이지를 촬영하면 노아가 마음에 닿은 문장을 찾을 준비를 합니다.</p></article>
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">3</span><span class="function-label">밑줄 긋기</span></div><h3>문장씨앗 깨우기</h3><p>손가락으로 문장 위에 밑줄을 그으면 문장씨앗이 깨어납니다.</p></article>
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">4</span><span class="function-label">OCR 추출</span></div><h3>문장의 목소리 듣기</h3><p>OCR이 밑줄 친 문장의 글자를 자동으로 읽어옵니다.</p></article>
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">5</span><span class="function-label">메모 / 태그</span></div><h3>씨앗에 흙 덮기</h3><p>페이지 번호, 메모, 해시태그를 더해 문장을 더 오래 기억할 수 있게 합니다.</p></article>
+            <article class="flow-card reveal"><div class="step-label"><span class="step-number">6</span><span class="function-label">독서노트</span></div><h3>문장정원에서 다시 만나기</h3><p>저장된 밑줄은 독서노트에서 책별, 태그별로 다시 꺼내볼 수 있습니다.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="coming-intro reveal">
+            <span class="section-kicker">Coming Soon</span>
+            <h2>문장숲에는 아직 더 많은 친구들이 살고 있어요</h2>
+            <p class="lead">처음에는 노아와 결만 문장숲에 찾아왔지만, 앞으로 새로운 기능과 함께 다른 친구들도 차례차례 공개됩니다.</p>
+            <p class="lead">문장에 감정의 이름을 붙여주는 친구, 밑줄을 바탕으로 독후감을 정리해주는 친구, 나누고 싶은 문장을 예쁜 카드에 담아주는 친구, 오래전에 저장한 문장을 다시 데려와주는 친구가 곧 문장숲에 찾아옵니다.</p>
+          </div>
+          <div class="coming-grid">
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>온</h3><p><strong>문장 해석자</strong></p><p class="muted">밑줄과 메모를 바탕으로 독후감을 정리하는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장이 아니라,<br>조용히 기다리고 있던 문장입니다.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="start">
+        <div class="container">
+          <div class="cta-panel reveal">
+            <span class="section-kicker">Start</span>
+            <h2>오늘 마음에 남은 한 문장이 있다면</h2>
+            <p class="lead">밑줄긋기에 조용히 남겨보세요.<br>밑줄 하나가, 나만의 문장숲이 됩니다.</p>
+            <div class="cta-actions">
+              <!-- TODO: 실제 앱스토어, 플레이스토어 또는 앱 실행 URL로 교체 -->
+              <a href="#" class="btn btn-primary">내 문장숲 시작하기</a>
+              <a href="/" class="btn btn-secondary">밑줄긋기 랜딩페이지로 돌아가기</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <strong>밑줄긋기</strong>
+      <p>마음에 닿은 문장을 오래 남기는 독서 노트 앱</p>
+      <p class="footer-copy">© 2026 밑줄긋기. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('img').forEach((image) => {
+      image.addEventListener('error', () => {
+        image.style.display = 'none';
+      });
+      if (image.complete && image.naturalWidth === 0) {
+        image.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+  </script>
+</body>
+</html>
