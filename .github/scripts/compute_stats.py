@@ -96,6 +96,8 @@ def compute_author_stats(supabase: Client) -> int:
             "updated_at": now_iso,
         })
 
+    # 클린 리빌드: 기존 행 전체 삭제 후 재적재 (저자 병합·삭제를 반영, 잔존행 방지)
+    supabase.table("author_stats").delete().neq("author", "__rebuild__").execute()
     for i in range(0, len(out), 500):
         supabase.table("author_stats").upsert(out[i:i + 500], on_conflict="author").execute()
     print(f"author_stats 적재: {len(out)}명")
