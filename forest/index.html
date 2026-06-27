@@ -327,6 +327,10 @@
       text-align: center;
       box-shadow: 0 12px 28px rgba(27, 42, 74, 0.06);
     }
+    .hero-visual:has(img:not([style*="display: none"]))::after,
+    .character-image:has(img:not([style*="display: none"]))::after {
+      display: none;
+    }
     .hero-visual img,
     .character-image img {
       position: relative;
