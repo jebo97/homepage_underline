@@ -28,7 +28,12 @@
       --color-moss: #6F8064;
       --color-bark: #7A6048;
       --color-leaf: #DDE7D0;
+      --color-gold: #D9A317;
+      --color-ink: #102449;
+      --color-paper: #FFF8EA;
+      --color-paper-deep: #F4E6CA;
       --color-cream: #FFFDF8;
+      --sheet-border: rgba(217, 163, 23, 0.42);
       --shadow-card: 0 18px 50px rgba(27, 42, 74, 0.08);
       --shadow-forest: 0 28px 70px rgba(70, 92, 69, 0.16);
     }
@@ -51,9 +56,12 @@
       position: relative;
       min-height: 100vh;
       background:
+        linear-gradient(90deg, rgba(217, 163, 23, 0.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(217, 163, 23, 0.035) 1px, transparent 1px),
         radial-gradient(ellipse at 12% 6%, rgba(255, 214, 0, 0.2), transparent 28%),
         radial-gradient(ellipse at 90% 14%, rgba(111, 128, 100, 0.18), transparent 30%),
-        linear-gradient(180deg, #fffdf8 0%, var(--color-bg) 34%, #f2eee5 100%);
+        linear-gradient(180deg, #fffdf8 0%, var(--color-paper) 34%, #f2eee5 100%);
+      background-size: 34px 34px, 34px 34px, auto, auto, auto;
     }
     .page-shell::before {
       content: "";
@@ -70,24 +78,31 @@
     .page-shell > * { position: relative; z-index: 1; }
     .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
     .section { padding: 84px 0; }
+    .section,
+    .character-section { scroll-margin-top: 96px; }
     .section-kicker {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 14px;
-      color: var(--color-green);
-      font-size: 13px;
+      padding: 5px 12px 6px;
+      border-radius: 9px 9px 3px 3px;
+      background: var(--color-ink);
+      color: var(--color-white);
+      box-shadow: 0 7px 20px rgba(16, 36, 73, 0.12);
+      font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .section-kicker::before {
-      content: "";
-      width: 26px;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--color-yellow);
-      box-shadow: 0 0 0 6px rgba(255, 214, 0, 0.16);
+      content: "✦";
+      width: auto;
+      height: auto;
+      border-radius: 0;
+      background: transparent;
+      color: var(--color-gold);
+      box-shadow: none;
     }
     h1, h2, h3, p { margin-top: 0; }
     h1, h2 { font-family: "Noto Serif KR", serif; color: var(--color-navy); letter-spacing: 0; }
@@ -227,10 +242,10 @@
       gap: 8px;
       margin-bottom: 22px;
       padding: 8px 14px;
-      border: 1px solid rgba(111, 128, 100, 0.22);
-      border-radius: 999px;
-      background: rgba(255, 253, 248, 0.78);
-      color: var(--color-green);
+      border: 1px solid var(--sheet-border);
+      border-radius: 10px;
+      background: rgba(255, 248, 234, 0.86);
+      color: var(--color-ink);
       font-size: 13px;
       font-weight: 800;
     }
@@ -251,8 +266,9 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      border: 1px solid rgba(232, 226, 216, 0.9);
+      border: 1px solid var(--sheet-border);
       background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.52), transparent 28%, rgba(217, 163, 23, 0.05) 28.2%, transparent 29%),
         linear-gradient(180deg, rgba(255, 253, 248, 0.86), rgba(244, 239, 228, 0.72)),
         radial-gradient(ellipse at 40% 28%, rgba(255, 214, 0, 0.24), transparent 30%),
         radial-gradient(ellipse at 78% 24%, rgba(69, 100, 82, 0.2), transparent 32%),
@@ -386,29 +402,119 @@
     .keyword-card,
     .flow-card,
     .coming-card {
-      border: 1px solid var(--color-line);
+      border: 1px solid var(--sheet-border);
       border-radius: 22px;
       background:
-        linear-gradient(145deg, rgba(255, 253, 248, 0.9), rgba(250, 247, 240, 0.74)),
+        linear-gradient(145deg, rgba(255, 248, 234, 0.94), rgba(250, 240, 222, 0.74)),
         rgba(255, 255, 255, 0.78);
       box-shadow: var(--shadow-card);
     }
-    .keyword-card { padding: 22px; }
+    .keyword-card { position: relative; padding: 30px 22px 22px; }
+    .keyword-card::before,
+    .flow-card::before,
+    .coming-card::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 14px;
+      width: 28px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--color-gold);
+    }
     .keyword-card strong { display: block; margin-bottom: 8px; color: var(--color-navy); font-size: 18px; }
     .keyword-card p { margin: 0; color: #667085; font-size: 14px; line-height: 1.65; }
 
+    .archive-section { padding-top: 40px; }
+    .archive-panel {
+      position: relative;
+      display: grid;
+      gap: 28px;
+      align-items: center;
+      padding: 18px;
+      border: 1px solid var(--sheet-border);
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(255, 248, 234, 0.94), rgba(255, 253, 248, 0.78)),
+        var(--color-paper);
+      box-shadow: var(--shadow-forest);
+      overflow: hidden;
+    }
+    .archive-panel::before {
+      content: "WORLD ARCHIVE";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      padding: 6px 13px;
+      border-radius: 8px 8px 3px 3px;
+      background: var(--color-ink);
+      color: var(--color-white);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    .archive-image {
+      min-height: 320px;
+      border: 1px solid rgba(217, 163, 23, 0.34);
+      border-radius: 24px;
+      background: #fbf1dc;
+      overflow: hidden;
+    }
+    .archive-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      object-fit: cover;
+    }
+    .archive-copy { padding: 36px 12px 10px; }
+    .archive-copy p { color: #4e596d; }
+    .archive-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 22px 0 0;
+      list-style: none;
+    }
+    .archive-tags li {
+      padding: 7px 11px;
+      border: 1px solid rgba(217, 163, 23, 0.34);
+      border-radius: 999px;
+      background: rgba(255, 248, 234, 0.74);
+      color: var(--color-ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .character-section { padding: 76px 0; }
     .character-card {
+      position: relative;
       display: grid;
       gap: 28px;
       align-items: center;
       padding: 22px;
-      border: 1px solid rgba(232, 226, 216, 0.86);
+      border: 1px solid var(--sheet-border);
       border-radius: 32px;
       background:
-        linear-gradient(135deg, rgba(255, 253, 248, 0.9), rgba(247, 243, 234, 0.78)),
+        linear-gradient(135deg, rgba(255, 248, 234, 0.94), rgba(247, 238, 219, 0.82)),
         rgba(255, 255, 255, 0.68);
       box-shadow: var(--shadow-forest);
+      overflow: hidden;
+    }
+    .character-card::before {
+      content: attr(data-file);
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      padding: 6px 13px;
+      border-radius: 8px 8px 3px 3px;
+      background: var(--color-ink);
+      color: var(--color-white);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
     }
     .character-card.reverse .character-image { order: 0; }
     .character-image {
@@ -420,12 +526,32 @@
       display: inline-flex;
       margin-bottom: 16px;
       padding: 7px 12px;
+      border: 1px solid rgba(217, 163, 23, 0.36);
       border-radius: 999px;
-      background: rgba(255, 214, 0, 0.22);
-      color: var(--color-green);
+      background: rgba(255, 214, 0, 0.2);
+      color: var(--color-ink);
       font-size: 13px;
       font-weight: 800;
     }
+    .character-meta {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 22px;
+      padding: 14px 0 0;
+      border-top: 1px solid rgba(217, 163, 23, 0.32);
+    }
+    .character-meta div {
+      display: grid;
+      grid-template-columns: 68px 1fr;
+      gap: 12px;
+      color: #4e596d;
+      font-size: 14px;
+    }
+    .character-meta dt {
+      color: var(--color-ink);
+      font-weight: 800;
+    }
+    .character-meta dd { margin: 0; }
     .feature-list {
       display: flex;
       flex-wrap: wrap;
@@ -436,10 +562,10 @@
     }
     .feature-list li {
       padding: 7px 10px;
-      border: 1px solid var(--color-line);
+      border: 1px solid rgba(217, 163, 23, 0.32);
       border-radius: 999px;
       background: var(--color-cream);
-      color: #586275;
+      color: var(--color-ink);
       font-size: 13px;
       font-weight: 700;
     }
@@ -458,7 +584,7 @@
     }
 
     .flow-grid { display: grid; gap: 14px; margin-top: 34px; }
-    .flow-card { position: relative; padding: 22px; overflow: hidden; }
+    .flow-card { position: relative; padding: 30px 22px 22px; overflow: hidden; }
     .flow-card::after {
       content: "";
       position: absolute;
@@ -503,8 +629,9 @@
     .coming-grid { display: grid; gap: 14px; margin-top: 34px; }
     .coming-card {
       position: relative;
-      padding: 22px;
+      padding: 30px 22px 22px;
       border-style: dashed;
+      border-color: var(--sheet-border);
       opacity: 0.78;
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
@@ -532,7 +659,7 @@
 
     .cta-panel {
       padding: 40px 24px;
-      border: 1px solid var(--color-line);
+      border: 1px solid var(--sheet-border);
       border-radius: 32px;
       background:
         radial-gradient(ellipse at 18% 10%, rgba(255, 214, 0, 0.24), transparent 28%),
@@ -565,7 +692,8 @@
       .section { padding: 108px 0; }
       .hero-grid,
       .story-grid,
-      .character-card { grid-template-columns: 1fr 1fr; }
+      .character-card,
+      .archive-panel { grid-template-columns: 1fr 1fr; }
       .hero-actions,
       .cta-actions { flex-direction: row; align-items: center; }
       .keyword-grid,
@@ -676,15 +804,42 @@
         </div>
       </section>
 
+      <section class="section archive-section" aria-label="문장숲 아카이브">
+        <div class="container">
+          <div class="archive-panel reveal">
+            <div class="archive-image">
+              <img src="/characters/forest-friends.png" alt="문장숲에서 문장을 돌보는 친구들" />
+            </div>
+            <div class="archive-copy">
+              <span class="section-kicker">Character Archive</span>
+              <h2>문장숲의 친구들은 기록을 함께 돌봐요</h2>
+              <p class="lead">노아가 마음에 닿은 문장을 발견하면, 결은 그 문장이 오래 머물 수 있도록 조용히 정리합니다.</p>
+              <p>문장숲에는 각자의 도구와 성격을 가진 친구들이 살고 있어요. 누군가는 감정을 살피고, 누군가는 문장을 정리하고, 누군가는 오래 기다리던 기록을 다시 데려옵니다.</p>
+              <ul class="archive-tags">
+                <li>문장빛</li>
+                <li>인덱스 노트</li>
+                <li>문장카드</li>
+                <li>기억의 길</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="character-section" id="characters">
         <div class="container">
-          <article class="character-card reveal">
+          <article class="character-card reveal" data-file="CHARACTER FILE 01">
             <div class="character-image" data-placeholder="노아 캐릭터 이미지">
               <img src="/characters/noa.png" alt="노아 캐릭터" onerror="this.style.display='none'" />
             </div>
             <div>
               <span class="role">문장 감응자</span>
               <h2>노아</h2>
+              <dl class="character-meta">
+                <div><dt>역할</dt><dd>마음에 닿은 문장을 가장 먼저 발견해요</dd></div>
+                <div><dt>도구</dt><dd>형광펜, 노트, 크로스백</dd></div>
+                <div><dt>키워드</dt><dd>차분한 관찰, 첫 밑줄, 문장빛</dd></div>
+              </dl>
               <p>노아는 마음에 닿은 문장을 가장 먼저 알아차리는 고양이입니다. 사용자가 책을 읽다가 잠시 멈추는 순간, 노아의 안경에는 노란 문장빛이 반짝입니다.</p>
               <p>노아는 밑줄을 재촉하지 않습니다. 책을 끝까지 읽으라고 말하지도 않습니다.</p>
               <p>그저 조용히 묻습니다. “방금, 마음이 조금 멈췄죠?”</p>
@@ -699,13 +854,18 @@
 
       <section class="character-section">
         <div class="container">
-          <article class="character-card reverse reveal">
+          <article class="character-card reverse reveal" data-file="CHARACTER FILE 02">
             <div class="character-image is-gyeol" data-placeholder="결 캐릭터 이미지">
               <img src="/characters/gyeol.png" alt="결 캐릭터" onerror="this.style.display='none'" />
             </div>
             <div>
               <span class="role">문장결 정리자</span>
               <h2>결</h2>
+              <dl class="character-meta">
+                <div><dt>역할</dt><dd>문장과 문장 사이의 흐름을 정리해요</dd></div>
+                <div><dt>도구</dt><dd>인덱스 탭 노트, 문장카드, 정리 파우치</dd></div>
+                <div><dt>키워드</dt><dd>섬세한 분류, 독서노트, 당신만의 결</dd></div>
+              </dl>
               <p>결은 문장과 문장 사이의 마음의 흐름을 읽는 친구입니다. 노아가 발견한 문장을 조심히 받아 독서노트 안에 오래 꺼내볼 수 있도록 정리합니다.</p>
               <p>저장된 문장은 그냥 데이터가 아닙니다. 어떤 문장에 멈췄는지, 어떤 말에 위로받았는지, 어떤 생각을 오래 붙잡고 싶었는지 보여주는 작은 마음의 흔적입니다.</p>
               <p>결은 그 흔적들을 차곡차곡 모아 당신만의 문장정원을 만들어갑니다.</p>
