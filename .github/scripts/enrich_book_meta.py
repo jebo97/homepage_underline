@@ -41,6 +41,16 @@ NAVER_TITLE_OVERRIDES = {
     "지적 대화를 위한 넓고 얕은 지식: 현실너머 편": "지적 대화를 위한 넓고 얕은 지식 2",
 }
 
+# 제목은 같지만 저자가 다른 책으로 오매칭되는 제목들 — 네이버 조회를 건너뛰고 강제로 비운다.
+# (예: 법정 스님 책이 동명의 다른 저자 책으로 잡히는 경우. 잘못된 표지/설명 노출 방지)
+NAVER_SKIP_TITLES = {
+    "무소유",
+    "산에는 꽃이 피네",
+    "숫타니파타",
+    "아름다운 마무리",
+    "인연 이야기",
+}
+
 
 def load_env_local() -> None:
     env_path = Path(__file__).resolve().parent.parent / ".env.local"
@@ -194,8 +204,10 @@ def fetch_representatives(supabase: Client):
         resp = (
             supabase.table("bestsellers")
             .select("title, author, publisher, year, week")
+            # year,week 는 고유하지 않아 페이징 시 중복/누락 → id 로 총정렬을 보장
             .order("year", desc=False)
             .order("week", desc=False)
+            .order("id", desc=False)
             .range(start, start + PAGE - 1)
             .execute()
         )
@@ -253,6 +265,14 @@ def main():
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
     matched_cnt, batch, BATCH = 0, [], 100
     for i, title in enumerate(todo, 1):
+        # 오매칭 방지 스킵 목록: 네이버 조회 없이 강제로 비운다(기존 잘못된 값도 덮어씀).
+        if title in NAVER_SKIP_TITLES:
+            batch.append({
+                "title": title, "matched": False, "updated_at": now_iso,
+                "naver_title": None, "naver_author": None, "naver_publisher": None,
+                "pubdate": None, "image": None, "link": None, "description": None,
+            })
+            continue
         rep = reps[title]
         search_title = NAVER_TITLE_OVERRIDES.get(title, title)
         nv = get_naver_book(search_title, rep["author"], rep["publisher"], cid, csec)
