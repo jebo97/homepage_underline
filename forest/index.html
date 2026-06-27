@@ -348,6 +348,10 @@
       object-fit: contain;
       margin: auto;
     }
+    .character-image.is-gyeol img {
+      max-width: 96%;
+      max-height: 500px;
+    }
 
     .story-grid { display: grid; gap: 34px; align-items: start; }
     .story-text {
@@ -591,6 +595,10 @@
         max-width: 78%;
         max-height: 390px;
       }
+      .character-image.is-gyeol img {
+        max-width: 100%;
+        max-height: 330px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -642,7 +650,7 @@
               <span class="forest-leaf"></span>
               <span class="sentence-path"></span>
             </div>
-            <img src="/images/noa-gyeol-hero.png" alt="노아와 결" onerror="this.style.display='none'" />
+            <img src="/characters/noa-gyeol.png" alt="노아와 결" onerror="this.style.display='none'" />
           </div>
         </div>
       </section>
@@ -692,7 +700,7 @@
       <section class="character-section">
         <div class="container">
           <article class="character-card reverse reveal">
-            <div class="character-image" data-placeholder="결 캐릭터 이미지">
+            <div class="character-image is-gyeol" data-placeholder="결 캐릭터 이미지">
               <img src="/characters/gyeol.png" alt="결 캐릭터" onerror="this.style.display='none'" />
             </div>
             <div>
