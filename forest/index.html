@@ -34,6 +34,7 @@
       --color-paper-deep: #F4E6CA;
       --color-cream: #FFFDF8;
       --sheet-border: rgba(217, 163, 23, 0.42);
+      --hero-image: url("/characters/hero-noa-gyeol.png");
       --cta-image: url("/characters/forest-cta-noa-gyeol.png");
       --shadow-card: 0 18px 50px rgba(27, 42, 74, 0.08);
       --shadow-forest: 0 28px 70px rgba(70, 92, 69, 0.16);
@@ -203,6 +204,15 @@
       position: relative;
       overflow: hidden;
       padding: 76px 0 92px;
+      min-height: calc(100vh - 72px);
+      display: grid;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(255, 253, 248, 0.96) 0%, rgba(255, 253, 248, 0.88) 39%, rgba(255, 253, 248, 0.32) 62%, rgba(255, 253, 248, 0.08) 100%),
+        linear-gradient(180deg, rgba(255, 253, 248, 0.08), rgba(250, 249, 247, 0.18)),
+        var(--hero-image);
+      background-size: cover;
+      background-position: center right;
     }
     .hero::before {
       content: "";
@@ -214,6 +224,7 @@
         radial-gradient(ellipse at 84% 18%, rgba(69, 100, 82, 0.16), transparent 34%),
         radial-gradient(ellipse at 50% 100%, rgba(122, 96, 72, 0.16), transparent 42%);
       pointer-events: none;
+      mix-blend-mode: soft-light;
     }
     .hero::after {
       content: "";
@@ -233,9 +244,7 @@
     }
     .hero-grid {
       position: relative;
-      display: grid;
-      gap: 36px;
-      align-items: center;
+      display: block;
     }
     .hero-badge {
       display: inline-flex;
@@ -261,7 +270,6 @@
     .hero-copy { max-width: 620px; }
     .hero-copy .lead { max-width: 520px; margin-bottom: 30px; }
     .hero-actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
-    .hero-visual,
     .character-image {
       position: relative;
       display: grid;
@@ -276,30 +284,7 @@
         repeating-linear-gradient(116deg, rgba(27, 42, 74, 0.035) 0 1px, transparent 1px 16px);
       box-shadow: var(--shadow-forest);
     }
-    .hero-visual {
-      min-height: 390px;
-      border-radius: 30px;
-    }
-    .hero-visual.has-photo {
-      background: #fff7e8;
-    }
-    .hero-visual::before {
-      content: "";
-      position: absolute;
-      inset: 28px;
-      border-radius: 30px;
-      background:
-        radial-gradient(ellipse at 48% 30%, rgba(255, 214, 0, 0.32), transparent 22%),
-        linear-gradient(158deg, transparent 0 46%, rgba(122, 96, 72, 0.2) 46.2% 48%, transparent 48.2% 100%),
-        linear-gradient(102deg, transparent 0 58%, rgba(69, 100, 82, 0.18) 58.2% 59.4%, transparent 59.6% 100%),
-        radial-gradient(ellipse at 50% 104%, rgba(122, 96, 72, 0.24), transparent 44%);
-      opacity: 0.9;
-    }
-    .hero-visual .forest-orbit {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
+    .forest-orbit { display: none; }
     .forest-leaf {
       position: absolute;
       width: 58px;
@@ -333,7 +318,6 @@
     }
     .sentence-path::before { top: 34px; }
     .sentence-path::after { top: 70px; left: 18%; width: 58%; }
-    .hero-visual::after,
     .character-image::after {
       content: attr(data-placeholder);
       position: absolute;
@@ -347,16 +331,8 @@
       text-align: center;
       box-shadow: 0 12px 28px rgba(27, 42, 74, 0.06);
     }
-    .hero-visual:has(img:not([style*="display: none"]))::after,
     .character-image:has(img:not([style*="display: none"]))::after {
       display: none;
-    }
-    .hero-visual img {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
     .character-image img {
       position: relative;
@@ -440,6 +416,22 @@
       max-height: 100%;
       object-fit: contain;
     }
+    .keyword-card.is-line .keyword-icon {
+      width: 100%;
+      max-width: 176px;
+      height: 118px;
+      padding: 18px;
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse at center, rgba(255, 214, 0, 0.18), transparent 72%),
+        rgba(255, 253, 248, 0.72);
+      box-shadow: inset 0 0 0 1px rgba(217, 163, 23, 0.22);
+    }
+    .keyword-card.is-line .keyword-icon img {
+      width: 100%;
+      max-width: none;
+      filter: saturate(1.24) contrast(1.08) drop-shadow(0 7px 12px rgba(217, 163, 23, 0.22));
+    }
 
     .character-section { padding: 76px 0; }
     .character-card {
@@ -471,6 +463,10 @@
       letter-spacing: 0.06em;
     }
     .character-card.reverse .character-image { order: 0; }
+    .character-card.reverse::before {
+      left: auto;
+      right: 18px;
+    }
     .character-image {
       min-height: 330px;
       padding: 28px;
@@ -596,58 +592,22 @@
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
     .coming-card:hover { transform: translateY(-5px); opacity: 0.92; }
-    .silhouette {
-      position: relative;
-      width: 86px;
-      height: 96px;
+    .coming-prop {
+      display: grid;
+      place-items: center;
+      width: 92px;
+      height: 92px;
       margin-bottom: 18px;
-      opacity: 0.72;
-      filter: blur(0.2px);
+      border: 1px dashed rgba(217, 163, 23, 0.46);
+      border-radius: 24px;
       background:
-        radial-gradient(circle at 50% 35%, rgba(16, 36, 73, 0.35) 0 27px, transparent 28px),
-        radial-gradient(ellipse at 50% 82%, rgba(16, 36, 73, 0.28) 0 35px, transparent 36px);
-    }
-    .silhouette::before,
-    .silhouette::after {
-      content: "";
-      position: absolute;
-      top: 6px;
-      width: 26px;
-      height: 36px;
-      border-radius: 60% 60% 40% 40%;
-      background: rgba(16, 36, 73, 0.26);
-    }
-    .silhouette::before { left: 16px; transform: rotate(-22deg); }
-    .silhouette::after { right: 16px; transform: rotate(22deg); }
-    .silhouette.bird::before {
-      left: 28px;
-      top: 0;
-      width: 18px;
-      height: 32px;
-      border-radius: 50%;
-      transform: rotate(-16deg);
-    }
-    .silhouette.bird::after {
-      right: 18px;
-      top: 36px;
-      width: 24px;
-      height: 12px;
-      border-radius: 999px 999px 0 0;
-      transform: rotate(20deg);
-    }
-    .silhouette.rabbit::before,
-    .silhouette.rabbit::after {
-      top: -10px;
-      width: 18px;
-      height: 58px;
-      border-radius: 999px;
-    }
-    .silhouette.fox::before,
-    .silhouette.fox::after {
-      top: 1px;
-      width: 30px;
-      height: 42px;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        radial-gradient(ellipse at center, rgba(255, 214, 0, 0.16), transparent 68%),
+        rgba(255, 253, 248, 0.7);
+      color: rgba(27, 42, 74, 0.56);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
     }
     .coming-badge {
       position: absolute;
@@ -663,18 +623,19 @@
 
     .cta-panel {
       position: relative;
+      min-height: 300px;
       padding: 46px 24px;
       border: 1px solid var(--sheet-border);
       border-radius: 32px;
       background:
-        linear-gradient(90deg, rgba(16, 36, 73, 0.84), rgba(16, 36, 73, 0.42) 48%, rgba(16, 36, 73, 0.08)),
+        linear-gradient(90deg, rgba(16, 36, 73, 0.88) 0%, rgba(16, 36, 73, 0.68) 39%, rgba(16, 36, 73, 0.08) 64%),
         var(--cta-image),
         radial-gradient(ellipse at 18% 10%, rgba(255, 214, 0, 0.24), transparent 28%),
         radial-gradient(ellipse at 86% 92%, rgba(69, 100, 82, 0.18), transparent 30%),
         linear-gradient(135deg, rgba(255, 214, 0, 0.16), rgba(255, 255, 255, 0.86) 46%, rgba(69, 100, 82, 0.12)),
         var(--color-white);
-      background-size: cover;
-      background-position: center;
+      background-size: auto, auto 112%, auto, auto, auto, auto;
+      background-position: center, calc(100% + 150px) center, center, center, center, center;
       box-shadow: var(--shadow-forest);
       text-align: left;
       overflow: hidden;
@@ -685,6 +646,9 @@
     .cta-panel h2,
     .cta-panel p { color: var(--color-white); text-shadow: 0 2px 10px rgba(16, 36, 73, 0.22); }
     .cta-panel .lead { max-width: 560px; }
+    .cta-panel h2,
+    .cta-panel .lead,
+    .cta-actions { max-width: 480px; }
     .cta-panel .btn-secondary {
       background: rgba(255, 253, 248, 0.9);
     }
@@ -709,7 +673,6 @@
 
     @media (min-width: 768px) {
       .section { padding: 108px 0; }
-      .hero-grid,
       .story-grid,
       .character-card { grid-template-columns: 1fr 1fr; }
       .hero-actions,
@@ -723,9 +686,10 @@
 
     @media (min-width: 1024px) {
       .header-inner { min-height: 78px; }
-      .hero { padding: 112px 0 126px; }
-      .hero-grid { grid-template-columns: 0.95fr 1.05fr; }
-      .hero-visual { min-height: 560px; }
+      .hero {
+        min-height: 680px;
+        padding: 112px 0 126px;
+      }
       .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .cta-panel { padding: 58px; }
@@ -745,14 +709,27 @@
         max-width: 100%;
         max-height: 330px;
       }
-      .hero-visual { min-height: 378px; }
+      .hero {
+        min-height: 780px;
+        align-items: start;
+        padding: 72px 0 360px;
+        background:
+          linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 253, 248, 0.92) 44%, rgba(255, 253, 248, 0.18) 70%, rgba(255, 253, 248, 0.08) 100%),
+          var(--hero-image);
+        background-size: auto 56%, auto 56%;
+        background-position: center bottom, center bottom;
+        background-repeat: no-repeat;
+      }
       .cta-panel {
+        min-height: 520px;
+        padding: 34px 22px 290px;
         text-align: center;
         background:
-          linear-gradient(180deg, rgba(16, 36, 73, 0.82), rgba(16, 36, 73, 0.36) 58%, rgba(16, 36, 73, 0.1)),
+          linear-gradient(180deg, rgba(16, 36, 73, 0.88) 0%, rgba(16, 36, 73, 0.66) 42%, rgba(16, 36, 73, 0.04) 72%),
           var(--cta-image);
-        background-size: cover;
-        background-position: center;
+        background-size: auto, auto 52%;
+        background-position: center, center bottom;
+        background-repeat: no-repeat;
       }
       .cta-panel .lead { margin-left: auto; margin-right: auto; }
     }
@@ -795,18 +772,9 @@
             </p>
             <div class="hero-actions">
               <!-- TODO: 실제 앱스토어, 플레이스토어 또는 앱 실행 URL로 교체 -->
-              <a href="#" class="btn btn-primary">내 문장숲 시작하기</a>
+              <a href="#" class="btn btn-primary">밑줄긋기 시작하기</a>
               <a href="#characters" class="btn btn-secondary">노아와 결 만나기</a>
             </div>
-          </div>
-          <div class="hero-visual has-photo reveal" data-placeholder="노아와 결 이미지 영역">
-            <div class="forest-orbit" aria-hidden="true">
-              <span class="forest-leaf"></span>
-              <span class="forest-leaf"></span>
-              <span class="forest-leaf"></span>
-              <span class="sentence-path"></span>
-            </div>
-            <img src="/characters/hero-noa-gyeol.png" alt="문장숲에서 책을 함께 보는 노아와 결" onerror="this.style.display='none'" />
           </div>
         </div>
       </section>
@@ -825,7 +793,7 @@
           </div>
           <div class="keyword-grid reveal">
             <article class="keyword-card"><div class="keyword-icon"><img src="/characters/seed.png" alt="" aria-hidden="true" /></div><strong>문장씨앗</strong><p>밑줄을 긋는 순간 깨어나는 작은 기록</p></article>
-            <article class="keyword-card"><div class="keyword-icon"><img src="/characters/line.png" alt="" aria-hidden="true" /></div><strong>노란 결</strong><p>마음이 멈춘 자리에 생기는 빛</p></article>
+            <article class="keyword-card is-line"><div class="keyword-icon"><img src="/characters/line.png" alt="" aria-hidden="true" /></div><strong>노란 결</strong><p>마음이 멈춘 자리에 생기는 빛</p></article>
             <article class="keyword-card"><div class="keyword-icon"><img src="/characters/garden.png" alt="" aria-hidden="true" /></div><strong>문장정원</strong><p>저장된 밑줄들이 자라는 나만의 공간</p></article>
             <article class="keyword-card"><div class="keyword-icon"><img src="/characters/path.png" alt="" aria-hidden="true" /></div><strong>태그 오솔길</strong><p>태그는 문장숲의 길이에요.</p></article>
           </div>
@@ -911,10 +879,10 @@
             <p class="lead">문장에 감정의 이름을 붙여주는 친구, 밑줄을 바탕으로 독후감을 정리해주는 친구, 나누고 싶은 문장을 예쁜 카드에 담아주는 친구, 오래전에 저장한 문장을 다시 데려와주는 친구가 곧 문장숲에 찾아옵니다.</p>
           </div>
           <div class="coming-grid">
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette bird" aria-hidden="true"></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette" aria-hidden="true"></div><h3>온</h3><p><strong>문장 해석자</strong></p><p class="muted">밑줄과 메모를 바탕으로 독후감을 정리하는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette rabbit" aria-hidden="true"></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="silhouette fox" aria-hidden="true"></div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장이 아니라,<br>조용히 기다리고 있던 문장입니다.</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop" aria-hidden="true">소품<br>이미지</div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop" aria-hidden="true">소품<br>이미지</div><h3>온</h3><p><strong>문장 해석자</strong></p><p class="muted">밑줄과 메모를 바탕으로 독후감을 정리하는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop" aria-hidden="true">소품<br>이미지</div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
+            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop" aria-hidden="true">소품<br>이미지</div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장이 아니라,<br>조용히 기다리고 있던 문장입니다.</p></article>
           </div>
         </div>
       </section>
@@ -927,8 +895,8 @@
             <p class="lead">밑줄긋기에 조용히 남겨보세요.<br>밑줄 하나가, 나만의 문장숲이 됩니다.</p>
             <div class="cta-actions">
               <!-- TODO: 실제 앱스토어, 플레이스토어 또는 앱 실행 URL로 교체 -->
-              <a href="#" class="btn btn-primary">내 문장숲 시작하기</a>
-              <a href="/" class="btn btn-secondary">밑줄긋기 랜딩페이지로 돌아가기</a>
+              <a href="#" class="btn btn-primary">밑줄긋기 시작하기</a>
+              <a href="/" class="btn btn-secondary">밑줄긋기 더 알아보기</a>
             </div>
           </div>
         </div>
