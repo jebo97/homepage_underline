@@ -68,7 +68,7 @@ def load_env_local() -> None:
 _KEEP = re.compile(r"[^0-9a-z가-힣]")
 _TAGS = re.compile(r"<[^>]+>")
 _PARENS = re.compile(r"\([^)]*\)")
-_VOL = re.compile(r"[가-힣]\s+(\d{1,2})\s*$")
+_VOL = re.compile(r"[가-힣]\s+(\d{1,2})\s*(?:$|[:\-–—])")  # 끝 또는 부제 구분자(:,-) 앞의 권번호
 _EDITION = re.compile(r"큰글자|큰글씨|세트|합본|박스|특별판|한정판|영문판")
 
 
