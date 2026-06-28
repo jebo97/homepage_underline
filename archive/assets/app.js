@@ -285,6 +285,16 @@ const ERA = {
   2021: "투자 열풍의 해", 2022: "일상 회복의 해", 2023: "세이노 신드롬의 해",
   2024: "철학과 성찰의 해", 2025: "심리학·고전의 귀환",
 };
+const FIELD_DISPLAY_NAMES = {
+  "소설": "이야기 숲길",
+  "에세이": "마음 숲길",
+  "인문": "생각 숲길",
+  "역사문화": "시간의 숲길",
+  "경제경영": "일과 돈의 숲길",
+  "자기계발": "성장 숲길",
+  "정치사회": "세상의 숲길",
+  "교양과학": "호기심 숲길",
+};
 
 function aggregate(rows, includePublisher = true) {
   const map = new Map();
@@ -326,27 +336,28 @@ async function renderYear() {
   const root = document.getElementById("page-root");
   const year = Number(new URLSearchParams(location.search).get("y"));
   if (!Number.isInteger(year) || year < START_YEAR || year > END_YEAR) {
-    root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도입니다. <a class="back-link" href="index.html">← 메인으로</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도입니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
-  document.title = `${year}년의 책들 · 베스트셀러 아카이브`;
+  document.title = `${year}년에 열린 책길 · 문장숲 책길`;
   const { highlight, top10, byField } = await getYearData(year);
   const hasPrev = year > START_YEAR;
   const hasNext = year < END_YEAR;
 
   const prevPill = hasPrev
-    ? `<a class="pill" href="${esc(yearHref(year - 1))}">← ${year - 1}</a>`
-    : `<span class="pill disabled">← ${year - 1}</span>`;
+    ? `<a class="pill" href="${esc(yearHref(year - 1))}">← ${year - 1}년 책길</a>`
+    : `<span class="pill disabled">← ${year - 1}년 책길</span>`;
   const nextPill = hasNext
-    ? `<a class="pill" href="${esc(yearHref(year + 1))}">${year + 1} →</a>`
-    : `<span class="pill disabled">${year + 1} →</span>`;
+    ? `<a class="pill" href="${esc(yearHref(year + 1))}">${year + 1}년 책길 →</a>`
+    : `<span class="pill disabled">${year + 1}년 책길 →</span>`;
 
   const highlightHTML = highlight ? `
     <a class="highlight-card" href="${esc(bookHref(highlight.title))}">
-      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">올해의 종합 1위 · 1위 최장기간</span></div>
+      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">그해 가장 앞에 오래 선 책</span></div>
       <h2 class="highlight-title">${esc(highlight.title)}</h2>
       <p class="highlight-meta">${esc(highlight.author ?? "저자 미상")}${highlight.publisher ? ` · ${esc(highlight.publisher)}` : ""}</p>
-      <div class="badge-accent">종합 1위 ${highlight.weeks}주</div>
+      <p class="highlight-copy">${highlight.weeks}주 동안 책길의 가장 앞에 서 있었어요.</p>
+      <div class="badge-accent">${highlight.weeks}주 동안 1위</div>
     </a>` : "";
 
   const top10HTML = top10.length > 0
@@ -357,54 +368,72 @@ async function renderYear() {
             <a href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
             <p>${esc(book.author ?? "저자 미상")}</p>
           </div>
-          <span class="weeks">${book.weeks}주</span>
+          <span class="weeks">${book.weeks}주 동안 책길에 머문 책</span>
         </li>`).join("")}</ol>`
     : `<p class="muted">데이터 없음</p>`;
 
   const byFieldHTML = byField.map(({ category, book }) => `
     <div class="field-card">
-      <span class="field-name">${esc(category)}</span>
+      <span class="field-name">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span>
       ${book ? `
         <a class="ft line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
         <p class="fa">${esc(book.author ?? "저자 미상")}</p>
-        <p class="fw">${book.weeks}주 1위</p>`
+        <p class="fw">${book.weeks}주 동안 1위</p>`
       : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">데이터 없음</p>`}
     </div>`).join("");
 
   const footPrev = hasPrev
-    ? `<a class="back-link" style="font-size:1rem" href="${esc(yearHref(year - 1))}">← ${year - 1}년</a>`
-    : `<span style="font-size:1rem;color:var(--slate-700)">← ${year - 1}년</span>`;
+    ? `<a class="back-link" style="font-size:1rem" href="${esc(yearHref(year - 1))}">← ${year - 1}년 책길</a>`
+    : `<span style="font-size:1rem;color:var(--slate-700)">← ${year - 1}년 책길</span>`;
   const footNext = hasNext
-    ? `<a class="back-link" style="font-size:1rem" href="${esc(yearHref(year + 1))}">${year + 1}년 →</a>`
-    : `<span style="font-size:1rem;color:var(--slate-700)">${year + 1}년 →</span>`;
+    ? `<a class="back-link" style="font-size:1rem" href="${esc(yearHref(year + 1))}">${year + 1}년 책길 →</a>`
+    : `<span style="font-size:1rem;color:var(--slate-700)">${year + 1}년 책길 →</span>`;
 
   root.innerHTML = `
-    <main>
+    <main class="year-road-page">
       <div class="wrap wrap-5xl">
         <header class="year-page-header">
           <div class="year-topbar">
-            <a class="back-link" href="index.html">← 메인으로</a>
+            <a class="back-link" href="index.html">← 문장숲 책길로</a>
             <nav class="year-nav">${prevPill}${nextPill}</nav>
           </div>
-          <h1 class="page-title year-page-title">${year}년의 책들</h1>
+          <h1 class="page-title year-page-title">${year}년에 열린 책길</h1>
+          <p class="year-subtitle">그해 독자들이 남긴 책길의 흐름을 모았습니다.</p>
           <p class="era">${esc(ERA[year] ?? "")}</p>
         </header>
         ${highlightHTML}
         <section class="section-pad">
-          <h2 class="section-heading">종합 TOP 10</h2>
-          <p class="section-note" style="margin-bottom:2.5rem">그 해 종합 차트에 오래 머문 순서 (차트인 주수 기준)</p>
+          <h2 class="section-heading">그해 오래 머문 책</h2>
+          <p class="section-note year-section-note">그해 베스트셀러 목록에 오래 남아 있던 책들을 차트인 주수 기준으로 정리했습니다.</p>
           ${top10HTML}
         </section>
-        <section class="section-pad" style="padding-bottom:7rem">
-          <h2 class="section-heading" style="margin-bottom:2.5rem">분야별 최다 1위</h2>
+        <section class="section-pad year-field-section">
+          <h2 class="section-heading">숲길 갈래별 가장 앞에 선 책</h2>
+          <p class="section-note year-section-note">각 분야에서 1위 자리에 가장 오래 선 책들을 모았습니다.</p>
           <div class="field-grid">${byFieldHTML}</div>
         </section>
+        <p class="year-data-note">교보문고 주간 베스트셀러 데이터를 바탕으로 개인이 정리한 아카이브입니다.</p>
       </div>
-      <footer class="cta-footer">
-        <div class="cta-inner" style="flex-direction:row;justify-content:space-between;padding:4rem 1.5rem">
-          ${footPrev}${footNext}
+      <section class="book-road-cta year-book-road-cta">
+        <div class="wrap wrap-5xl">
+          <div class="book-road-cta-card">
+            <div>
+              <p class="cta-kicker">Underline Your Sentence</p>
+              <p class="cta-title">마음이 멈춘 책을 발견했다면,<br />이제 밑줄로 남겨보세요.</p>
+              <p class="cta-sub">밑줄이 모여, 나만의 문장숲이 됩니다.</p>
+              <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
+            </div>
+            <div class="cta-still-life">
+              <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" />
+            </div>
+          </div>
         </div>
-      </footer>
+      </section>
+      <div class="wrap wrap-5xl">
+        <nav class="year-foot-nav">
+          ${footPrev}${footNext}
+        </nav>
+      </div>
     </main>`;
 }
 
