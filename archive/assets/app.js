@@ -187,8 +187,8 @@ async function renderHome() {
   const STATS = [
     { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", tone: "light", imageKey: "bookmark" },
     { value: "50,401", unit: "", name: "50,401개의 책길 기록", desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", tone: "dark", imageKey: "note" },
-    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png", tone: "dark", imageKey: "hashtag" },
     { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png", tone: "light", imageKey: "book" },
+    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png", tone: "dark", imageKey: "hashtag" },
   ];
 
   const statsHTML = STATS.map((s) => `
