@@ -244,22 +244,6 @@
       pointer-events: none;
       mix-blend-mode: soft-light;
     }
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -7vw;
-      bottom: -70px;
-      width: 54vw;
-      min-width: 360px;
-      height: 270px;
-      border-radius: 50% 50% 0 0;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.0), rgba(250, 249, 247, 0.8)),
-        repeating-linear-gradient(92deg, rgba(69, 100, 82, 0.14) 0 2px, transparent 2px 44px);
-      opacity: 0.42;
-      transform: rotate(-4deg);
-      pointer-events: none;
-    }
     .hero-grid {
       position: relative;
       display: block;
@@ -272,38 +256,12 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--sheet-border);
       background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 .63 0 0 0 0 .42 0 0 0 0 .16 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23paper)'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.56), transparent 28%),
-        radial-gradient(circle at 72% 78%, rgba(122, 96, 72, 0.14), transparent 32%),
-        radial-gradient(circle at 26% 76%, rgba(255, 214, 0, 0.16), transparent 34%),
-        linear-gradient(145deg, #f8dbab 0%, #f0c982 48%, #e3ad61 100%);
-      background-blend-mode: soft-light, normal, normal, normal, normal;
-      box-shadow:
-        0 20px 48px rgba(27, 42, 74, 0.13),
-        0 6px 16px rgba(122, 96, 72, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.72),
-        inset 0 -14px 24px rgba(122, 96, 72, 0.1);
-    }
-    .character-image::before {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      z-index: 0;
-      border: 3px solid rgba(27, 42, 74, 0.84);
-      border-radius: 22px;
-      background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 .74 0 0 0 0 .52 0 0 0 0 .25 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23grain)'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.5), transparent 26%),
-        radial-gradient(circle at 78% 72%, rgba(217, 163, 23, 0.1), transparent 34%),
-        linear-gradient(180deg, rgba(255, 232, 190, 0.98), rgba(244, 206, 146, 0.98));
-      background-blend-mode: soft-light, normal, normal, normal;
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.34),
-        inset 0 10px 18px rgba(255, 255, 255, 0.2),
-        inset 0 -14px 22px rgba(122, 96, 72, 0.08);
-      pointer-events: none;
+        linear-gradient(180deg, rgba(255, 253, 248, 0.86), rgba(244, 239, 228, 0.72)),
+        radial-gradient(ellipse at 40% 28%, rgba(255, 214, 0, 0.24), transparent 30%),
+        radial-gradient(ellipse at 78% 24%, rgba(69, 100, 82, 0.2), transparent 32%);
+      box-shadow: var(--shadow-forest);
     }
     .forest-orbit { display: none; }
     .forest-leaf {
@@ -342,7 +300,7 @@
     .character-image::after {
       content: attr(data-placeholder);
       position: absolute;
-      z-index: 2;
+      z-index: 1;
       max-width: 210px;
       padding: 12px 16px;
       border-radius: 999px;
@@ -713,11 +671,6 @@
       .character-image {
         min-height: 360px;
         padding: 22px;
-      }
-      .character-image::before {
-        inset: 14px;
-        border-width: 2px;
-        border-radius: 20px;
       }
       .character-image img {
         max-width: 72%;
