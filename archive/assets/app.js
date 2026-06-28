@@ -89,6 +89,26 @@ function renderNav() {
     </div>
     ${searchFormHTML("small")}
   </div>`;
+
+  const searchForm = el.querySelector(".search-form.small");
+  const searchInput = searchForm?.querySelector(".search-input");
+  const searchButton = searchForm?.querySelector(".search-btn");
+  searchButton?.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 639px)").matches) return;
+    if (searchForm.classList.contains("is-open")) return;
+    event.preventDefault();
+    searchForm.classList.add("is-open");
+    window.requestAnimationFrame(() => searchInput?.focus());
+  });
+  searchForm?.addEventListener("submit", () => {
+    searchForm.classList.remove("is-open");
+  });
+  document.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 639px)").matches) return;
+    if (!searchForm?.classList.contains("is-open")) return;
+    if (searchForm.contains(event.target)) return;
+    searchForm.classList.remove("is-open");
+  });
 }
 
 function renderSourceFooter() {

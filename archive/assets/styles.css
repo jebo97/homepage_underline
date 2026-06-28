@@ -385,18 +385,26 @@ a.alink:hover { color: var(--accent); }
     font-size: 0.82rem;
   }
   .search-form.small {
-    order: 3;
     position: relative;
+    width: 2.7rem;
+    margin-left: auto;
+  }
+  .search-form.small .search-input {
+    display: none;
+  }
+  .search-form.small.is-open {
+    order: 3;
     width: 100%;
     margin-left: 0;
   }
-  .search-form.small .search-input {
+  .search-form.small.is-open .search-input {
     display: block;
     width: 100%;
     border-radius: 9999px;
     padding: 0.85rem 3.6rem 0.85rem 1rem;
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.14);
+    font-size: 16px;
   }
   .search-form.small .search-btn,
   .search-form.large .search-btn {
@@ -423,8 +431,9 @@ a.alink:hover { color: var(--accent); }
     display: block;
   }
   .home-header {
-    min-height: calc(100svh - 65px);
-    padding: 4.5rem 0 4rem;
+    min-height: calc(100svh - 72px);
+    min-height: calc(100dvh - 72px);
+    padding: 4.25rem 0 4.75rem;
   }
   .search-form.large {
     position: relative;
@@ -438,6 +447,7 @@ a.alink:hover { color: var(--accent); }
     background: rgba(255, 255, 255, 0.09);
     border-color: rgba(255, 255, 255, 0.2);
     color: var(--slate-50);
+    font-size: 16px;
   }
   .search-form.large .search-input::placeholder {
     color: rgba(226, 232, 240, 0.58);
@@ -456,6 +466,8 @@ a.alink:hover { color: var(--accent); }
   }
   .book-road-cta-card {
     min-height: 0;
+    padding: 2rem 1.4rem 1.4rem;
+    gap: 1.5rem;
   }
   .cta-still-life {
     min-height: 10rem;
@@ -571,7 +583,19 @@ a.alink:hover { color: var(--accent); }
 }
 @media (max-width: 639px) {
   .cta-still-life {
-    min-height: 10rem;
+    min-height: 0;
+    border-radius: 1rem;
+    z-index: 2;
+  }
+  .cta-still-life img {
+    width: 100%;
+    max-height: 13rem;
+    object-fit: cover;
+    object-position: center;
+  }
+  .book-road-cta-card::after {
+    background:
+      linear-gradient(180deg, rgba(16, 26, 46, 0.88) 0%, rgba(16, 26, 46, 0.56) 58%, rgba(16, 26, 46, 0.22) 100%);
   }
 }
 
