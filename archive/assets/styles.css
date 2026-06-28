@@ -50,6 +50,8 @@ body {
   font-family: "Noto Sans KR", system-ui, -apple-system, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 body[data-page="home"] {
