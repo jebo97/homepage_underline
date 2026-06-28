@@ -272,14 +272,38 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      border: 1px solid var(--sheet-border);
+      border: 1px solid rgba(255, 255, 255, 0.86);
       background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.52), transparent 28%, rgba(217, 163, 23, 0.05) 28.2%, transparent 29%),
-        linear-gradient(180deg, rgba(255, 253, 248, 0.86), rgba(244, 239, 228, 0.72)),
-        radial-gradient(ellipse at 40% 28%, rgba(255, 214, 0, 0.24), transparent 30%),
-        radial-gradient(ellipse at 78% 24%, rgba(69, 100, 82, 0.2), transparent 32%),
-        repeating-linear-gradient(116deg, rgba(27, 42, 74, 0.035) 0 1px, transparent 1px 16px);
-      box-shadow: var(--shadow-forest);
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 .63 0 0 0 0 .42 0 0 0 0 .16 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23paper)'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.56), transparent 28%),
+        radial-gradient(circle at 72% 78%, rgba(122, 96, 72, 0.14), transparent 32%),
+        radial-gradient(circle at 26% 76%, rgba(255, 214, 0, 0.16), transparent 34%),
+        linear-gradient(145deg, #f8dbab 0%, #f0c982 48%, #e3ad61 100%);
+      background-blend-mode: soft-light, normal, normal, normal, normal;
+      box-shadow:
+        0 20px 48px rgba(27, 42, 74, 0.13),
+        0 6px 16px rgba(122, 96, 72, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 -14px 24px rgba(122, 96, 72, 0.1);
+    }
+    .character-image::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      z-index: 0;
+      border: 3px solid rgba(27, 42, 74, 0.84);
+      border-radius: 22px;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 .74 0 0 0 0 .52 0 0 0 0 .25 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23grain)'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.5), transparent 26%),
+        radial-gradient(circle at 78% 72%, rgba(217, 163, 23, 0.1), transparent 34%),
+        linear-gradient(180deg, rgba(255, 232, 190, 0.98), rgba(244, 206, 146, 0.98));
+      background-blend-mode: soft-light, normal, normal, normal;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.34),
+        inset 0 10px 18px rgba(255, 255, 255, 0.2),
+        inset 0 -14px 22px rgba(122, 96, 72, 0.08);
+      pointer-events: none;
     }
     .forest-orbit { display: none; }
     .forest-leaf {
@@ -318,7 +342,7 @@
     .character-image::after {
       content: attr(data-placeholder);
       position: absolute;
-      z-index: 1;
+      z-index: 2;
       max-width: 210px;
       padding: 12px 16px;
       border-radius: 999px;
@@ -690,6 +714,11 @@
         min-height: 360px;
         padding: 22px;
       }
+      .character-image::before {
+        inset: 14px;
+        border-width: 2px;
+        border-radius: 20px;
+      }
       .character-image img {
         max-width: 72%;
         max-height: 350px;
@@ -804,7 +833,7 @@
               <p>노아는 마음에 닿은 문장을 가장 먼저 알아차리는 친구입니다.<br>책을 읽다 잠시 멈추는 순간, 노아의 안경에는 노란 문장빛이 반짝입니다.</p>
               <p>노아는 밑줄을 재촉하지 않습니다.<br>그저 조용히 묻습니다. “방금, 마음이 조금 멈췄죠?”</p>
               <ul class="feature-list">
-                <li>책 페이지 촬영</li><li>손가락으로 밑줄 긋기</li><li>문장 선택</li><li>첫 밑줄 저장 경험</li><li>온보딩 안내</li>
+                <li>책 페이지 촬영</li><li>손가락으로 밑줄 긋기</li><li>문장 선택</li>
               </ul>
               <blockquote class="quote-card">“다 읽지 않아도 괜찮아요.<br>오늘 마음에 남은 한 문장이 있다면 충분해요.”</blockquote>
             </div>
@@ -829,7 +858,7 @@
               <p>결은 문장과 문장 사이의 마음의 흐름을 읽는 친구입니다.<br>노아가 발견한 문장을 받아 오래 꺼내볼 수 있도록 정리합니다.</p>
               <p>저장된 문장은 작은 마음의 흔적입니다.<br>결은 그 흔적들을 차곡차곡 모아 당신만의 문장정원을 만들어갑니다.</p>
               <ul class="feature-list">
-                <li>OCR로 추출된 문장 확인</li><li>독서노트 저장</li><li>책별 밑줄 카드 정리</li><li>태그별 기록 연결</li><li>밑줄 통계 확장</li>
+                <li>문장 확인</li><li>독서노트 저장</li><li>책별 밑줄 카드 정리</li>
               </ul>
               <blockquote class="quote-card">“기록은 쌓이는 게 아니라,<br>당신만의 결을 만드는 거예요.”</blockquote>
             </div>
