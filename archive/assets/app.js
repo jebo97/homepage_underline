@@ -72,7 +72,7 @@ function searchFormHTML(variant, value = "") {
     </form>`;
   }
   return `<form class="search-form large" action="search.html" method="get">
-    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="책 제목이나 저자를 검색해보세요" aria-label="책 제목, 저자 검색" />
+    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="책 제목이나 작가 이름으로 책길을 찾아보세요" aria-label="책 제목, 저자 검색" />
     <button class="search-btn" type="submit">검색</button>
   </form>`;
 }
@@ -83,7 +83,7 @@ function renderNav() {
   el.className = "nav";
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
-      <a class="nav-brand" href="index.html">베스트셀러 아카이브</a>
+      <a class="nav-brand" href="index.html">문장숲 책길</a>
       <a class="nav-link" href="authors.html">저자 명예의 전당</a>
     </div>
     ${searchFormHTML("small")}
@@ -131,6 +131,7 @@ async function getYearRanking(year) {
 
 async function renderHome() {
   const root = document.getElementById("page-root");
+  document.title = "문장숲 책길";
   const years = Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, i) => START_YEAR + i);
   const rankings = await Promise.all(years.map((y) => getYearRanking(y)));
 
@@ -152,16 +153,17 @@ async function renderHome() {
   });
 
   const STATS = [
-    { value: "20", unit: "년", label: "기록 기간 (2006–2025)" },
-    { value: "50,401", unit: "", label: "수록 레코드" },
-    { value: "9", unit: "개", label: "분야" },
-    { value: "164", unit: "주", label: "역대 최장 1위 · 나미야 잡화점의 기적" },
+    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", icon: "seed" },
+    { value: "50,401", unit: "", name: "50,401개의 기록", desc: "주간 베스트셀러 데이터", icon: "note" },
+    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", icon: "path" },
+    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "bookmark" },
   ];
 
   const statsHTML = STATS.map((s) => `
-    <div class="stat-card">
+    <div class="stat-card" data-icon="${esc(s.icon)}">
       <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
-      <div class="stat-label">${esc(s.label)}</div>
+      <div class="stat-name">${esc(s.name)}</div>
+      <div class="stat-label">${esc(s.desc)}</div>
     </div>`).join("");
 
   const yearsHTML = years.map((year, i) => {
@@ -173,28 +175,60 @@ async function renderHome() {
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
+        <span class="year-kicker">그해 가장 오래 머문 책</span>
         ${titleHTML}
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
+        <a class="year-link" href="${esc(yearHref(year))}">책길 보기 →</a>
       </div>`;
   }).join("");
 
   root.innerHTML = `
-    <main>
+    <main class="book-road-home">
       <div class="wrap wrap-5xl">
         <header class="home-header">
-          <h1 class="page-title">한국 베스트셀러 아카이브</h1>
-          <div class="accent-divider"></div>
-          <p class="subtitle">본 아카이브는 교보문고 주간 베스트셀러를 기반으로 개인이 수집·정리한 데이터입니다.</p>
+          <div class="home-copy">
+            <p class="hero-eyebrow">Sentence Forest Book Road</p>
+            <h1 class="page-title">문장숲 책길</h1>
+            <p class="hero-lead">많은 독자들이 지나간 책의 길을 따라,<br />오늘 내 마음에 남을 문장을 찾아보세요.</p>
+            <p class="subtitle">2006년부터 이어진 베스트셀러의 흐름을 모아,<br />책과 독자들이 오래 머문 자리를 기록했습니다.</p>
+            <div class="search-block">${searchFormHTML("large")}</div>
+          </div>
+          <div class="home-visual" aria-hidden="true">
+            <div class="book-road-scene">
+              <span class="prop prop-book"></span>
+              <span class="prop prop-note"></span>
+              <span class="prop prop-card"></span>
+              <span class="prop prop-tag">#</span>
+              <span class="prop prop-seed"></span>
+              <span class="prop prop-pen"></span>
+            </div>
+          </div>
         </header>
-        <div class="search-block">${searchFormHTML("large")}</div>
         <section class="stats-grid">${statsHTML}</section>
         <section class="section-years">
-          <h2 class="section-heading">연도별 탐색</h2>
-          <p class="section-note">각 카드는 그 해 종합 차트에서 오래 사랑받은 대표작입니다. 직전 연도와 같은 책은 다음 작품으로 표시합니다.</p>
+          <h2 class="section-heading">해마다 열린 책길</h2>
+          <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
       </div>
-      ${ctaFooterHTML({ text: "밑줄긋기 앱과 함께 독서를 기록하세요", label: "App Store에서 다운로드", href: APP_STORE_URL })}
+      <section class="book-road-cta">
+        <div class="wrap wrap-5xl">
+          <div class="book-road-cta-card">
+            <div>
+              <p class="cta-kicker">Underline Your Sentence</p>
+              <p class="cta-title">마음이 멈춘 책을 발견했다면,<br />이제 밑줄로 남겨보세요.</p>
+              <p class="cta-sub">밑줄 하나가, 나만의 문장숲이 됩니다.</p>
+              <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
+            </div>
+            <div class="cta-still-life" aria-hidden="true">
+              <span class="cta-book"></span>
+              <span class="cta-note"></span>
+              <span class="cta-card"></span>
+              <span class="cta-line"></span>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>`;
 }
 
