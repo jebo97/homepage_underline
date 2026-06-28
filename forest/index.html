@@ -661,8 +661,8 @@
     @media (min-width: 1024px) {
       .header-inner { min-height: 78px; }
       .hero {
-        min-height: 680px;
-        padding: 112px 0 126px;
+        min-height: calc(100svh - 78px);
+        padding: clamp(96px, 12svh, 132px) 0 clamp(112px, 14svh, 156px);
       }
       .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -724,10 +724,7 @@
           <img class="brand-mark" src="/assets/icon/icon.png" alt="" aria-hidden="true" />
           <span>밑줄긋기</span>
         </a>
-        <nav class="nav-links" aria-label="문장숲 메뉴">
-          <a href="#world">문장숲</a>
-          <a href="#characters">노아와 결</a>
-          <a href="#how">사용 방법</a>
+        <nav class="nav-links" aria-label="앱 시작">
           <a class="nav-cta" href="#start">앱 시작하기</a>
         </nav>
       </div>
