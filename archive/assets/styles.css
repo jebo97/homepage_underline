@@ -398,7 +398,10 @@ a.alink:hover { color: var(--accent); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(16, 26, 46, 0.9) 0%, rgba(16, 26, 46, 0.72) 48%, rgba(16, 26, 46, 0.08) 100%);
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(16, 26, 46, 0.96) 0%, rgba(16, 26, 46, 0.9) 42%, rgba(16, 26, 46, 0.44) 68%, rgba(16, 26, 46, 0.12) 100%),
+    linear-gradient(0deg, rgba(16, 26, 46, 0.18), rgba(16, 26, 46, 0.18));
   pointer-events: none;
 }
 .book-road-cta-card > div:first-child {
@@ -448,23 +451,32 @@ a.alink:hover { color: var(--accent); }
   display: grid;
   place-items: center;
   min-height: 13rem;
-  z-index: 1;
+  overflow: hidden;
+  border-radius: 1.1rem;
+  z-index: 0;
 }
 .cta-still-life img {
   width: min(100%, 28rem);
   height: auto;
   display: block;
-  filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.22));
+  border-radius: inherit;
+  filter: saturate(0.96) contrast(0.98);
 }
 @media (min-width: 760px) {
   .cta-still-life {
     position: absolute;
-    right: clamp(-1.5rem, -2vw, -0.5rem);
-    bottom: clamp(-2.2rem, -3vw, -1rem);
-    width: min(48%, 34rem);
+    inset: 0 0 0 auto;
+    width: min(58%, 44rem);
     min-height: 0;
-    opacity: 0.96;
-    transform: rotate(-1.5deg);
+    border-radius: 0 1.5rem 1.5rem 0;
+  }
+  .cta-still-life img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 13%, rgba(0, 0, 0, 0.82) 34%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 13%, rgba(0, 0, 0, 0.82) 34%, #000 100%);
   }
 }
 @media (max-width: 639px) {
