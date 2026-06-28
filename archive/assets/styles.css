@@ -284,22 +284,36 @@ a.alink:hover { color: var(--accent); }
   box-shadow: 0 18px 44px rgba(16, 26, 46, 0.18);
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
+.stat-card-light {
+  border-color: rgba(138, 98, 61, 0.16);
+  background:
+    radial-gradient(ellipse at 82% 16%, rgba(255, 211, 61, 0.2), transparent 7rem),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.94), rgba(248, 233, 201, 0.8));
+  box-shadow: 0 18px 44px rgba(27, 42, 74, 0.09);
+}
 .stat-image-slot {
   position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
+  top: 1rem;
+  right: 1rem;
   display: grid;
   place-items: center;
-  width: 3.2rem;
-  height: 3.2rem;
-  border: 1px dashed rgba(255, 211, 61, 0.18);
-  border-radius: 0.85rem;
-  opacity: 0.42;
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: 1rem;
+  opacity: 0.92;
 }
 .stat-image-slot img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.stat-card-dark .stat-image-slot {
+  opacity: 0.76;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.16));
+}
+.stat-card-light .stat-image-slot {
+  opacity: 1;
+  filter: drop-shadow(0 12px 18px rgba(27, 42, 74, 0.12));
 }
 .stat-card::after {
   content: "";
@@ -323,6 +337,8 @@ a.alink:hover { color: var(--accent); }
 @media (min-width: 640px) { .stat-unit { font-size: 1.875rem; } }
 .stat-name { margin-top: 1rem; color: var(--slate-100); font-size: 0.95rem; font-weight: 700; }
 .stat-label { margin-top: 0.35rem; font-size: 0.75rem; line-height: 1.6; letter-spacing: 0.025em; color: var(--muted); }
+.stat-card-light .stat-name { color: var(--navy); }
+.stat-card-light .stat-label { color: #7b8798; }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
