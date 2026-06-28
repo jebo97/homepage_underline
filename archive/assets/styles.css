@@ -302,13 +302,13 @@ a.alink:hover { color: var(--accent); }
 @media (min-width: 1024px) { .year-grid { grid-template-columns: repeat(3, 1fr); } }
 .year-card {
   position: relative; display: flex; flex-direction: column;
-  min-height: 15rem;
+  min-height: 11.5rem;
   background:
     radial-gradient(ellipse at 90% 0%, rgba(255, 211, 61, 0.13), transparent 8rem),
     linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 233, 201, 0.72));
   border: 1px solid rgba(138, 98, 61, 0.16);
   border-radius: 1rem;
-  padding: 1.75rem;
+  padding: 1.55rem 1.65rem;
   box-shadow: 0 14px 30px rgba(27,42,74,0.07);
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
@@ -328,7 +328,7 @@ a.alink:hover { color: var(--accent); }
 }
 .year-card:hover::after { opacity: 1; }
 .year-card .dot {
-  position: absolute; left: 1.75rem; top: 2rem;
+  position: absolute; left: 1.65rem; top: 1.75rem;
   height: 0.55rem; width: 0.55rem; border-radius: 50% 50% 50% 0;
   background: var(--accent);
   transform: rotate(-28deg);
@@ -336,7 +336,7 @@ a.alink:hover { color: var(--accent); }
 }
 .year-card .year-num { padding-left: 1.25rem; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; color: var(--navy); transition: color .2s; }
 .year-card .year-num:hover { color: var(--accent); }
-.year-card .book-title { margin-top: 1.35rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
+.year-card .book-title { margin-top: 1.1rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
 .year-card a.book-title:hover { color: #b58500; }
 .year-card .book-author { margin-top: 0.45rem; font-size: 0.875rem; color: #7b8798; }
 
@@ -394,6 +394,17 @@ a.alink:hover { color: var(--accent); }
     linear-gradient(135deg, var(--navy-card), var(--navy));
   box-shadow: 0 24px 60px rgba(27, 42, 74, 0.16);
 }
+.book-road-cta-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(16, 26, 46, 0.9) 0%, rgba(16, 26, 46, 0.72) 48%, rgba(16, 26, 46, 0.08) 100%);
+  pointer-events: none;
+}
+.book-road-cta-card > div:first-child {
+  position: relative;
+  z-index: 2;
+}
 @media (min-width: 760px) {
   .book-road-cta-card {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr);
@@ -437,12 +448,29 @@ a.alink:hover { color: var(--accent); }
   display: grid;
   place-items: center;
   min-height: 13rem;
+  z-index: 1;
 }
 .cta-still-life img {
-  width: min(100%, 24rem);
+  width: min(100%, 28rem);
   height: auto;
   display: block;
-  filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.18));
+  filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.22));
+}
+@media (min-width: 760px) {
+  .cta-still-life {
+    position: absolute;
+    right: clamp(-1.5rem, -2vw, -0.5rem);
+    bottom: clamp(-2.2rem, -3vw, -1rem);
+    width: min(48%, 34rem);
+    min-height: 0;
+    opacity: 0.96;
+    transform: rotate(-1.5deg);
+  }
+}
+@media (max-width: 639px) {
+  .cta-still-life {
+    min-height: 10rem;
+  }
 }
 
 /* ---------- 연도 페이지 ---------- */
