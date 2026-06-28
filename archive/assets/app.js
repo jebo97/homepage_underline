@@ -196,7 +196,8 @@ async function renderHome() {
         <section class="stats-grid">${statsHTML}</section>
         <section class="section-years">
           <h2 class="section-heading">해마다 열린 책길</h2>
-          <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />직전 연도와 같은 책은 다음 책으로 보여줍니다.</p>
+          <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
+          <p class="section-source">대표 도서가 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
       </div>
