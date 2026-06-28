@@ -150,11 +150,32 @@ async function getYearRanking(year) {
     .map((e) => e.book);
 }
 
+async function getLongStayBooks() {
+  const rows = await fetchAll(() => supabase
+    .from("bestsellers")
+    .select("title, author, publisher")
+    .eq("category", "종합"));
+  return aggregate(rows).slice(0, 5);
+}
+
+function statIconSVG(icon) {
+  const icons = {
+    path: `<path d="M5 18c3.5-3.4 7.5-3.4 11 0 1.5 1.4 2.8 1.4 4 0"></path><path d="M4 7h10"></path><path d="M4 11h7"></path>`,
+    card: `<rect x="5" y="6" width="14" height="12" rx="2"></rect><path d="M8 10h8"></path><path d="M8 14h5"></path>`,
+    tag: `<rect x="6" y="5" width="12" height="14" rx="2"></rect><path d="M10 9v6"></path><path d="M14 9v6"></path><path d="M9 11h7"></path><path d="M8 14h7"></path>`,
+    book: `<path d="M5 6.5c2.7-1 5-.6 7 1v11c-2-1.6-4.3-2-7-1V6.5Z"></path><path d="M12 7.5c2-1.6 4.3-2 7-1v11c-2.7-1-5-.6-7 1V7.5Z"></path><path d="M16 5v4"></path>`,
+  };
+  return `<svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icons[icon] ?? icons.card}</svg>`;
+}
+
 async function renderHome() {
   const root = document.getElementById("page-root");
   document.title = "문장숲 책길";
   const years = Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, i) => START_YEAR + i);
-  const rankings = await Promise.all(years.map((y) => getYearRanking(y)));
+  const [rankings, longStayBooks] = await Promise.all([
+    Promise.all(years.map((y) => getYearRanking(y))),
+    getLongStayBooks(),
+  ]);
 
   // 대표작 선정 (page.tsx 알고리즘 포팅)
   let prevTopTitle = null;
@@ -174,14 +195,15 @@ async function renderHome() {
   });
 
   const STATS = [
-    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름" },
-    { value: "50,401", unit: "", name: "50,401개의 기록", desc: "주간 베스트셀러 데이터" },
-    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름" },
-    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록" },
+    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
+    { value: "50,401", unit: "", name: "50,401개의 책길 기록", desc: "주간 베스트셀러 데이터", icon: "card" },
+    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", icon: "tag" },
+    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
   ];
 
   const statsHTML = STATS.map((s) => `
     <div class="stat-card">
+      ${statIconSVG(s.icon)}
       <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
       <div class="stat-label">${esc(s.desc)}</div>
@@ -196,10 +218,19 @@ async function renderHome() {
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
+        <span class="year-kicker">대표 책길</span>
         ${titleHTML}
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
       </div>`;
   }).join("");
+
+  const longStayHTML = longStayBooks.map((book, index) => `
+    <a class="longstay-card" href="${esc(bookHref(book.title))}">
+      <span class="longstay-rank">${index + 1}</span>
+      <span class="longstay-title line-clamp-2">${esc(book.title)}</span>
+      <span class="longstay-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
+      <span class="longstay-weeks">${book.weeks}주</span>
+    </a>`).join("");
 
   root.innerHTML = `
     <main class="book-road-home">
@@ -209,7 +240,7 @@ async function renderHome() {
             <p class="hero-eyebrow">Sentence Forest Book Road</p>
             <h1 class="page-title">문장숲 책길</h1>
             <p class="hero-lead">많은 독자들이 지나간 책의 길을 따라,<br />오늘 내 마음에 남을 문장을 찾아보세요.</p>
-            <p class="subtitle">2006년부터 이어진 베스트셀러의 흐름을 모아,<br />책과 독자들이 오래 머문 자리를 기록했습니다.</p>
+            <p class="subtitle">2006년부터 쌓인 주간 베스트셀러 기록으로<br />시간이 지나도 오래 남은 책의 흐름을 들여다봅니다.</p>
             <p class="hero-source">교보문고 베스트셀러 데이터를 참고해 개인이 정리한 아카이브입니다.</p>
             <div class="search-block">${searchFormHTML("large")}</div>
           </div>
@@ -220,6 +251,11 @@ async function renderHome() {
           <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
           <p class="section-source">대표 도서가 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
           <div class="year-grid">${yearsHTML}</div>
+        </section>
+        <section class="section-longstay">
+          <h2 class="section-heading">오래 머문 책</h2>
+          <p class="section-note">여러 계절 동안 독자 곁에 남아 있던 책들을 모았습니다.</p>
+          <div class="longstay-grid">${longStayHTML}</div>
         </section>
       </div>
       <section class="book-road-cta">

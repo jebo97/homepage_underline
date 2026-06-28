@@ -182,7 +182,7 @@ a.alink:hover { color: var(--accent); }
   width: 100vw;
   transform: translateX(-50%);
   background:
-    linear-gradient(90deg, rgba(16, 26, 46, 0.98) 0%, rgba(16, 26, 46, 0.9) 42%, rgba(16, 26, 46, 0.42) 70%, rgba(16, 26, 46, 0.16) 100%),
+    linear-gradient(90deg, rgba(16, 26, 46, 0.88) 0%, rgba(16, 26, 46, 0.76) 42%, rgba(16, 26, 46, 0.32) 70%, rgba(16, 26, 46, 0.08) 100%),
     radial-gradient(ellipse at 78% 18%, rgba(255, 211, 61, 0.14), transparent 30rem),
     var(--book-road-hero-image),
     linear-gradient(180deg, var(--navy), #111d33);
@@ -284,6 +284,19 @@ a.alink:hover { color: var(--accent); }
   box-shadow: 0 18px 44px rgba(16, 26, 46, 0.18);
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
+.stat-icon {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.16;
+}
 .stat-card::after {
   content: "";
   position: absolute;
@@ -307,7 +320,7 @@ a.alink:hover { color: var(--accent); }
 .stat-name { margin-top: 1rem; color: var(--slate-100); font-size: 0.95rem; font-weight: 700; }
 .stat-label { margin-top: 0.35rem; font-size: 0.75rem; line-height: 1.6; letter-spacing: 0.025em; color: var(--muted); }
 
-.section-years { padding: 8rem 0 7rem; color: var(--navy); }
+.section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
   border-left-color: var(--gold);
   color: var(--navy);
@@ -319,7 +332,7 @@ a.alink:hover { color: var(--accent); }
   margin-bottom: 0.7rem;
 }
 .section-source {
-  margin: -0.25rem 0 3rem;
+  margin: -0.25rem 0 2.25rem;
   padding-left: 1rem;
   color: #9aa3b1;
   font-size: 0.72rem;
@@ -364,9 +377,73 @@ a.alink:hover { color: var(--accent); }
 }
 .year-card .year-num { padding-left: 1.25rem; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; color: var(--navy); transition: color .2s; }
 .year-card .year-num:hover { color: var(--accent); }
-.year-card .book-title { margin-top: 1.1rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
+.year-kicker {
+  margin-top: 1rem;
+  color: #9b7619;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.year-card .book-title { margin-top: 0.45rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
 .year-card a.book-title:hover { color: #b58500; }
 .year-card .book-author { margin-top: 0.45rem; font-size: 0.875rem; color: #7b8798; }
+
+.section-longstay {
+  padding: 0 0 6.5rem;
+  color: var(--navy);
+}
+.longstay-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+@media (min-width: 760px) {
+  .longstay-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+.longstay-card {
+  position: relative;
+  display: flex;
+  min-height: 10rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 1px solid rgba(138, 98, 61, 0.14);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 233, 201, 0.58));
+  box-shadow: 0 14px 30px rgba(27,42,74,0.06);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.longstay-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(231, 185, 40, 0.42);
+  box-shadow: 0 20px 38px rgba(27,42,74,0.11);
+}
+.longstay-rank {
+  width: 1.65rem;
+  height: 1.65rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--yellow);
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.longstay-title {
+  margin-top: 0.45rem;
+  color: var(--navy);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.longstay-author {
+  color: #7b8798;
+  font-size: 0.84rem;
+}
+.longstay-weeks {
+  margin-top: auto;
+  color: #9b7619;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
 
 @media (max-width: 639px) {
   .nav-inner {
@@ -459,7 +536,10 @@ a.alink:hover { color: var(--accent); }
     min-height: 11.5rem;
   }
   .section-years {
-    padding: 5rem 0 5rem;
+    padding: 5rem 0 4rem;
+  }
+  .section-longstay {
+    padding-bottom: 5rem;
   }
   .book-road-cta {
     padding-bottom: 5rem;
@@ -502,8 +582,8 @@ a.alink:hover { color: var(--accent); }
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(16, 26, 46, 0.96) 0%, rgba(16, 26, 46, 0.9) 42%, rgba(16, 26, 46, 0.44) 68%, rgba(16, 26, 46, 0.12) 100%),
-    linear-gradient(0deg, rgba(16, 26, 46, 0.18), rgba(16, 26, 46, 0.18));
+    linear-gradient(90deg, rgba(16, 26, 46, 0.96) 0%, rgba(16, 26, 46, 0.88) 42%, rgba(16, 26, 46, 0.24) 68%, rgba(16, 26, 46, 0.02) 100%),
+    linear-gradient(0deg, rgba(16, 26, 46, 0.08), rgba(16, 26, 46, 0.08));
   pointer-events: none;
 }
 .book-road-cta-card > div:first-child {
@@ -595,7 +675,7 @@ a.alink:hover { color: var(--accent); }
   }
   .book-road-cta-card::after {
     background:
-      linear-gradient(180deg, rgba(16, 26, 46, 0.88) 0%, rgba(16, 26, 46, 0.56) 58%, rgba(16, 26, 46, 0.22) 100%);
+      linear-gradient(180deg, rgba(16, 26, 46, 0.86) 0%, rgba(16, 26, 46, 0.42) 58%, rgba(16, 26, 46, 0.08) 100%);
   }
 }
 
