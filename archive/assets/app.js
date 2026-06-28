@@ -65,15 +65,16 @@ async function fetchAll(buildQuery) {
 
 // ---------- 공통 레이아웃 (nav / source footer) ----------
 function searchFormHTML(variant, value = "") {
+  const searchButtonContent = `<span class="search-label">검색</span><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>`;
   if (variant === "small") {
     return `<form class="search-form small" action="search.html" method="get">
       <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="검색" aria-label="책 제목, 저자 검색" />
-      <button class="search-btn" type="submit" aria-label="검색"><span>검색</span></button>
+      <button class="search-btn" type="submit" aria-label="검색">${searchButtonContent}</button>
     </form>`;
   }
   return `<form class="search-form large" action="search.html" method="get">
     <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="책 제목이나 작가 이름으로 책길을 찾아보세요" aria-label="책 제목, 저자 검색" />
-    <button class="search-btn" type="submit">검색</button>
+    <button class="search-btn" type="submit">${searchButtonContent}</button>
   </form>`;
 }
 
@@ -88,24 +89,6 @@ function renderNav() {
     </div>
     ${searchFormHTML("small")}
   </div>`;
-
-  const searchForm = el.querySelector(".search-form.small");
-  const searchInput = searchForm?.querySelector(".search-input");
-  const searchButton = searchForm?.querySelector(".search-btn");
-  searchButton?.addEventListener("click", (event) => {
-    if (!window.matchMedia("(max-width: 639px)").matches) return;
-    if (searchForm.classList.contains("is-open")) return;
-    event.preventDefault();
-    searchForm.classList.add("is-open");
-    window.requestAnimationFrame(() => searchInput?.focus());
-  });
-  document.addEventListener("click", (event) => {
-    if (!window.matchMedia("(max-width: 639px)").matches) return;
-    if (!searchForm?.classList.contains("is-open")) return;
-    if (searchForm.contains(event.target)) return;
-    if (searchInput?.value.trim()) return;
-    searchForm.classList.remove("is-open");
-  });
 }
 
 function renderSourceFooter() {
