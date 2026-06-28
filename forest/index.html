@@ -231,27 +231,6 @@
       position: relative;
       display: block;
     }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 22px;
-      padding: 8px 14px;
-      border: 1px solid var(--sheet-border);
-      border-radius: 10px;
-      background: rgba(255, 248, 234, 0.86);
-      color: var(--color-ink);
-      font-size: 13px;
-      font-weight: 800;
-    }
-    .hero-badge::before {
-      content: "";
-      width: 14px;
-      height: 9px;
-      border-radius: 90% 0 90% 0;
-      background: var(--color-yellow);
-      transform: rotate(-22deg);
-    }
     .hero-copy { max-width: 620px; }
     .hero-copy .lead { max-width: 520px; margin-bottom: 30px; }
     .hero-actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
@@ -656,6 +635,7 @@
     }
     .site-footer strong { display: block; margin-bottom: 8px; color: var(--color-white); }
     .site-footer p { margin-bottom: 0; color: rgba(255, 255, 255, 0.56); }
+    .footer-ai-note { margin-top: 14px !important; font-size: 12px; color: rgba(255, 255, 255, 0.44) !important; }
     .footer-copy { margin-top: 22px !important; font-size: 12px; color: rgba(255, 255, 255, 0.38) !important; }
 
     .reveal {
@@ -704,13 +684,13 @@
         max-height: 330px;
       }
       .hero {
-        min-height: 780px;
+        min-height: calc(100svh - 148px);
         align-items: start;
-        padding: 72px 0 360px;
+        padding: clamp(42px, 7svh, 64px) 0 clamp(210px, 29svh, 260px);
         background:
           linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 253, 248, 0.92) 44%, rgba(255, 253, 248, 0.18) 70%, rgba(255, 253, 248, 0.08) 100%),
           var(--hero-image);
-        background-size: 100% 100%, auto 100%;
+        background-size: 100% 100%, auto 92%;
         background-position: center bottom, 66% bottom;
         background-repeat: no-repeat;
         background-color: #fffdf8;
@@ -757,7 +737,6 @@
       <section class="hero">
         <div class="container hero-grid">
           <div class="hero-copy reveal">
-            <div class="hero-badge">밑줄긋기 세계관</div>
             <h1><span class="highlight">문장숲</span></h1>
             <p class="hero-tagline">밑줄 하나가,<br>나만의 문장숲이 됩니다.</p>
             <p class="lead">
@@ -903,6 +882,7 @@
     <div class="container">
       <strong>밑줄긋기</strong>
       <p>마음에 닿은 문장을 오래 남기는 독서 노트 앱</p>
+      <p class="footer-ai-note">이 페이지에 사용된 이미지는 AI로 생성되었습니다.</p>
       <p class="footer-copy">© 2026 밑줄긋기. All rights reserved.</p>
     </div>
   </footer>
