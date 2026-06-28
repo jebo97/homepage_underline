@@ -537,8 +537,35 @@
       margin: 0 0 18px;
     }
 
-    .coming-intro { max-width: 760px; }
-    .coming-grid { display: grid; gap: 14px; margin-top: 34px; }
+    .coming-layout {
+      display: grid;
+      gap: 30px;
+      align-items: start;
+    }
+    .coming-intro { max-width: 640px; }
+    .coming-intro .lead { max-width: 560px; }
+    .coming-feature-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 30px;
+    }
+    .coming-feature {
+      padding: 18px 0 18px 18px;
+      border-left: 3px solid rgba(255, 214, 0, 0.72);
+    }
+    .coming-feature strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--color-navy);
+      font-size: 16px;
+    }
+    .coming-feature p {
+      margin: 0;
+      color: #667085;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .coming-grid { display: grid; gap: 14px; }
     .coming-card {
       position: relative;
       padding: 30px 22px 22px;
@@ -662,7 +689,7 @@
         padding: clamp(96px, 12svh, 132px) 0 clamp(112px, 14svh, 156px);
       }
       .flow-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .coming-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .coming-layout { grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.2fr); }
       .cta-panel { padding: 58px; }
       .character-image { min-height: 500px; }
     }
@@ -776,7 +803,7 @@
               <img src="/characters/noa.png" alt="노아 캐릭터" onerror="this.style.display='none'" />
             </div>
             <div>
-              <span class="role">문장 감응자</span>
+              <span class="role">문장 발견자</span>
               <h2>노아</h2>
               <dl class="character-meta">
                 <div><dt>역할</dt><dd>마음에 닿은 문장을 가장 먼저 발견해요</dd></div>
@@ -801,7 +828,7 @@
               <img src="/characters/gyeol.png" alt="결 캐릭터" onerror="this.style.display='none'" />
             </div>
             <div>
-              <span class="role">문장결 정리자</span>
+              <span class="role">문장 정리자</span>
               <h2>결</h2>
               <dl class="character-meta">
                 <div><dt>역할</dt><dd>문장과 문장 사이의 흐름을 정리해요</dd></div>
@@ -839,17 +866,24 @@
 
       <section class="section">
         <div class="container">
-          <div class="coming-intro reveal">
-            <span class="section-kicker">Coming Soon</span>
-            <h2>문장숲에는 아직 더 많은 친구들이 살고 있어요</h2>
-            <p class="lead">처음에는 노아와 결만 문장숲에 찾아왔지만, 앞으로 새로운 기능과 함께 다른 친구들도 차례차례 공개됩니다.</p>
-            <p class="lead">문장에 감정의 이름을 붙여주는 친구, 밑줄을 바탕으로 독후감을 정리해주는 친구, 나누고 싶은 문장을 예쁜 카드에 담아주는 친구, 오래전에 저장한 문장을 다시 데려와주는 친구가 곧 문장숲에 찾아옵니다.</p>
-          </div>
-          <div class="coming-grid">
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/soro-hashtag.png" alt="소로를 상징하는 해시태그 소품" /></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">태그와 감정 기록을 도와주는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/on-pen.png" alt="온을 상징하는 펜 소품" /></div><h3>온</h3><p><strong>문장 해석자</strong></p><p class="muted">밑줄과 메모를 바탕으로 독후감을 정리하는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/narin-letter.png" alt="나린을 상징하는 편지 소품" /></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">나누고 싶은 문장을 카드에 담아주는 친구</p></article>
-            <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/galpi-lanton.png" alt="갈피를 상징하는 랜턴 소품" /></div><h3>갈피</h3><p><strong>기억 회수자</strong></p><p class="muted">잊힌 문장을 다시 꺼내볼 수 있게 도와주는 친구</p></article>
+          <div class="coming-layout">
+            <div class="coming-intro reveal">
+              <span class="section-kicker">Coming Soon</span>
+              <h2>다음에 만날 친구들</h2>
+              <p class="lead">문장에 감정, 사유, 공유, 회상의 기능이 더해질 때마다 새로운 친구들이 문장숲에 찾아옵니다.</p>
+              <div class="coming-feature-list">
+                <div class="coming-feature"><strong>감정 기록</strong><p>밑줄에 감정의 이름을 붙여요.</p></div>
+                <div class="coming-feature"><strong>생각 정리</strong><p>밑줄에서 떠오른 생각을 이어가요.</p></div>
+                <div class="coming-feature"><strong>문장 공유</strong><p>나누고 싶은 문장을 카드로 담아요.</p></div>
+                <div class="coming-feature"><strong>기억 회상</strong><p>오래전 저장한 문장을 다시 만나게 해요.</p></div>
+              </div>
+            </div>
+            <div class="coming-grid">
+              <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/soro-hashtag.png" alt="소로를 상징하는 해시태그 소품" /></div><h3>소로</h3><p><strong>감정 길잡이</strong></p><p class="muted">마음의 방향을 짚어주는 친구</p></article>
+              <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/on-pen.png" alt="온을 상징하는 펜 소품" /></div><h3>온</h3><p><strong>사유 기록자</strong></p><p class="muted">생각을 문장으로 옮기는 친구</p></article>
+              <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/narin-letter.png" alt="나린을 상징하는 편지 소품" /></div><h3>나린</h3><p><strong>문장 전달자</strong></p><p class="muted">소중한 문장을 건네는 친구</p></article>
+              <article class="coming-card reveal"><span class="coming-badge">Coming Soon</span><div class="coming-prop"><img src="/characters/items/galpi-lanton.png" alt="갈피를 상징하는 랜턴 소품" /></div><h3>갈피</h3><p><strong>기억 안내자</strong></p><p class="muted">오래된 밑줄의 자리를 밝히는 친구</p></article>
+            </div>
           </div>
         </div>
       </section>
