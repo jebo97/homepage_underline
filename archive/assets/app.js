@@ -68,7 +68,7 @@ function searchFormHTML(variant, value = "") {
   if (variant === "small") {
     return `<form class="search-form small" action="search.html" method="get">
       <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="검색" aria-label="책 제목, 저자 검색" />
-      <button class="search-btn" type="submit" aria-label="검색">검색</button>
+      <button class="search-btn" type="submit" aria-label="검색"><span>검색</span></button>
     </form>`;
   }
   return `<form class="search-form large" action="search.html" method="get">
@@ -88,6 +88,24 @@ function renderNav() {
     </div>
     ${searchFormHTML("small")}
   </div>`;
+
+  const searchForm = el.querySelector(".search-form.small");
+  const searchInput = searchForm?.querySelector(".search-input");
+  const searchButton = searchForm?.querySelector(".search-btn");
+  searchButton?.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 639px)").matches) return;
+    if (searchForm.classList.contains("is-open")) return;
+    event.preventDefault();
+    searchForm.classList.add("is-open");
+    window.requestAnimationFrame(() => searchInput?.focus());
+  });
+  document.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 639px)").matches) return;
+    if (!searchForm?.classList.contains("is-open")) return;
+    if (searchForm.contains(event.target)) return;
+    if (searchInput?.value.trim()) return;
+    searchForm.classList.remove("is-open");
+  });
 }
 
 function renderSourceFooter() {
