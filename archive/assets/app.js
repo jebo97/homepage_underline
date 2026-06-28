@@ -189,13 +189,14 @@ async function renderHome() {
             <h1 class="page-title">문장숲 책길</h1>
             <p class="hero-lead">많은 독자들이 지나간 책의 길을 따라,<br />오늘 내 마음에 남을 문장을 찾아보세요.</p>
             <p class="subtitle">2006년부터 이어진 베스트셀러의 흐름을 모아,<br />책과 독자들이 오래 머문 자리를 기록했습니다.</p>
+            <p class="hero-source">교보문고 베스트셀러 데이터를 참고해 개인이 정리한 아카이브입니다.</p>
             <div class="search-block">${searchFormHTML("large")}</div>
           </div>
         </header>
         <section class="stats-grid">${statsHTML}</section>
         <section class="section-years">
           <h2 class="section-heading">해마다 열린 책길</h2>
-          <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
+          <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />직전 연도와 같은 책은 다음 책으로 보여줍니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
       </div>
@@ -205,7 +206,7 @@ async function renderHome() {
             <div>
               <p class="cta-kicker">Underline Your Sentence</p>
               <p class="cta-title">마음이 멈춘 책을 발견했다면,<br />이제 밑줄로 남겨보세요.</p>
-              <p class="cta-sub">밑줄 하나가, 나만의 문장숲이 됩니다.</p>
+              <p class="cta-sub">밑줄이 모여, 나만의 문장숲이 됩니다.</p>
               <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
             </div>
             <div class="cta-still-life">

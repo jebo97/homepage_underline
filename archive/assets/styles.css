@@ -224,6 +224,12 @@ a.alink:hover { color: var(--accent); }
   line-height: 1.8;
   letter-spacing: -0.01em;
 }
+.hero-source {
+  margin: 0.9rem 0 0;
+  color: rgba(241, 245, 249, 0.42);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
 .search-block { max-width: var(--w2xl); margin: 2.3rem 0 0; }
 .image-placeholder {
   display: grid;
