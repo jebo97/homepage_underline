@@ -175,10 +175,8 @@ async function renderHome() {
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
-        <span class="year-kicker">그해 가장 오래 머문 책</span>
         ${titleHTML}
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
-        <a class="year-link" href="${esc(yearHref(year))}">책길 보기 →</a>
       </div>`;
   }).join("");
 
@@ -192,14 +190,6 @@ async function renderHome() {
             <p class="hero-lead">많은 독자들이 지나간 책의 길을 따라,<br />오늘 내 마음에 남을 문장을 찾아보세요.</p>
             <p class="subtitle">2006년부터 이어진 베스트셀러의 흐름을 모아,<br />책과 독자들이 오래 머문 자리를 기록했습니다.</p>
             <div class="search-block">${searchFormHTML("large")}</div>
-          </div>
-          <div class="home-visual">
-            <div class="book-road-scene">
-              <div class="image-placeholder">
-                <strong>문장숲 책길 이미지 영역</strong>
-                <span>책, 노트, 문장카드, 책갈피, 노란 밑줄 이미지</span>
-              </div>
-            </div>
           </div>
         </header>
         <section class="stats-grid">${statsHTML}</section>
@@ -219,10 +209,7 @@ async function renderHome() {
               <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
             </div>
             <div class="cta-still-life">
-              <div class="image-placeholder">
-                <strong>CTA 이미지 영역</strong>
-                <span>책, 노트, 문장카드, 노란 결 이미지</span>
-              </div>
+              <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" />
             </div>
           </div>
         </div>

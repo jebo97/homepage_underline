@@ -225,20 +225,6 @@ a.alink:hover { color: var(--accent); }
   letter-spacing: -0.01em;
 }
 .search-block { max-width: var(--w2xl); margin: 2.3rem 0 0; }
-.home-visual {
-  position: relative;
-  z-index: 1;
-}
-.book-road-scene {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: min(58svh, 520px);
-  border-radius: 1.6rem;
-  overflow: hidden;
-  background: rgba(255, 247, 232, 0.035);
-  border: 1px dashed rgba(255, 211, 61, 0.42);
-}
 .image-placeholder {
   display: grid;
   gap: 0.45rem;
@@ -350,22 +336,9 @@ a.alink:hover { color: var(--accent); }
 }
 .year-card .year-num { padding-left: 1.25rem; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; color: var(--navy); transition: color .2s; }
 .year-card .year-num:hover { color: var(--accent); }
-.year-kicker {
-  margin-top: 1.3rem;
-  color: #7d6d5b;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.year-card .book-title { margin-top: 0.9rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
+.year-card .book-title { margin-top: 1.35rem; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--navy); transition: color .2s; }
 .year-card a.book-title:hover { color: #b58500; }
 .year-card .book-author { margin-top: 0.45rem; font-size: 0.875rem; color: #7b8798; }
-.year-link {
-  margin-top: auto;
-  padding-top: 1.5rem;
-  color: #9b7619;
-  font-size: 0.84rem;
-  font-weight: 700;
-}
 
 @media (max-width: 639px) {
   .home-header {
@@ -378,13 +351,6 @@ a.alink:hover { color: var(--accent); }
   }
   .search-form.large .search-btn {
     width: 100%;
-  }
-  .home-visual {
-    min-height: 220px;
-  }
-  .book-road-scene {
-    min-height: 220px;
-    border-radius: 1.4rem;
   }
   .stats-grid {
     grid-template-columns: 1fr;
@@ -471,6 +437,12 @@ a.alink:hover { color: var(--accent); }
   display: grid;
   place-items: center;
   min-height: 13rem;
+}
+.cta-still-life img {
+  width: min(100%, 24rem);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.18));
 }
 
 /* ---------- 연도 페이지 ---------- */
