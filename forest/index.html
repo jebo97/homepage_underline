@@ -156,8 +156,10 @@
     }
     .nav-links a:hover { background: rgba(255, 214, 0, 0.22); color: var(--color-navy); }
     .nav-cta {
+      padding: 6px 10px !important;
       background: var(--color-navy);
       color: var(--color-white) !important;
+      font-size: 13px;
       font-weight: 700;
     }
     .nav-cta.is-play {
@@ -346,34 +348,11 @@
 
     .story-grid { display: grid; gap: 34px; align-items: start; }
     .story-text {
-      position: relative;
-      padding: 34px 0 34px 28px;
+      padding: 20px 0 0;
       color: #3f4a5d;
       font-size: 17px;
     }
-    .story-text::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 42px;
-      bottom: 44px;
-      width: 3px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, var(--color-yellow), rgba(69, 100, 82, 0.34));
-    }
-    .story-text p { position: relative; }
-    .story-text p::before {
-      content: "";
-      position: absolute;
-      left: -34px;
-      top: 0.65em;
-      width: 12px;
-      height: 8px;
-      border-radius: 90% 0 90% 0;
-      background: rgba(69, 100, 82, 0.3);
-      transform: rotate(-20deg);
-    }
-    .keyword-grid { display: grid; gap: 14px; }
+    .keyword-grid { display: grid; gap: 14px; align-self: start; }
     .keyword-card,
     .flow-card,
     .coming-card {
@@ -688,6 +667,7 @@
       .cta-actions { flex-direction: row; align-items: center; }
       .keyword-grid,
       .flow-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .story-grid .keyword-grid { margin-top: 58px; }
       .coming-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .character-card { padding: 30px; }
       .character-card.reverse .character-image { order: 2; }
