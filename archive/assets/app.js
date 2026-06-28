@@ -158,16 +158,6 @@ async function getLongStayBooks() {
   return aggregate(rows).slice(0, 5);
 }
 
-function statIconSVG(icon) {
-  const icons = {
-    path: `<path d="M5 18c3.5-3.4 7.5-3.4 11 0 1.5 1.4 2.8 1.4 4 0"></path><path d="M4 7h10"></path><path d="M4 11h7"></path>`,
-    card: `<rect x="5" y="6" width="14" height="12" rx="2"></rect><path d="M8 10h8"></path><path d="M8 14h5"></path>`,
-    tag: `<rect x="6" y="5" width="12" height="14" rx="2"></rect><path d="M10 9v6"></path><path d="M14 9v6"></path><path d="M9 11h7"></path><path d="M8 14h7"></path>`,
-    book: `<path d="M5 6.5c2.7-1 5-.6 7 1v11c-2-1.6-4.3-2-7-1V6.5Z"></path><path d="M12 7.5c2-1.6 4.3-2 7-1v11c-2.7-1-5-.6-7 1V7.5Z"></path><path d="M16 5v4"></path>`,
-  };
-  return `<svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icons[icon] ?? icons.card}</svg>`;
-}
-
 async function renderHome() {
   const root = document.getElementById("page-root");
   document.title = "문장숲 책길";
@@ -195,15 +185,17 @@ async function renderHome() {
   });
 
   const STATS = [
-    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
-    { value: "50,401", unit: "", name: "50,401개의 책길 기록", desc: "주간 베스트셀러 데이터", icon: "card" },
-    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", icon: "tag" },
-    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
+    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png" },
+    { value: "50,401", unit: "", name: "50,401개의 책길 기록", desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png" },
+    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png" },
+    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png" },
   ];
 
   const statsHTML = STATS.map((s) => `
     <div class="stat-card">
-      ${statIconSVG(s.icon)}
+      <span class="stat-image-slot">
+        <img src="${esc(s.image)}" alt="" loading="lazy" onerror="this.hidden=true" />
+      </span>
       <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
       <div class="stat-label">${esc(s.desc)}</div>
@@ -249,7 +241,7 @@ async function renderHome() {
         <section class="section-years">
           <h2 class="section-heading">해마다 열린 책길</h2>
           <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
-          <p class="section-source">대표 도서가 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
+          <p class="section-source">대표 책길이 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
         <section class="section-longstay">
