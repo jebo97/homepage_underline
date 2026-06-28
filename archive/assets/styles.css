@@ -317,10 +317,6 @@ a.alink:hover { color: var(--accent); }
   opacity: 0.9;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.16));
 }
-.stat-image-bookmark {
-  width: 1.9rem;
-  height: 2.8rem;
-}
 .stat-image-note {
   width: 3.1rem;
   height: 3.1rem;
@@ -473,7 +469,6 @@ a.alink:hover { color: var(--accent); }
   box-shadow: 0 22px 44px rgba(27,42,74,0.12);
 }
 .longstay-badge {
-  align-self: flex-start;
   border-radius: 9999px;
   padding: 0.25rem 0.55rem;
   background: rgba(255, 211, 61, 0.16);
@@ -496,6 +491,12 @@ a.alink:hover { color: var(--accent); }
   color: var(--navy);
   font-size: 0.78rem;
   font-weight: 800;
+}
+.longstay-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 1.65rem;
 }
 .longstay-title {
   margin-top: 0.45rem;

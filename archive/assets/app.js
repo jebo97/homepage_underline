@@ -218,8 +218,10 @@ async function renderHome() {
 
   const longStayHTML = longStayBooks.map((book, index) => `
     <a class="longstay-card${index === 0 ? " longstay-card-featured" : ""}" href="${esc(bookHref(book.title))}">
-      ${index === 0 ? `<span class="longstay-badge">가장 오래 머문 책</span>` : ""}
-      <span class="longstay-rank">${index + 1}</span>
+      <span class="longstay-head">
+        <span class="longstay-rank">${index + 1}</span>
+        ${index === 0 ? `<span class="longstay-badge">가장 오래 머문 책</span>` : ""}
+      </span>
       <span class="longstay-title line-clamp-2">${esc(book.title)}</span>
       <span class="longstay-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
       <span class="longstay-weeks">${book.weeks}주</span>
