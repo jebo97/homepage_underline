@@ -153,14 +153,14 @@ async function renderHome() {
   });
 
   const STATS = [
-    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", icon: "seed" },
-    { value: "50,401", unit: "", name: "50,401개의 기록", desc: "주간 베스트셀러 데이터", icon: "note" },
-    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름", icon: "path" },
-    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "bookmark" },
+    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름" },
+    { value: "50,401", unit: "", name: "50,401개의 기록", desc: "주간 베스트셀러 데이터" },
+    { value: "9", unit: "개", name: "9갈래의 숲길", desc: "분야별 독서 흐름" },
+    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록" },
   ];
 
   const statsHTML = STATS.map((s) => `
-    <div class="stat-card" data-icon="${esc(s.icon)}">
+    <div class="stat-card">
       <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
       <div class="stat-label">${esc(s.desc)}</div>
@@ -193,14 +193,12 @@ async function renderHome() {
             <p class="subtitle">2006년부터 이어진 베스트셀러의 흐름을 모아,<br />책과 독자들이 오래 머문 자리를 기록했습니다.</p>
             <div class="search-block">${searchFormHTML("large")}</div>
           </div>
-          <div class="home-visual" aria-hidden="true">
+          <div class="home-visual">
             <div class="book-road-scene">
-              <span class="prop prop-book"></span>
-              <span class="prop prop-note"></span>
-              <span class="prop prop-card"></span>
-              <span class="prop prop-tag">#</span>
-              <span class="prop prop-seed"></span>
-              <span class="prop prop-pen"></span>
+              <div class="image-placeholder">
+                <strong>문장숲 책길 이미지 영역</strong>
+                <span>책, 노트, 문장카드, 책갈피, 노란 밑줄 이미지</span>
+              </div>
             </div>
           </div>
         </header>
@@ -220,11 +218,11 @@ async function renderHome() {
               <p class="cta-sub">밑줄 하나가, 나만의 문장숲이 됩니다.</p>
               <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
             </div>
-            <div class="cta-still-life" aria-hidden="true">
-              <span class="cta-book"></span>
-              <span class="cta-note"></span>
-              <span class="cta-card"></span>
-              <span class="cta-line"></span>
+            <div class="cta-still-life">
+              <div class="image-placeholder">
+                <strong>CTA 이미지 영역</strong>
+                <span>책, 노트, 문장카드, 노란 결 이미지</span>
+              </div>
             </div>
           </div>
         </div>
