@@ -595,15 +595,28 @@
     .coming-prop {
       display: grid;
       place-items: center;
-      width: 108px;
-      height: 108px;
-      margin-bottom: 18px;
+      width: 118px;
+      height: 118px;
+      margin: 2px 0 20px;
     }
     .coming-prop img {
-      max-width: 100%;
-      max-height: 100%;
+      max-width: 78%;
+      max-height: 78%;
       object-fit: contain;
       filter: drop-shadow(0 12px 18px rgba(27, 42, 74, 0.12));
+    }
+    .coming-prop img[src*="soro-hashtag"],
+    .coming-prop img[src*="on-pen"] {
+      max-width: 74%;
+      max-height: 74%;
+    }
+    .coming-prop img[src*="narin-letter"] {
+      max-width: 84%;
+      max-height: 72%;
+    }
+    .coming-prop img[src*="galpi-lanton"] {
+      max-width: 66%;
+      max-height: 82%;
     }
     .coming-badge {
       position: absolute;
