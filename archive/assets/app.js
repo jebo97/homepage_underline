@@ -178,7 +178,7 @@ async function getYearRanking(year) {
   }
   return [...counts.values()]
     .sort((a, b) => b.weeks - a.weeks || a.book.title.localeCompare(b.book.title))
-    .map((e) => e.book);
+    .map((e) => ({ ...e.book, weeks: e.weeks }));
 }
 
 async function getLongStayBooks() {
@@ -241,9 +241,10 @@ async function renderHome() {
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
-        <span class="year-kicker">대표 책길</span>
+        ${ERA[year] ? `<span class="year-era">${esc(ERA[year])}</span>` : ""}
         ${titleHTML}
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
+        ${book ? `<span class="year-weeks">${book.weeks}주 차트인</span>` : ""}
       </div>`;
   }).join("");
 

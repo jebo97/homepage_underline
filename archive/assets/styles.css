@@ -405,14 +405,14 @@ a.alink:hover { color: var(--accent); }
 @media (min-width: 1024px) { .year-grid { grid-template-columns: repeat(3, 1fr); } }
 .year-card {
   position: relative; display: flex; flex-direction: column;
-  min-height: 11.5rem;
+  min-height: 12.5rem;
   background:
-    radial-gradient(ellipse at 90% 0%, rgba(255, 211, 61, 0.13), transparent 8rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 233, 201, 0.72));
-  border: 1px solid rgba(138, 98, 61, 0.16);
+    radial-gradient(ellipse at 90% 0%, rgba(255, 211, 61, 0.16), transparent 8rem),
+    linear-gradient(180deg, #ffffff, rgba(248, 233, 201, 0.6));
+  border: 1px solid rgba(138, 98, 61, 0.32);
   border-radius: 1rem;
   padding: 1.55rem 1.65rem;
-  box-shadow: 0 14px 30px rgba(27,42,74,0.07);
+  box-shadow: 0 16px 34px rgba(27,42,74,0.1);
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 .year-card::after {
@@ -451,9 +451,25 @@ a.alink:hover { color: var(--accent); }
   font-size: 0.72rem;
   font-weight: 800;
 }
-.year-card .book-title { margin-top: 0.85rem; font-size: 1.06rem; font-weight: 800; line-height: 1.45; color: #101a2e; transition: color .2s; }
+.year-era {
+  margin-top: 0.95rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #b07d1a;
+  word-break: keep-all;
+}
+.year-card .book-title { margin-top: 0.6rem; font-size: 1.06rem; font-weight: 800; line-height: 1.45; color: #101a2e; transition: color .2s; word-break: keep-all; }
 .year-card a.book-title:hover { color: #b58500; }
 .year-card .book-author { margin-top: 0.45rem; font-size: 0.875rem; color: #8a95a5; }
+.year-weeks {
+  margin-top: auto;
+  padding-top: 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #b58500;
+  letter-spacing: -0.01em;
+}
 
 .section-longstay {
   padding: 0 0 4.8rem;
