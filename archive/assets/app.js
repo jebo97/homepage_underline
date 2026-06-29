@@ -236,7 +236,7 @@ async function renderHome() {
     const book = topBooks[i];
     const titleHTML = book
       ? `<a class="book-title line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>`
-      : `<span class="book-title line-clamp-2">데이터 없음</span>`;
+      : `<span class="book-title line-clamp-2">아직 기록이 없어요</span>`;
     return `
       <div class="year-card">
         <span class="dot"></span>
@@ -411,7 +411,7 @@ async function renderYear() {
         <a class="ft line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
         <p class="fa">${esc(book.author ?? "저자 미상")}</p>
         <p class="fw">${book.weeks}주 1위</p>`
-      : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">해당 분야 기록 없음</p>`}
+      : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">이 숲길에는 아직 기록이 없어요</p>`}
     </div>`).join("");
 
   const footPrev = hasPrev
@@ -570,7 +570,7 @@ async function renderBook() {
         <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxYearlyWeeks) * 100)}%"></span></span>
         <span class="bar-weeks">${weeks}주</span>
       </a>`).join("")}</div>`
-    : `<p class="muted">종합 차트인 기록이 없습니다.</p>`;
+    : `<p class="muted">아직 책길에 머문 기록이 없어요</p>`;
 
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad" style="padding-top:6rem">
