@@ -255,7 +255,7 @@ async function renderHome() {
       </span>
       <span class="longstay-title line-clamp-2">${esc(book.title)}</span>
       <span class="longstay-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
-      <span class="longstay-weeks">${book.weeks}주</span>
+      <span class="longstay-weeks">${book.weeks}주 차트인</span>
     </a>`).join("");
 
   root.innerHTML = `
@@ -384,11 +384,11 @@ async function renderYear() {
 
   const highlightHTML = highlight ? `
     <a class="highlight-card" href="${esc(bookHref(highlight.title))}">
-      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">그해 가장 앞에 오래 선 책</span></div>
+      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">그해 가장 오래 1위에 선 책</span></div>
       <h2 class="highlight-title">${esc(highlight.title)}</h2>
       <p class="highlight-meta">${esc(highlight.author ?? "저자 미상")}${highlight.publisher ? ` · ${esc(highlight.publisher)}` : ""}</p>
       <p class="highlight-copy">${highlight.weeks}주 동안 책길의 가장 앞에 서 있었어요.</p>
-      <div class="badge-accent">${highlight.weeks}주 동안 1위</div>
+      <div class="badge-accent">${highlight.weeks}주 1위</div>
     </a>` : "";
 
   const top10HTML = top10.length > 0
@@ -399,9 +399,9 @@ async function renderYear() {
             <a href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
             <p>${esc(book.author ?? "저자 미상")}</p>
           </div>
-          <span class="weeks">${book.weeks}주 동안 책길에 머문 책</span>
+          <span class="weeks">${book.weeks}주 차트인</span>
         </li>`).join("")}</ol>`
-    : `<p class="muted">데이터 없음</p>`;
+    : `<p class="muted">아직 남은 책길 기록이 없어요</p>`;
 
   const byFieldHTML = byField.map(({ category, book }) => `
     <div class="field-card">
@@ -409,8 +409,8 @@ async function renderYear() {
       ${book ? `
         <a class="ft line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
         <p class="fa">${esc(book.author ?? "저자 미상")}</p>
-        <p class="fw">${book.weeks}주 동안 1위</p>`
-      : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">데이터 없음</p>`}
+        <p class="fw">${book.weeks}주 1위</p>`
+      : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">해당 분야 기록 없음</p>`}
     </div>`).join("");
 
   const footPrev = hasPrev
@@ -434,12 +434,12 @@ async function renderYear() {
         </header>
         ${highlightHTML}
         <section class="section-pad">
-          <h2 class="section-heading">그해 오래 머문 책</h2>
+          <h2 class="section-heading">그해 책길에 오래 머문 책</h2>
           <p class="section-note year-section-note">그해 베스트셀러 목록에 오래 남아 있던 책들을 차트인 주수 기준으로 정리했습니다.</p>
           ${top10HTML}
         </section>
         <section class="section-pad year-field-section">
-          <h2 class="section-heading">숲길 갈래별 가장 앞에 선 책</h2>
+          <h2 class="section-heading">숲길 갈래별 오래 1위에 선 책</h2>
           <p class="section-note year-section-note">각 분야에서 1위 자리에 가장 오래 선 책들을 모았습니다.</p>
           <div class="field-grid">${byFieldHTML}</div>
         </section>
