@@ -634,7 +634,7 @@ async function renderBook() {
         ${yearlyHTML}
         ${catHTML}
         ${compHTML}
-        <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 데이터 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
+        <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
       </div>
       ${slimCtaHTML()}
     </main>`;
