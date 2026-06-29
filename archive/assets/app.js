@@ -405,13 +405,13 @@ async function renderYear() {
     : `<p class="muted">아직 남은 책길 기록이 없어요</p>`;
 
   const byFieldHTML = byField.map(({ category, book }) => `
-    <div class="field-card">
+    <div class="field-card${book ? "" : " field-card-empty"}">
       <span class="field-name">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span>
       ${book ? `
         <a class="ft line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
         <p class="fa">${esc(book.author ?? "저자 미상")}</p>
         <p class="fw">${book.weeks}주 1위</p>`
-      : `<p class="fa" style="margin-top:1rem;color:var(--slate-600)">이 숲길에는 아직 기록이 없어요</p>`}
+      : `<p class="field-empty-msg">이 숲길에는 아직 기록이 없어요</p>`}
     </div>`).join("");
 
   const footPrev = hasPrev
