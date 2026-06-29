@@ -1031,7 +1031,7 @@ a.alink:hover { color: var(--accent); }
 .book-road-page .companion .weeks { flex-shrink: 0; border-radius: 9999px; padding: 0.4rem 0.7rem; background: rgba(255, 211, 61, 0.16); color: #9b7619; font-size: 0.76rem; font-weight: 800; white-space: nowrap; }
 
 /* 주의 문구 */
-.book-road-page .disclaimer { margin-top: 4rem; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 2rem 0 1rem; color: #98a1b0; font-size: 0.8rem; line-height: 1.7; }
+.book-road-page .disclaimer { margin-top: 4rem; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 2rem 0 1rem; color: #98a1b0; font-size: 0.74rem; line-height: 1.7; letter-spacing: -0.012em; }
 
 /* 밝은 페이지(연도·책 상세)용 슬림 CTA 보정 */
 .year-road-page .slim-cta, .book-road-page .slim-cta { border-top-color: rgba(138, 98, 61, 0.18); }
