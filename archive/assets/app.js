@@ -65,7 +65,7 @@ async function fetchAll(buildQuery) {
 
 // ---------- 공통 레이아웃 (nav / source footer) ----------
 function searchFormHTML(variant, value = "") {
-  const searchButtonContent = `<span class="search-label">검색</span><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>`;
+  const searchButtonContent = `<span class="search-label">검색</span><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="15.8" y1="15.8" x2="21" y2="21"></line></svg>`;
   if (variant === "small") {
     return `<form class="search-form small" action="search.html" method="get">
       <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="검색" aria-label="책 제목, 저자 검색" />

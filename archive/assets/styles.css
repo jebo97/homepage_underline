@@ -144,11 +144,11 @@ a.alink:hover { color: var(--accent); }
 .search-btn:hover { opacity: 0.9; }
 .search-icon {
   display: none;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.3rem;
+  height: 1.3rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.4;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
