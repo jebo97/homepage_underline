@@ -114,8 +114,8 @@ a.alink:hover { color: var(--accent); }
   word-break: keep-all;
 }
 .slim-cta-link strong { color: var(--accent); font-weight: 700; transition: color .2s; }
-/* 호버: 주변 문구는 흐려지고 '밑줄긋기'만 또렷하게 */
-.slim-cta-link:hover { color: rgba(135, 146, 168, 0.3); }
+/* 호버: 주변 문구는 배경색과 같아져 사라지고 '밑줄긋기'(메인 노랑)만 남음 */
+.slim-cta-link:hover { color: var(--bg); }
 .slim-cta-link:hover strong { color: var(--accent); }
 
 /* ---------- 검색바 ---------- */
@@ -1038,9 +1038,7 @@ a.alink:hover { color: var(--accent); }
 /* 밝은 페이지(연도·책 상세)용 슬림 CTA 보정 */
 .year-road-page .slim-cta, .book-road-page .slim-cta { border-top-color: rgba(138, 98, 61, 0.18); }
 .year-road-page .slim-cta-link, .book-road-page .slim-cta-link { color: #687386; }
-.year-road-page .slim-cta-link strong, .book-road-page .slim-cta-link strong { color: #9b7619; }
-.year-road-page .slim-cta-link:hover, .book-road-page .slim-cta-link:hover { color: rgba(104, 115, 134, 0.25); }
-.year-road-page .slim-cta-link:hover strong, .book-road-page .slim-cta-link:hover strong { color: #9b7619; }
+.year-road-page .slim-cta-link:hover, .book-road-page .slim-cta-link:hover { color: #fff9ee; }
 .year-book-road-cta { padding-top: 0; }
 .year-foot-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 3rem 0 5rem; }
 
