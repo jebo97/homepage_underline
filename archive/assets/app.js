@@ -674,14 +674,15 @@ async function renderSearch() {
 
   // 헤더 먼저 그리고, 결과는 비동기로 채운다.
   root.innerHTML = `
-    <main>
+    <main class="book-road-page">
       <div class="wrap wrap-3xl">
-        <header style="padding:5rem 0 3rem">
+        <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
-          <h1 class="page-title" style="font-size:1.875rem;margin:3rem 0 2rem">책길 찾기</h1>
-          ${searchFormHTML("large", query)}
+          <h1 class="book-title-lg">책길 찾기</h1>
+          <p class="book-hero-desc">책 제목이나 작가 이름으로 문장숲 책길을 찾아보세요.</p>
+          <div class="search-block">${searchFormHTML("large", query)}</div>
         </header>
-        <section id="search-results" style="padding-bottom:4rem">
+        <section id="search-results" class="section-pad book-now">
           ${query ? `<p class="loading">검색 중…</p>` : ""}
         </section>
       </div>
@@ -692,18 +693,21 @@ async function renderSearch() {
   const results = await searchBooks(query);
   const box = document.getElementById("search-results");
   if (results.length === 0) {
-    box.innerHTML = `<p class="empty">‘${esc(query)}’에 대한 검색 결과가 없습니다</p>`;
+    box.innerHTML = `<p class="empty">‘${esc(query)}’의 책길은 아직 찾지 못했어요.</p>`;
     return;
   }
   box.innerHTML = `
     <p class="results-count">‘${esc(query)}’ 검색 결과 ${results.length}건</p>
-    <div class="results">${results.map((book) => {
+    <div class="companions">${results.map((book) => {
       const period = book.firstYear === book.lastYear
-        ? `${book.firstYear}년` : `${book.firstYear}–${book.lastYear}년`;
-      return `<a class="result" href="${esc(bookHref(book.title))}">
-        <span class="rt">${esc(book.title)}</span>
-        <span class="rmeta">${esc(book.author ?? "저자 미상")}${book.publisher ? ` · ${esc(book.publisher)}` : ""}</span>
-        <span class="rstats"><span>책길에 <span class="accent">${book.totalWeeks}</span>주 머문 책</span><span class="sep">·</span><span>${period}</span></span>
+        ? `${book.firstYear}` : `${book.firstYear}–${book.lastYear}`;
+      const meta = `${esc(book.author ?? "저자 미상")}${book.publisher ? ` · ${esc(book.publisher)}` : ""} · ${period}`;
+      return `<a class="companion" href="${esc(bookHref(book.title))}">
+        <span class="info">
+          <span class="ct">${esc(book.title)}</span>
+          <span class="ca">${meta}</span>
+        </span>
+        <span class="weeks">${book.totalWeeks}주 머문 책</span>
       </a>`;
     }).join("")}</div>`;
 }
@@ -731,36 +735,40 @@ async function renderAuthors() {
 
   const toggles = Object.entries(AUTHOR_SORTS).map(([k, v]) =>
     k === by
-      ? `<span class="pill" style="border-color:var(--accent);color:var(--accent)">${v.label}</span>`
+      ? `<span class="pill pill-on">${v.label}</span>`
       : `<a class="pill" href="authors.html?by=${k}">${v.label}</a>`
   ).join("");
 
   const rows = (data ?? []);
+  const metricFor = (a) =>
+    by === "books" ? `${a.book_count}권`
+    : by === "one" ? `${a.one_weeks}주 1위`
+    : `${a.chartin_weeks}주 차트인`;
   const listHTML = rows.length > 0
-    ? `<ol class="top10">${rows.map((a, i) => `
-        <li>
-          <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
-          <div class="info">
-            <a href="${esc(authorHref(a.author))}">${esc(a.author)}</a>
-            <p>대표작 · <a href="${esc(bookHref(a.top_title))}" style="color:inherit">${esc(a.top_title)}</a> · ${a.book_count}권 · ${a.first_year}–${a.last_year}</p>
-          </div>
-          <span class="weeks" style="text-align:right">
-            <span style="color:var(--accent)">${a[sort.col]}</span>${sort.col === "book_count" ? "권" : "주"}
+    ? `<div class="companions">${rows.map((a, i) => {
+        const range = a.first_year === a.last_year ? `${a.first_year}` : `${a.first_year}–${a.last_year}`;
+        return `<a class="companion" href="${esc(authorHref(a.author))}">
+          <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
+          <span class="info">
+            <span class="ct">${esc(a.author)}</span>
+            <span class="ca">대표작 《${esc(a.top_title)}》 · ${a.book_count}권 · ${range}</span>
           </span>
-        </li>`).join("")}</ol>`
-    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "집계 데이터가 아직 없습니다."}</p>`;
+          <span class="weeks">${metricFor(a)}</span>
+        </a>`;
+      }).join("")}</div>`
+    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 작가의 숲에 모인 기록이 없어요."}</p>`;
 
   root.innerHTML = `
-    <main>
+    <main class="book-road-page">
       <div class="wrap wrap-3xl">
-        <header style="padding:5rem 0 2rem">
+        <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
-          <h1 class="page-title" style="font-size:2.25rem;margin:3rem 0 0.75rem">작가의 숲</h1>
-          <p class="subtitle" style="margin-top:0.75rem">2006년부터 이어진 책길에 가장 오래 머물고,<br />가장 앞에 오래 선 작가들을 모았습니다.</p>
-          <div class="year-nav" style="margin-top:2rem;flex-wrap:wrap">${toggles}</div>
+          <h1 class="book-title-lg">작가의 숲</h1>
+          <p class="book-hero-desc">2006년부터 이어진 책길에 가장 오래 머물고, 가장 앞에 오래 선 작가들을 모았습니다.</p>
+          <div class="year-nav author-sorts">${toggles}</div>
         </header>
-        <section style="padding-bottom:6rem">
-          <p class="section-note" style="padding-left:0;margin-bottom:1.5rem">‘${esc(sort.label)}’ 상위 50명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있습니다</p>
+        <section class="section-pad book-now">
+          <p class="section-note" style="padding-left:0">‘${esc(sort.label)}’ 상위 50명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
           ${listHTML}
         </section>
       </div>

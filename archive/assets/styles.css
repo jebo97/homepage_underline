@@ -59,7 +59,9 @@ body[data-page="home"] {
 }
 
 body[data-page="book"],
-body[data-page="author"] {
+body[data-page="author"],
+body[data-page="authors"],
+body[data-page="search"] {
   background: #fff9ee;
 }
 
@@ -1035,6 +1037,21 @@ a.alink:hover { color: var(--accent); }
 .book-road-page .companion .ct { display: block; color: var(--navy); font-weight: 800; font-size: 0.98rem; line-height: 1.4; word-break: keep-all; }
 .book-road-page .companion .ca { display: block; margin-top: 0.2rem; color: #8a95a5; font-size: 0.84rem; }
 .book-road-page .companion .weeks { flex-shrink: 0; border-radius: 9999px; padding: 0.4rem 0.7rem; background: rgba(255, 211, 61, 0.16); color: #9b7619; font-size: 0.76rem; font-weight: 800; white-space: nowrap; }
+
+/* 작가의 숲 목록 · 검색 페이지(밝은 톤) */
+.pill.pill-on { border-color: rgba(231, 185, 40, 0.55); color: #9b7619; background: rgba(255, 211, 61, 0.16); font-weight: 700; }
+.author-sorts { margin-top: 2rem; flex-wrap: wrap; }
+.book-road-page .results-count { margin: 0 0 1.6rem; color: #687386; font-size: 0.9rem; }
+.book-road-page .empty, .book-road-page .loading { padding: 4rem 0; text-align: center; color: #98a1b0; font-size: 1rem; }
+.book-road-page .search-block { max-width: none; margin: 2.2rem 0 0; }
+.book-road-page .search-form.large .search-input {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(138, 98, 61, 0.22);
+  color: var(--navy);
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 232, 0.4);
+}
+.book-road-page .search-form.large .search-input::placeholder { color: #98a1b0; }
+.book-road-page .search-form.large .search-input:focus { border-color: rgba(231, 185, 40, 0.6); }
 
 /* 주의 문구 */
 .book-road-page .disclaimer { margin-top: 4rem; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 2rem 0 1rem; color: #98a1b0; font-size: 0.8rem; line-height: 1.7; text-align: center; }
