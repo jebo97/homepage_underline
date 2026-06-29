@@ -85,7 +85,7 @@ function renderNav() {
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
       <a class="nav-brand" href="index.html">문장숲 책길</a>
-      <a class="nav-link" href="authors.html">저자 명예의 전당</a>
+      <a class="nav-link" href="authors.html">작가의 숲</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;
@@ -709,7 +709,7 @@ async function renderSearch() {
 }
 
 // ====================================================================
-// 저자 명예의 전당
+// 작가의 숲
 // ====================================================================
 const AUTHOR_SORTS = {
   chartin: { col: "chartin_weeks", label: "오래 머문 순" },
@@ -755,7 +755,7 @@ async function renderAuthors() {
       <div class="wrap wrap-3xl">
         <header style="padding:5rem 0 2rem">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
-          <h1 class="page-title" style="font-size:2.25rem;margin:3rem 0 0.75rem">저자 명예의 전당</h1>
+          <h1 class="page-title" style="font-size:2.25rem;margin:3rem 0 0.75rem">작가의 숲</h1>
           <p class="subtitle" style="margin-top:0.75rem">2006년부터 이어진 책길에 가장 오래 머물고,<br />가장 앞에 오래 선 작가들을 모았습니다.</p>
           <div class="year-nav" style="margin-top:2rem;flex-wrap:wrap">${toggles}</div>
         </header>
@@ -775,7 +775,7 @@ async function renderAuthor() {
   const root = document.getElementById("page-root");
   const name = new URLSearchParams(location.search).get("name") || "";
   if (!name) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 명예의 전당</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
     return;
   }
   document.title = `${name} · 문장숲 책길`;
@@ -787,7 +787,7 @@ async function renderAuthor() {
       .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지)
   );
   if (all.length === 0) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="authors.html">← 명예의 전당</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
     return;
   }
 
@@ -822,20 +822,31 @@ async function renderAuthor() {
   const byCategory = [...catMap.entries()].map(([category, weeks]) => ({ category, weeks }))
     .sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
 
+  const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
+
+  // 작가 책길 요약 카드 (1위 유지 있으면 4개)
+  const statBoxes = oneWeeks > 0
+    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "책길에 오른 책"], [yearRange, "", "기록된 해"]]
+    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "책길에 오른 책"], [yearRange, "", "기록된 해"]];
+  const statHTML = statBoxes.map(([v, u, c]) =>
+    `<div class="box"><div class="big">${v}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("");
+
   const booksHTML = books.length > 0 ? `
-    <section class="section-pad" style="padding-top:5rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">이 작가가 남긴 책길</h2>
-      <ol class="top10">${books.map((b, i) => `
-        <li>
-          <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
-          <div class="info"><a href="${esc(bookHref(b.title))}">${esc(b.title)}</a></div>
-          <span class="weeks">${b.weeks}주</span>
-        </li>`).join("")}</ol>
+    <section class="section-pad">
+      <h2 class="section-heading">이 작가가 남긴 책길</h2>
+      <p class="section-note">문장숲 책길에 오른 책들을 오래 머문 순서로 정리했습니다.</p>
+      <div class="companions">${books.map((b, i) => `
+        <a class="companion" href="${esc(bookHref(b.title))}">
+          <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
+          <span class="info"><span class="ct">${esc(b.title)}</span></span>
+          <span class="weeks">${b.weeks}주 차트인</span>
+        </a>`).join("")}</div>
     </section>` : "";
 
   const yearlyHTML = yearly.length > 0 ? `
-    <section class="section-pad" style="padding-top:5rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">해마다 머문 책길</h2>
+    <section class="section-pad">
+      <h2 class="section-heading">해마다 머문 책길</h2>
+      <p class="section-note">이 작가의 책들이 해마다 책길에 머문 주수를 보여줍니다.</p>
       <div class="bars">${yearly.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
           <span class="bar-year">${year}</span>
@@ -845,25 +856,25 @@ async function renderAuthor() {
     </section>` : "";
 
   const catHTML = byCategory.length > 0 ? `
-    <section class="section-pad" style="padding:5rem 0">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">숲길 갈래별 기록</h2>
+    <section class="section-pad">
+      <h2 class="section-heading">숲길 갈래별 기록</h2>
+      <p class="section-note">분야별 차트 기준으로, 전체 기록과 주수가 다를 수 있어요.</p>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문</span></div>`).join("")}</div>
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머묾</span></div>`).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
-    <main>
+    <main class="book-road-page">
       <div class="wrap wrap-3xl">
-        <header style="padding:5rem 0 3rem">
-          <a class="back-link" href="authors.html">← 저자 명예의 전당</a>
+        <header class="book-page-header">
+          <a class="back-link" href="authors.html">← 작가의 숲</a>
           <h1 class="book-title-lg">${esc(name)}</h1>
-          <p class="highlight-meta">${bookCount}권 · ${firstYear}–${lastYear} 활동</p>
+          <p class="book-meta">${bookCount}권 · ${yearRange} 책길 기록</p>
+          <p class="book-hero-desc">이 작가가 문장숲 책길에 남긴 흐름을 모았습니다.</p>
         </header>
-        <div class="stat3">
-          <div class="box"><div class="big">${chartinWeeks}<span class="u">주</span></div><div class="cap">책길에 머문 시간</div></div>
-          <div class="box"><div class="big">${oneWeeks}<span class="u">주</span></div><div class="cap">가장 앞에 선 시간</div></div>
-          <div class="box"><div class="big">${bookCount}<span class="u">권</span></div><div class="cap">남긴 책</div></div>
-        </div>
+        <section class="section-pad book-now">
+          <div class="book-stats">${statHTML}</div>
+        </section>
         ${booksHTML}
         ${yearlyHTML}
         ${catHTML}

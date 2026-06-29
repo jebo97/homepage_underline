@@ -58,7 +58,8 @@ body[data-page="home"] {
   background: #fff9ee;
 }
 
-body[data-page="book"] {
+body[data-page="book"],
+body[data-page="author"] {
   background: #fff9ee;
 }
 
@@ -984,6 +985,8 @@ a.alink:hover { color: var(--accent); }
 .book-hero-desc { margin: 0.75rem 0 0; color: #8b95a5; font-size: 0.95rem; line-height: 1.7; }
 .book-road-page .section-pad { padding-top: 4.5rem; }
 .book-road-page .book-now { padding-top: 1.5rem; }
+/* 작가 책길 리스트의 순위 번호 */
+.book-road-page .comp-rank { flex-shrink: 0; width: 1.9rem; color: #9b7619; font-weight: 800; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .book-road-page .section-heading { color: var(--navy); border-left-color: var(--gold); font-weight: 800; margin-bottom: 0.7rem; }
 .book-road-page .section-note { color: #687386; font-size: 0.9rem; margin: 0 0 1.6rem; padding-left: 1rem; line-height: 1.6; }
 .book-road-page .section-foot { margin: 1.1rem 0 0; color: #98a1b0; font-size: 0.82rem; line-height: 1.6; }
