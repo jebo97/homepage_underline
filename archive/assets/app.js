@@ -608,7 +608,7 @@ async function renderBook() {
   const compHTML = fieldMates.length > 0 ? `
     <section class="section-pad">
       <h2 class="section-heading">${esc(fieldName)}에서 함께 오른 책들</h2>
-      <p class="section-note">이 책과 같은 숲길에 오른 책들이에요.</p>
+      <p class="section-note">이 책과 같은 해, 같은 숲길에 머문 책들이에요.</p>
       <div class="companions">${fieldMates.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
           <span class="info"><span class="ct">${esc(book.title)}</span><span class="ca">${esc(book.author ?? "저자 미상")}</span></span>
