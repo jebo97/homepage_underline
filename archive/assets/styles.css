@@ -58,6 +58,10 @@ body[data-page="home"] {
   background: #fff9ee;
 }
 
+body[data-page="book"] {
+  background: #fff9ee;
+}
+
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; }
 
@@ -960,6 +964,80 @@ a.alink:hover { color: var(--accent); }
 .muted { color: var(--slate-600); font-size: 0.875rem; }
 .year-field-section { padding-bottom: 4rem; }
 .year-data-note { margin: 0 0 4rem; color: #8b95a5; font-size: 0.78rem; line-height: 1.7; }
+
+/* ===== 책 상세 — 밝은 책길 톤 ===== */
+.book-road-page {
+  background:
+    radial-gradient(ellipse at 86% 5%, rgba(255, 211, 61, 0.12), transparent 24rem),
+    linear-gradient(180deg, #fff9ee 0%, #fffdf8 46%, #fff9ee 100%);
+  color: var(--navy);
+}
+.book-page-header { padding: 5rem 0 3rem; }
+@media (min-width: 640px) { .book-page-header { padding-top: 7rem; } }
+.book-road-page .book-title-lg { margin-top: 2.4rem; color: var(--navy); font-weight: 800; font-size: 2.1rem; line-height: 1.2; word-break: keep-all; }
+@media (min-width: 640px) { .book-road-page .book-title-lg { font-size: 2.6rem; } }
+.book-meta { margin: 1rem 0 0; color: #687386; font-size: 1rem; }
+.book-meta a.alink:hover { color: #9b7619; }
+.book-badge { margin-top: 1.3rem; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(255, 211, 61, 0.18); color: #9b7619; padding: 0.32rem 0.72rem; font-size: 0.72rem; font-weight: 800; }
+.book-hero-desc { margin: 1.1rem 0 0; color: #8b95a5; font-size: 0.95rem; line-height: 1.7; }
+.book-road-page .section-pad { padding-top: 4.5rem; }
+.book-road-page .section-heading { color: var(--navy); border-left-color: var(--gold); font-weight: 800; margin-bottom: 0.7rem; }
+.book-road-page .section-note { color: #687386; font-size: 0.9rem; margin: 0 0 1.6rem; padding-left: 1rem; line-height: 1.6; }
+.book-road-page .section-foot { margin: 1.1rem 0 0; color: #98a1b0; font-size: 0.82rem; line-height: 1.6; }
+.book-road-page .muted { color: #98a1b0; }
+
+/* 현재 책 정보 카드 (보조 정보, 위계 낮춤) */
+.book-road-page .naver-card { background: rgba(255, 255, 255, 0.62); border: 1px solid rgba(138, 98, 61, 0.16); border-radius: 1rem; padding: 1.6rem; box-shadow: 0 10px 24px rgba(27, 42, 74, 0.05); }
+.book-road-page .naver-body { display: flex; flex-direction: column; gap: 1.4rem; }
+@media (min-width: 640px) { .book-road-page .naver-body { flex-direction: row; } }
+.book-road-page .naver-cover { width: 7.5rem; flex-shrink: 0; align-self: center; border-radius: 0.5rem; box-shadow: 0 8px 20px rgba(27, 42, 74, 0.16); }
+@media (min-width: 640px) { .book-road-page .naver-cover { align-self: flex-start; } }
+.book-road-page .naver-info h3 { margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--navy); line-height: 1.4; word-break: keep-all; }
+.book-road-page .naver-info .na { margin: 0.5rem 0 0; color: #687386; font-size: 0.9rem; }
+.book-road-page .naver-info .nd { margin: 0.3rem 0 0; color: #98a1b0; font-size: 0.85rem; }
+.book-road-page .naver-info .desc { margin: 1rem 0 0; color: #4a5568; font-size: 0.9rem; line-height: 1.7; }
+.book-road-page .naver-link { margin-top: 1.2rem; display: inline-flex; border-radius: 9999px; border: 1px solid rgba(138, 98, 61, 0.2); padding: 0.5rem 1rem; color: #9b7619; font-size: 0.85rem; font-weight: 700; transition: all .2s; }
+.book-road-page .naver-link:hover { border-color: rgba(231, 185, 40, 0.55); background: rgba(255, 211, 61, 0.12); }
+
+/* 책길 기록 stat 카드 (3 또는 4개) */
+.book-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.9rem; }
+.book-road-page .book-stats .box { background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 233, 201, 0.6)); border: 1px solid rgba(138, 98, 61, 0.18); border-radius: 1rem; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 12px 26px rgba(27, 42, 74, 0.06); }
+.book-road-page .book-stats .big { font-size: 1.7rem; font-weight: 800; color: #9b7619; }
+.book-road-page .book-stats .big .u { margin-left: 0.1rem; font-size: 1rem; font-weight: 700; }
+.book-road-page .book-stats .cap { margin-top: 0.6rem; font-size: 0.78rem; color: #687386; font-weight: 600; }
+
+/* 연도별 막대 */
+.book-road-page .bars { display: flex; flex-direction: column; gap: 0.7rem; }
+.book-road-page .bar-row { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
+.book-road-page .bar-year { width: 3rem; flex-shrink: 0; font-size: 0.85rem; font-weight: 700; color: #687386; transition: color .2s; }
+.book-road-page .bar-track { flex: 1; height: 1.1rem; border-radius: 9999px; background: rgba(138, 98, 61, 0.08); overflow: hidden; }
+.book-road-page .bar-fill { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, var(--gold), var(--yellow)); }
+.book-road-page .bar-weeks { width: 3rem; flex-shrink: 0; text-align: right; font-size: 0.82rem; font-weight: 700; color: #9b7619; }
+.book-road-page .bar-row:hover .bar-year { color: #9b7619; }
+
+/* 숲길 갈래별 */
+.book-road-page .cat-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.book-road-page .cat-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.95rem 1.2rem; border-radius: 0.85rem; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(138, 98, 61, 0.12); }
+.book-road-page .cat-row .cn { color: var(--navy); font-weight: 700; font-size: 0.95rem; }
+.book-road-page .cat-row .cw { flex-shrink: 0; color: #9b7619; font-weight: 800; font-size: 0.82rem; white-space: nowrap; }
+
+/* 함께 책길에 오른 책들 */
+.book-road-page .companions { display: flex; flex-direction: column; gap: 0.6rem; }
+.book-road-page .companion { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-radius: 0.9rem; background: rgba(255, 255, 255, 0.66); border: 1px solid rgba(138, 98, 61, 0.14); box-shadow: 0 8px 20px rgba(27, 42, 74, 0.04); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.book-road-page .companion:hover { transform: translateY(-2px); border-color: rgba(231, 185, 40, 0.4); box-shadow: 0 14px 30px rgba(27, 42, 74, 0.09); }
+.book-road-page .companion .info { min-width: 0; }
+.book-road-page .companion .ct { display: block; color: var(--navy); font-weight: 800; font-size: 0.98rem; line-height: 1.4; word-break: keep-all; }
+.book-road-page .companion .ca { display: block; margin-top: 0.2rem; color: #8a95a5; font-size: 0.84rem; }
+.book-road-page .companion .weeks { flex-shrink: 0; border-radius: 9999px; padding: 0.4rem 0.7rem; background: rgba(255, 211, 61, 0.16); color: #9b7619; font-size: 0.76rem; font-weight: 800; white-space: nowrap; }
+
+/* 주의 문구 */
+.book-road-page .disclaimer { margin-top: 4rem; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 2rem 0 1rem; color: #98a1b0; font-size: 0.8rem; line-height: 1.7; }
+
+/* 밝은 페이지(연도·책 상세)용 슬림 CTA 보정 */
+.year-road-page .slim-cta, .book-road-page .slim-cta { border-top-color: rgba(138, 98, 61, 0.18); }
+.year-road-page .slim-cta-link, .book-road-page .slim-cta-link { color: #687386; }
+.year-road-page .slim-cta-link strong, .book-road-page .slim-cta-link strong { color: #9b7619; }
+.year-road-page .slim-cta-link:hover, .book-road-page .slim-cta-link:hover { color: var(--navy); }
 .year-book-road-cta { padding-top: 0; }
 .year-foot-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 3rem 0 5rem; }
 

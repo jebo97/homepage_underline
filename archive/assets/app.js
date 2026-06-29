@@ -473,6 +473,7 @@ async function getBookData(title) {
   const general = history.filter((r) => r.category === "종합");
   const generalWeeks = general.length;
   const bestRank = general.length ? Math.min(...general.map((r) => r.rank)) : null;
+  const oneWeeks = general.filter((r) => r.rank === 1).length;
   const firstYear = general.length
     ? Math.min(...general.map((r) => r.year))
     : history.length ? Math.min(...history.map((r) => r.year)) : null;
@@ -509,7 +510,7 @@ async function getBookData(title) {
       .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title))
       .slice(0, 5);
   }
-  return { author, publisher, generalWeeks, bestRank, firstYear, yearlyGeneral, byCategory, companions };
+  return { author, publisher, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, companions };
 }
 
 // 사전 적재된 네이버 메타데이터 (book_meta). 없거나 미매칭이면 null.
@@ -538,71 +539,89 @@ async function renderBook() {
   }
   document.title = `${title} · 문장숲 책길`;
   const [data, naver] = await Promise.all([getBookData(title), getNaverMeta(title)]);
-  const { author, publisher, generalWeeks, bestRank, firstYear, yearlyGeneral, byCategory, companions } = data;
+  const { author, publisher, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, companions } = data;
   const maxYearlyWeeks = Math.max(1, ...yearlyGeneral.map((y) => y.weeks));
   const fullDescription = naver?.description ? stripTags(naver.description) : "";
   const description = fullDescription.slice(0, 200);
 
+  // 2. 현재 책 정보 (네이버) — 보조 정보, 위계 낮춤
   const naverHTML = naver ? `
-    <section class="naver-card">
-      <p class="label">📖 현재 판매 정보 (네이버 책 기준)</p>
-      <div class="naver-body">
-        ${naver.image ? `<img class="naver-cover" src="${esc(naver.image)}" alt="${esc(stripTags(naver.naver_title || title))}" />` : ""}
-        <div class="naver-info">
-          <h2>${esc(stripTags(naver.naver_title || title))}</h2>
-          <p class="na">${esc((naver.naver_author || "").split("^").filter(Boolean).join(", "))}${naver.naver_publisher ? ` · ${esc(naver.naver_publisher)}` : ""}</p>
-          ${naver.pubdate ? `<p class="nd">${esc(formatPubdate(naver.pubdate))} 출간</p>` : ""}
-          ${description ? `<p class="desc">${esc(description)}${fullDescription.length > 200 ? "…" : ""}</p>` : ""}
-          ${naver.link ? `<a class="naver-link" href="${esc(naver.link)}" target="_blank" rel="noopener noreferrer">네이버 책 정보 보기 →</a>` : ""}
+    <section class="section-pad book-now">
+      <h2 class="section-heading">현재 책 정보</h2>
+      <p class="section-note">현재 판매 정보는 네이버 책 정보를 기준으로 보여줍니다.</p>
+      <div class="naver-card">
+        <div class="naver-body">
+          ${naver.image ? `<img class="naver-cover" src="${esc(naver.image)}" alt="${esc(stripTags(naver.naver_title || title))}" />` : ""}
+          <div class="naver-info">
+            <h3>${esc(stripTags(naver.naver_title || title))}</h3>
+            <p class="na">${esc((naver.naver_author || "").split("^").filter(Boolean).join(", "))}${naver.naver_publisher ? ` · ${esc(naver.naver_publisher)}` : ""}</p>
+            ${naver.pubdate ? `<p class="nd">${esc(formatPubdate(naver.pubdate))} 출간</p>` : ""}
+            ${description ? `<p class="desc">${esc(description)}${fullDescription.length > 200 ? "…" : ""}</p>` : ""}
+            ${naver.link ? `<a class="naver-link" href="${esc(naver.link)}" target="_blank" rel="noopener noreferrer">네이버 책 정보 보기 →</a>` : ""}
+          </div>
         </div>
       </div>
     </section>` : "";
 
-  const historyHTML = generalWeeks > 0 ? `
-    <div class="stat3">
-      <div class="box"><div class="big">${generalWeeks}<span class="u">주</span></div><div class="cap">책길에 머문 시간</div></div>
-      <div class="box"><div class="big">${bestRank}<span class="u">위</span></div><div class="cap">가장 앞에 선 순위</div></div>
-      <div class="box"><div class="big">${firstYear ?? "—"}</div><div class="cap">처음 오른 해</div></div>
-    </div>
-    <div class="bars">${yearlyGeneral.map(({ year, weeks }) => `
-      <a class="bar-row" href="${esc(yearHref(year))}">
-        <span class="bar-year">${year}</span>
-        <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxYearlyWeeks) * 100)}%"></span></span>
-        <span class="bar-weeks">${weeks}주</span>
-      </a>`).join("")}</div>`
+  // 3. 이 책이 머문 책길 기록 — 1위 유지 주수가 있으면 4카드, 없으면 3카드
+  const statBoxes = oneWeeks > 0
+    ? [[generalWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bestRank, "위", "최고 순위"], [firstYear, "년", "처음 오른 해"]]
+    : [[generalWeeks, "주", "책길에 머문 시간"], [bestRank, "위", "최고 순위"], [firstYear, "년", "처음 오른 해"]];
+  const recordHTML = generalWeeks > 0 ? `
+    <div class="book-stats">${statBoxes.map(([v, u, c]) =>
+      `<div class="box"><div class="big">${v ?? "—"}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("")}</div>
+    <p class="section-foot">베스트셀러 목록에 머문 전체 주수를 기준으로 정리했습니다.</p>`
     : `<p class="muted">아직 책길에 머문 기록이 없어요</p>`;
 
-  const catHTML = byCategory.length > 0 ? `
-    <section class="section-pad" style="padding-top:6rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">숲길 갈래별 기록</h2>
-      <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문</span></div>`).join("")}</div>
+  // 4. 연도별 책길 흐름
+  const yearlyHTML = (generalWeeks > 0 && yearlyGeneral.length) ? `
+    <section class="section-pad">
+      <h2 class="section-heading">연도별 책길 흐름</h2>
+      <p class="section-note">이 책이 해마다 책길에 머문 주수를 보여줍니다.</p>
+      <div class="bars">${yearlyGeneral.map(({ year, weeks }) => `
+        <a class="bar-row" href="${esc(yearHref(year))}">
+          <span class="bar-year">${year}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxYearlyWeeks) * 100)}%"></span></span>
+          <span class="bar-weeks">${weeks}주</span>
+        </a>`).join("")}</div>
     </section>` : "";
 
+  // 5. 숲길 갈래별 기록 (분야별 차트 기준 — 종합과 별개)
+  const catHTML = byCategory.length > 0 ? `
+    <section class="section-pad">
+      <h2 class="section-heading">숲길 갈래별 기록</h2>
+      <p class="section-note">각 숲길(분야) 차트에 머문 주수예요. 종합 차트와 별개로 집계돼 전체 주수와 다를 수 있어요.</p>
+      <div class="cat-list">${byCategory.map(({ category, weeks }) => `
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문 책</span></div>`).join("")}</div>
+    </section>` : "";
+
+  // 6. 함께 책길에 오른 책들
   const compHTML = companions.length > 0 ? `
-    <section class="section-pad" style="padding:6rem 0">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">${firstYear}년, 함께 책길에 오른 책들</h2>
+    <section class="section-pad">
+      <h2 class="section-heading">${firstYear}년, 함께 책길에 오른 책들</h2>
       <div class="companions">${companions.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
           <span class="info"><span class="ct">${esc(book.title)}</span><span class="ca">${esc(book.author ?? "저자 미상")}</span></span>
-          <span class="weeks">${book.weeks}주</span>
+          <span class="weeks">${book.weeks}주 차트인</span>
         </a>`).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
-    <main>
+    <main class="book-road-page">
       <div class="wrap wrap-3xl">
-        <header style="padding:5rem 0 4rem">
-          <a class="back-link" href="javascript:history.back()">← 뒤로가기</a>
+        <header class="book-page-header">
+          <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">${esc(title)}</h1>
-          <p class="highlight-meta">${authorLink(author, "alink")}${publisher ? ` · ${esc(publisher)}` : ""}</p>
-          <span class="book-badge">당시 기록 기준</span>
+          <p class="book-meta">${authorLink(author, "alink")}${publisher ? ` · ${esc(publisher)}` : ""}</p>
+          <span class="book-badge">책길 기록</span>
+          <p class="book-hero-desc">이 책이 문장숲 책길에 남긴 흐름을 모았습니다.</p>
         </header>
         ${naverHTML}
-        <section class="section-pad" style="padding-top:6rem">
-          <h2 class="section-heading" style="margin-bottom:2.5rem">이 책이 머문 책길</h2>
-          ${historyHTML}
+        <section class="section-pad">
+          <h2 class="section-heading">이 책이 머문 책길 기록</h2>
+          ${recordHTML}
         </section>
+        ${yearlyHTML}
         ${catHTML}
         ${compHTML}
         <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 데이터 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
