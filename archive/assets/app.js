@@ -127,6 +127,28 @@ function ctaFooterHTML({ narrow = false, text, label, href }) {
   </footer>`;
 }
 
+// 문장숲 책길 공용 CTA (home/year 와 동일 디자인). 페이지 하단 공통 사용.
+function bookRoadCtaHTML({
+  title = "마음이 멈춘 책을 발견했다면,<br />이제 밑줄로 남겨보세요.",
+  sub = "밑줄이 모여, 나만의 문장숲이 됩니다.",
+} = {}) {
+  return `<section class="book-road-cta">
+    <div class="wrap wrap-5xl">
+      <div class="book-road-cta-card">
+        <div>
+          <p class="cta-kicker">Underline Your Sentence</p>
+          <p class="cta-title">${title}</p>
+          <p class="cta-sub">${esc(sub)}</p>
+          <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
+        </div>
+        <div class="cta-still-life">
+          <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" onerror="this.hidden=true" />
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
 // ====================================================================
 // 홈
 // ====================================================================
@@ -516,10 +538,10 @@ async function renderBook() {
   const root = document.getElementById("page-root");
   const title = new URLSearchParams(location.search).get("title") || "";
   if (!title) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">책을 찾을 수 없습니다. <a class="back-link" href="index.html">← 메인으로</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">책을 찾을 수 없습니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
-  document.title = `${title} · 베스트셀러 아카이브`;
+  document.title = `${title} · 문장숲 책길`;
   const [data, naver] = await Promise.all([getBookData(title), getNaverMeta(title)]);
   const { author, publisher, generalWeeks, bestRank, firstYear, yearlyGeneral, byCategory, companions } = data;
   const maxYearlyWeeks = Math.max(1, ...yearlyGeneral.map((y) => y.weeks));
@@ -543,9 +565,9 @@ async function renderBook() {
 
   const historyHTML = generalWeeks > 0 ? `
     <div class="stat3">
-      <div class="box"><div class="big">${generalWeeks}<span class="u">주</span></div><div class="cap">종합 차트인</div></div>
-      <div class="box"><div class="big">${bestRank}<span class="u">위</span></div><div class="cap">최고 순위</div></div>
-      <div class="box"><div class="big">${firstYear ?? "—"}</div><div class="cap">최초 진입</div></div>
+      <div class="box"><div class="big">${generalWeeks}<span class="u">주</span></div><div class="cap">책길에 머문 시간</div></div>
+      <div class="box"><div class="big">${bestRank}<span class="u">위</span></div><div class="cap">가장 앞에 선 순위</div></div>
+      <div class="box"><div class="big">${firstYear ?? "—"}</div><div class="cap">처음 오른 해</div></div>
     </div>
     <div class="bars">${yearlyGeneral.map(({ year, weeks }) => `
       <a class="bar-row" href="${esc(yearHref(year))}">
@@ -557,14 +579,14 @@ async function renderBook() {
 
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad" style="padding-top:6rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">분야별 기록</h2>
+      <h2 class="section-heading" style="margin-bottom:2.5rem">숲길 갈래별 기록</h2>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(category)}</span><span class="cw">${weeks}주 차트인</span></div>`).join("")}</div>
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문</span></div>`).join("")}</div>
     </section>` : "";
 
   const compHTML = companions.length > 0 ? `
     <section class="section-pad" style="padding:6rem 0">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">${firstYear}년, 함께 팔린 책들</h2>
+      <h2 class="section-heading" style="margin-bottom:2.5rem">${firstYear}년, 함께 책길에 오른 책들</h2>
       <div class="companions">${companions.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
           <span class="info"><span class="ct">${esc(book.title)}</span><span class="ca">${esc(book.author ?? "저자 미상")}</span></span>
@@ -583,14 +605,14 @@ async function renderBook() {
         </header>
         ${naverHTML}
         <section class="section-pad" style="padding-top:6rem">
-          <h2 class="section-heading" style="margin-bottom:2.5rem">이 책의 베스트셀러 기록</h2>
+          <h2 class="section-heading" style="margin-bottom:2.5rem">이 책이 머문 책길</h2>
           ${historyHTML}
         </section>
         ${catHTML}
         ${compHTML}
         <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 데이터 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
       </div>
-      ${ctaFooterHTML({ narrow: true, text: "이 책, 밑줄긋기 앱에서 기록해보세요", label: "밑줄긋기 앱에서 이 책 기록하기", href: HOME_URL })}
+      ${bookRoadCtaHTML()}
     </main>`;
 }
 
@@ -624,15 +646,15 @@ async function searchBooks(query) {
 async function renderSearch() {
   const root = document.getElementById("page-root");
   const query = (new URLSearchParams(location.search).get("q") || "").trim();
-  if (query) document.title = `'${query}' 검색 · 베스트셀러 아카이브`;
+  if (query) document.title = `'${query}' 검색 · 문장숲 책길`;
 
   // 헤더 먼저 그리고, 결과는 비동기로 채운다.
   root.innerHTML = `
     <main>
       <div class="wrap wrap-3xl">
         <header style="padding:5rem 0 3rem">
-          <a class="back-link" href="index.html">← 메인으로</a>
-          <h1 class="page-title" style="font-size:1.875rem;margin:3rem 0 2rem">검색</h1>
+          <a class="back-link" href="index.html">← 문장숲 책길로</a>
+          <h1 class="page-title" style="font-size:1.875rem;margin:3rem 0 2rem">책길 찾기</h1>
           ${searchFormHTML("large", query)}
         </header>
         <section id="search-results" style="padding-bottom:6rem">
@@ -656,7 +678,7 @@ async function renderSearch() {
       return `<a class="result" href="${esc(bookHref(book.title))}">
         <span class="rt">${esc(book.title)}</span>
         <span class="rmeta">${esc(book.author ?? "저자 미상")}${book.publisher ? ` · ${esc(book.publisher)}` : ""}</span>
-        <span class="rstats"><span>종합 <span class="accent">${book.totalWeeks}</span>주 차트인</span><span class="sep">·</span><span>${period}</span></span>
+        <span class="rstats"><span>책길에 <span class="accent">${book.totalWeeks}</span>주 머문 책</span><span class="sep">·</span><span>${period}</span></span>
       </a>`;
     }).join("")}</div>`;
 }
@@ -665,9 +687,9 @@ async function renderSearch() {
 // 저자 명예의 전당
 // ====================================================================
 const AUTHOR_SORTS = {
-  chartin: { col: "chartin_weeks", label: "차트인 주수" },
-  one: { col: "one_weeks", label: "1위 주수" },
-  books: { col: "book_count", label: "작품 수" },
+  chartin: { col: "chartin_weeks", label: "오래 머문 순" },
+  one: { col: "one_weeks", label: "가장 앞에 선 순" },
+  books: { col: "book_count", label: "남긴 책 순" },
 };
 
 async function renderAuthors() {
@@ -707,17 +729,17 @@ async function renderAuthors() {
     <main>
       <div class="wrap wrap-3xl">
         <header style="padding:5rem 0 2rem">
-          <a class="back-link" href="index.html">← 메인으로</a>
+          <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="page-title" style="font-size:2.25rem;margin:3rem 0 0.75rem">저자 명예의 전당</h1>
-          <p class="subtitle" style="margin-top:0.75rem">교보문고 종합 베스트셀러(2006–2025) 기준 누적 기록</p>
+          <p class="subtitle" style="margin-top:0.75rem">2006년부터 이어진 책길에 가장 오래 머물고,<br />가장 앞에 오래 선 작가들을 모았습니다.</p>
           <div class="year-nav" style="margin-top:2rem;flex-wrap:wrap">${toggles}</div>
         </header>
         <section style="padding-bottom:6rem">
-          <p class="section-note" style="padding-left:0;margin-bottom:1.5rem">‘${esc(sort.label)}’ 기준 상위 50명 · 이름을 누르면 저자별 기록을 볼 수 있습니다</p>
+          <p class="section-note" style="padding-left:0;margin-bottom:1.5rem">‘${esc(sort.label)}’ 상위 50명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있습니다</p>
           ${listHTML}
         </section>
       </div>
-      ${ctaFooterHTML({ narrow: true, text: "당신의 인생 작가를 기록해보세요", label: "App Store에서 다운로드", href: APP_STORE_URL })}
+      ${bookRoadCtaHTML()}
     </main>`;
 }
 
@@ -731,7 +753,7 @@ async function renderAuthor() {
     root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 명예의 전당</a></p></div></main>`;
     return;
   }
-  document.title = `${name} · 베스트셀러 아카이브`;
+  document.title = `${name} · 문장숲 책길`;
 
   const all = await fetchAll(() =>
     supabase.from("bestsellers")
@@ -777,7 +799,7 @@ async function renderAuthor() {
 
   const booksHTML = books.length > 0 ? `
     <section class="section-pad" style="padding-top:5rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">작품 (종합 차트인 기준)</h2>
+      <h2 class="section-heading" style="margin-bottom:2.5rem">이 작가가 남긴 책길</h2>
       <ol class="top10">${books.map((b, i) => `
         <li>
           <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
@@ -788,7 +810,7 @@ async function renderAuthor() {
 
   const yearlyHTML = yearly.length > 0 ? `
     <section class="section-pad" style="padding-top:5rem">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">연도별 종합 차트인</h2>
+      <h2 class="section-heading" style="margin-bottom:2.5rem">해마다 머문 책길</h2>
       <div class="bars">${yearly.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
           <span class="bar-year">${year}</span>
@@ -799,9 +821,9 @@ async function renderAuthor() {
 
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad" style="padding:5rem 0">
-      <h2 class="section-heading" style="margin-bottom:2.5rem">분야별 차트인</h2>
+      <h2 class="section-heading" style="margin-bottom:2.5rem">숲길 갈래별 기록</h2>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(category)}</span><span class="cw">${weeks}주</span></div>`).join("")}</div>
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문</span></div>`).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
@@ -813,16 +835,16 @@ async function renderAuthor() {
           <p class="highlight-meta">${bookCount}권 · ${firstYear}–${lastYear} 활동</p>
         </header>
         <div class="stat3">
-          <div class="box"><div class="big">${chartinWeeks}<span class="u">주</span></div><div class="cap">종합 차트인</div></div>
-          <div class="box"><div class="big">${oneWeeks}<span class="u">주</span></div><div class="cap">종합 1위</div></div>
-          <div class="box"><div class="big">${bookCount}<span class="u">권</span></div><div class="cap">차트인 작품</div></div>
+          <div class="box"><div class="big">${chartinWeeks}<span class="u">주</span></div><div class="cap">책길에 머문 시간</div></div>
+          <div class="box"><div class="big">${oneWeeks}<span class="u">주</span></div><div class="cap">가장 앞에 선 시간</div></div>
+          <div class="box"><div class="big">${bookCount}<span class="u">권</span></div><div class="cap">남긴 책</div></div>
         </div>
         ${booksHTML}
         ${yearlyHTML}
         ${catHTML}
         <p class="disclaimer">저자 표기는 차트 등재 당시 데이터 기준이며, 동명이인·공저 표기 차이로 일부 다르게 묶일 수 있습니다.</p>
       </div>
-      ${ctaFooterHTML({ narrow: true, text: "이 작가의 책, 밑줄긋기로 기록해보세요", label: "밑줄긋기 앱에서 기록하기", href: HOME_URL })}
+      ${bookRoadCtaHTML()}
     </main>`;
 }
 
