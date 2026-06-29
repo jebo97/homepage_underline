@@ -595,7 +595,7 @@ async function renderBook() {
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad">
       <h2 class="section-heading">숲길 갈래별 기록</h2>
-      <p class="section-note">각 숲길(분야) 차트에 머문 주수예요. 종합 차트와 별개로 집계돼 전체 주수와 다를 수 있어요.</p>
+      <p class="section-note">분야별 차트 기준으로, 종합 기록과 주수가 다를 수 있어요.</p>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
         <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문 책</span></div>`).join("")}</div>
     </section>` : "";
