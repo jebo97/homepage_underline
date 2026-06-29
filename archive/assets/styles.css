@@ -983,6 +983,7 @@ a.alink:hover { color: var(--accent); }
 .book-badge { margin-top: 1.1rem; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(255, 211, 61, 0.18); color: #9b7619; padding: 0.32rem 0.72rem; font-size: 0.72rem; font-weight: 800; }
 .book-hero-desc { margin: 0.75rem 0 0; color: #8b95a5; font-size: 0.95rem; line-height: 1.7; }
 .book-road-page .section-pad { padding-top: 4.5rem; }
+.book-road-page .book-now { padding-top: 1.5rem; }
 .book-road-page .section-heading { color: var(--navy); border-left-color: var(--gold); font-weight: 800; margin-bottom: 0.7rem; }
 .book-road-page .section-note { color: #687386; font-size: 0.9rem; margin: 0 0 1.6rem; padding-left: 1rem; line-height: 1.6; }
 .book-road-page .section-foot { margin: 1.1rem 0 0; color: #98a1b0; font-size: 0.82rem; line-height: 1.6; }
