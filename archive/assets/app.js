@@ -153,7 +153,7 @@ function bookRoadCtaHTML({
 function slimCtaHTML() {
   return `<div class="wrap wrap-3xl">
     <p class="slim-cta">
-      <a class="slim-cta-link" href="${esc(HOME_URL)}">마음이 멈춘 책이라면, <strong>밑줄긋기</strong>에서 남겨보세요 →</a>
+      <a class="slim-cta-link" href="${esc(HOME_URL)}">마음이 멈춘 책이라면, <strong>밑줄긋기</strong>에서 남겨보세요</a>
     </p>
   </div>`;
 }
@@ -443,7 +443,6 @@ async function renderYear() {
           <p class="section-note year-section-note">각 분야에서 1위 자리에 가장 오래 선 책들을 모았습니다.</p>
           <div class="field-grid">${byFieldHTML}</div>
         </section>
-        <p class="year-data-note">교보문고 주간 베스트셀러 데이터를 바탕으로 개인이 정리한 아카이브입니다.</p>
       </div>
       ${slimCtaHTML()}
       <div class="wrap wrap-5xl">
