@@ -149,6 +149,15 @@ function bookRoadCtaHTML({
   </section>`;
 }
 
+// 첫 화면 외 페이지용 — 은근한 한 줄 CTA
+function slimCtaHTML() {
+  return `<div class="wrap wrap-3xl">
+    <p class="slim-cta">
+      <a class="slim-cta-link" href="${esc(HOME_URL)}">마음이 멈춘 책이라면, <strong>밑줄긋기</strong>에서 남겨보세요 →</a>
+    </p>
+  </div>`;
+}
+
 // ====================================================================
 // 홈
 // ====================================================================
@@ -436,21 +445,7 @@ async function renderYear() {
         </section>
         <p class="year-data-note">교보문고 주간 베스트셀러 데이터를 바탕으로 개인이 정리한 아카이브입니다.</p>
       </div>
-      <section class="book-road-cta year-book-road-cta">
-        <div class="wrap wrap-5xl">
-          <div class="book-road-cta-card">
-            <div>
-              <p class="cta-kicker">Underline Your Sentence</p>
-              <p class="cta-title">마음이 멈춘 책을 발견했다면,<br />이제 밑줄로 남겨보세요.</p>
-              <p class="cta-sub">밑줄이 모여, 나만의 문장숲이 됩니다.</p>
-              <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
-            </div>
-            <div class="cta-still-life">
-              <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" />
-            </div>
-          </div>
-        </div>
-      </section>
+      ${slimCtaHTML()}
       <div class="wrap wrap-5xl">
         <nav class="year-foot-nav">
           ${footPrev}${footNext}
@@ -612,7 +607,7 @@ async function renderBook() {
         ${compHTML}
         <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 데이터 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
       </div>
-      ${bookRoadCtaHTML()}
+      ${slimCtaHTML()}
     </main>`;
 }
 
@@ -657,10 +652,11 @@ async function renderSearch() {
           <h1 class="page-title" style="font-size:1.875rem;margin:3rem 0 2rem">책길 찾기</h1>
           ${searchFormHTML("large", query)}
         </header>
-        <section id="search-results" style="padding-bottom:6rem">
+        <section id="search-results" style="padding-bottom:4rem">
           ${query ? `<p class="loading">검색 중…</p>` : ""}
         </section>
       </div>
+      ${slimCtaHTML()}
     </main>`;
 
   if (!query) return;
@@ -739,7 +735,7 @@ async function renderAuthors() {
           ${listHTML}
         </section>
       </div>
-      ${bookRoadCtaHTML()}
+      ${slimCtaHTML()}
     </main>`;
 }
 
@@ -844,7 +840,7 @@ async function renderAuthor() {
         ${catHTML}
         <p class="disclaimer">저자 표기는 차트 등재 당시 데이터 기준이며, 동명이인·공저 표기 차이로 일부 다르게 묶일 수 있습니다.</p>
       </div>
-      ${bookRoadCtaHTML()}
+      ${slimCtaHTML()}
     </main>`;
 }
 
