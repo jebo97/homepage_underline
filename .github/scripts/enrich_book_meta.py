@@ -41,6 +41,12 @@ NAVER_TITLE_OVERRIDES = {
     "지적 대화를 위한 넓고 얕은 지식: 현실너머 편": "지적 대화를 위한 넓고 얕은 지식 2",
 }
 
+# 특정 제목은 매칭 로직과 무관하게 지정한 네이버 카탈로그로 강제 고정한다.
+# (예: 절판된 원판 대신 현재 판매 중인 판본으로 연결하고 싶을 때. 값=카탈로그 ID)
+NAVER_FORCE_CATALOG = {
+    "녹나무의 파수꾼": "49023649618",  # 2020 원판 대신 2024 무선제본특별판으로 연결
+}
+
 # 제목은 같지만 저자가 다른 책으로 오매칭되는 제목들 — 네이버 조회를 건너뛰고 강제로 비운다.
 # (예: 법정 스님 책이 동명의 다른 저자 책으로 잡히는 경우. 잘못된 표지/설명 노출 방지)
 NAVER_SKIP_TITLES = {
@@ -162,7 +168,7 @@ def fetch_naver_items(query, client_id, client_secret):
         return []
 
 
-def get_naver_book(title, author, publisher, client_id, client_secret):
+def get_naver_book(title, author, publisher, client_id, client_secret, force_catalog=None):
     no_parens = re.sub(r"\s+", " ", _PARENS.sub("", title)).strip()
     compact = re.sub(r"\s+", "", title)
     candidates = [
@@ -182,13 +188,21 @@ def get_naver_book(title, author, publisher, client_id, client_secret):
         seen.add(k)
         queries.append(k)
 
+    fallback = None  # force_catalog 미발견 시 일반 best match 로 보존
     for query in queries:
         items = fetch_naver_items(query, client_id, client_secret)
         time.sleep(THROTTLE)
+        if force_catalog:
+            forced = next((it for it in items if force_catalog in (it.get("link") or "")), None)
+            if forced:
+                return forced
+            if fallback is None:
+                fallback = pick_best_match(items, title, author, publisher)
+            continue
         match = pick_best_match(items, title, author, publisher)
         if match:
             return match
-    return None
+    return fallback
 
 
 # ---------- 데이터 수집 ----------
@@ -275,7 +289,8 @@ def main():
             continue
         rep = reps[title]
         search_title = NAVER_TITLE_OVERRIDES.get(title, title)
-        nv = get_naver_book(search_title, rep["author"], rep["publisher"], cid, csec)
+        nv = get_naver_book(search_title, rep["author"], rep["publisher"], cid, csec,
+                            force_catalog=NAVER_FORCE_CATALOG.get(title))
         # refresh 모드: 매칭 실패 시 기존 정보를 덮어쓰지 않고 보존(다운그레이드 방지)
         if not nv and refresh:
             if i % 50 == 0 or i == len(todo):
