@@ -207,6 +207,7 @@ a.alink:hover { color: var(--accent); }
   display: grid;
   gap: 3rem;
   align-items: center;
+  min-height: calc(100vh - 65px);
   min-height: calc(100svh - 65px);
   padding: clamp(5rem, 10svh, 8rem) 0;
 }
@@ -654,7 +655,19 @@ a.alink:hover { color: var(--accent); }
   .search-form.large .search-icon {
     display: block;
   }
+  /* nav(small) 검색: 노란 동그라미 없이 두껍고 큰 노란 라인 아이콘만 (탭 영역은 유지) */
+  .search-form.small .search-btn {
+    background: transparent;
+    color: var(--accent);
+  }
+  .search-form.small .search-btn:hover { opacity: 1; }
+  .search-form.small .search-icon {
+    width: 1.7rem;
+    height: 1.7rem;
+    stroke-width: 2.4;
+  }
   .home-header {
+    min-height: calc(100vh - 72px);
     min-height: calc(100svh - 72px);
     min-height: calc(100dvh - 72px);
     padding: 4.25rem 0 4.75rem;
