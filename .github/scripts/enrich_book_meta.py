@@ -171,6 +171,14 @@ def fetch_naver_items(query, client_id, client_secret):
 
 # 본책이 아닌 형태(묶음·큰글자판·부가상품)는 '현재 읽을 판본' 선택에서 제외한다.
 _EXCLUDE_FORM = re.compile(r"세트|합본|박스|전집|큰글자|큰글씨|필사집|필사노트|워크북|문제집|가이드북|컬러링")
+# 외국어판(번역 역수입 등)은 한국어 원서 선택에서 제외한다. 한자/가나 스크립트는
+# 한국어 책 제목(예: 마법천자문)에도 흔히 섞여 오판하므로, 네이버가 붙이는 명시적
+# 언어·지역 '○○판' 표기로만 판별한다.
+_FOREIGN_EDITION = re.compile(
+    r"대만판|중문판|중국어판|영문판|영어판|영국판|미국판|일본어판|일어판"
+    r"|불어판|프랑스어판|독일어판|독어판|이탈리아어판|스페인어판|러시아어판"
+    r"|베트남어판|태국어판|아랍어판|포르투갈어판|네덜란드어판"
+)
 
 
 def _author_matches(item, author):
@@ -224,7 +232,8 @@ def get_naver_book(title, author, publisher, client_id, client_secret, force_cat
     # 2) 이 책이 맞는 후보만(제목·권차·저자 신뢰) 추리고, 묶음/큰글자판/부가상품 제외
     valid = [it for it in items_all if pick_best_match([it], title, author, publisher)]
     preferred = [it for it in valid
-                 if not _EXCLUDE_FORM.search(normalize_for_match(it.get("title", "")))]
+                 if not _EXCLUDE_FORM.search(normalize_for_match(it.get("title", "")))
+                 and not _FOREIGN_EDITION.search(it.get("title", ""))]
 
     # 3) 현재 판본 우선(스크래핑 없이 API 정보만):
     #    제목 정확일치 → 저자 일치 → 판매중(가격 있음) → 최신 출간일
