@@ -843,11 +843,13 @@ async function renderAuthor() {
     .sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
 
   const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
+  // 통계 카드는 폭이 좁아 한 줄에 들어가도록 끝 연도를 2자리로 줄인다(예: 2010–24). 앞 연도가 4자리라 날짜로 오인되지 않음.
+  const yearRangeShort = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${String(lastYear).slice(-2)}`;
 
   // 작가 책길 요약 카드 (1위 유지 있으면 4개)
   const statBoxes = oneWeeks > 0
-    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "책길에 오른 책"], [yearRange, "", "기록된 해"]]
-    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "책길에 오른 책"], [yearRange, "", "기록된 해"]];
+    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]]
+    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]];
   const statHTML = statBoxes.map(([v, u, c]) =>
     `<div class="box"><div class="big">${v}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("");
 
