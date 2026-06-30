@@ -45,6 +45,7 @@ NAVER_TITLE_OVERRIDES = {
 # (예: 절판된 원판 대신 현재 판매 중인 판본으로 연결하고 싶을 때. 값=카탈로그 ID)
 NAVER_FORCE_CATALOG = {
     "녹나무의 파수꾼": "49023649618",  # 2020 원판 대신 2024 무선제본특별판으로 연결
+    "위험한 비너스": "49366169643",    # 제목·출판사 바뀐 개정판('아름답고 위험한 이름, 비너스', 하빌리스)
 }
 
 # 제목은 같지만 저자가 다른 책으로 오매칭되는 제목들 — 네이버 조회를 건너뛰고 강제로 비운다.
@@ -154,7 +155,7 @@ def pick_best_match(items, title, author, publisher):
 
 
 def fetch_naver_items(query, client_id, client_secret):
-    url = f"{NAVER_API}?query={urllib.parse.quote(query)}&display=10"
+    url = f"{NAVER_API}?query={urllib.parse.quote(query)}&display=100"
     req = urllib.request.Request(url, headers={
         "X-Naver-Client-Id": client_id,
         "X-Naver-Client-Secret": client_secret,
@@ -166,6 +167,19 @@ def fetch_naver_items(query, client_id, client_secret):
     except Exception as e:  # noqa: BLE001
         print(f"    [네이버 호출 실패] {query!r}: {e}")
         return []
+
+
+# 본책이 아닌 형태(묶음·큰글자판·부가상품)는 '현재 읽을 판본' 선택에서 제외한다.
+_EXCLUDE_FORM = re.compile(r"세트|합본|박스|전집|큰글자|큰글씨|필사집|필사노트|워크북|문제집|가이드북|컬러링")
+
+
+def _author_matches(item, author):
+    """후보의 저자가 DB 저자와 일치하는지(동명이서 다른 책 오선택 방지). 저자 정보 없으면 통과."""
+    db = normalize_for_match(author)
+    if not db:
+        return True
+    authors = [normalize_for_match(a) for a in (item.get("author") or "").split("^")]
+    return any(a and (db in a or a in db) for a in authors)
 
 
 def get_naver_book(title, author, publisher, client_id, client_secret, force_catalog=None):
@@ -188,21 +202,45 @@ def get_naver_book(title, author, publisher, client_id, client_secret, force_cat
         seen.add(k)
         queries.append(k)
 
-    fallback = None  # force_catalog 미발견 시 일반 best match 로 보존
+    # 1) 후보 수집. 유효 매칭이면서 저자까지 맞는 후보가 나오는 질의에서 멈춘다
+    #    (호출 절약 + 동명이서 책에서의 조기 종료 방지).
+    pool = {}
     for query in queries:
         items = fetch_naver_items(query, client_id, client_secret)
         time.sleep(THROTTLE)
-        if force_catalog:
-            forced = next((it for it in items if force_catalog in (it.get("link") or "")), None)
-            if forced:
-                return forced
-            if fallback is None:
-                fallback = pick_best_match(items, title, author, publisher)
-            continue
-        match = pick_best_match(items, title, author, publisher)
-        if match:
-            return match
-    return fallback
+        for it in items:
+            if force_catalog and force_catalog in (it.get("link") or ""):
+                return it  # 수동 지정 카탈로그는 항상 최우선(드문 예외 처리용)
+            key = it.get("isbn") or it.get("link")
+            if key and key not in pool:
+                pool[key] = it
+        if any(pick_best_match([it], title, author, publisher) and _author_matches(it, author)
+               for it in pool.values()):
+            break
+    items_all = list(pool.values())
+    if not items_all:
+        return None
+
+    # 2) 이 책이 맞는 후보만(제목·권차·저자 신뢰) 추리고, 묶음/큰글자판/부가상품 제외
+    valid = [it for it in items_all if pick_best_match([it], title, author, publisher)]
+    preferred = [it for it in valid
+                 if not _EXCLUDE_FORM.search(normalize_for_match(it.get("title", "")))]
+
+    # 3) 현재 판본 우선(스크래핑 없이 API 정보만):
+    #    제목 정확일치 → 저자 일치 → 판매중(가격 있음) → 최신 출간일
+    pool_pref = preferred or valid
+    if pool_pref:
+        db_core = parse_title(title)["core"]
+        exact = [it for it in pool_pref if parse_title(it.get("title", ""))["core"] == db_core]
+        pool_pref = exact or pool_pref
+        author_ok = [it for it in pool_pref if _author_matches(it, author)]
+        pool_pref = author_ok or pool_pref
+        in_print = [it for it in pool_pref if (it.get("discount") or "0") not in ("", "0")]
+        pool_pref = in_print or pool_pref
+        return sorted(pool_pref, key=lambda it: (it.get("pubdate") or ""), reverse=True)[0]
+
+    # 4) 폴백: 기존 best-match 로직(묶음/판본 포함)
+    return pick_best_match(items_all, title, author, publisher)
 
 
 # ---------- 데이터 수집 ----------
