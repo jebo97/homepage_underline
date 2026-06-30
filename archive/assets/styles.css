@@ -149,7 +149,7 @@ a.alink:hover { color: var(--accent); }
   height: 1.3rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.9;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -208,8 +208,8 @@ a.alink:hover { color: var(--accent); }
   display: grid;
   gap: 3rem;
   align-items: center;
-  min-height: calc(100vh - 65px);
-  min-height: calc(100svh - 65px);
+  min-height: calc(100vh - var(--nav-h, 65px));
+  min-height: calc(100svh - var(--nav-h, 65px));
   padding: clamp(5rem, 10svh, 8rem) 0;
 }
 .home-header::before {
@@ -667,10 +667,14 @@ a.alink:hover { color: var(--accent); }
     height: 1.7rem;
     stroke-width: 2.4;
   }
+  /* hero(large) 검색: nav 돋보기와 같은 두께 비율로, 크기만 약간 더 크게 */
+  .search-form.large .search-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+  }
   .home-header {
-    min-height: calc(100vh - 72px);
-    min-height: calc(100svh - 72px);
-    min-height: calc(100dvh - 72px);
+    min-height: calc(100vh - var(--nav-h, 56px));
+    min-height: calc(100svh - var(--nav-h, 56px));
     padding: 4.25rem 0 4.75rem;
   }
   .search-form.large {

@@ -111,6 +111,15 @@ function renderNav() {
     if (searchForm.contains(event.target)) return;
     searchForm.classList.remove("is-open");
   });
+
+  // 실제 네비 높이를 측정해 hero 높이 계산(--nav-h)에 사용 (기기·폰트별 편차 보정)
+  const setNavHeight = () => {
+    const h = el.getBoundingClientRect().height;
+    if (h) document.documentElement.style.setProperty("--nav-h", `${Math.round(h)}px`);
+  };
+  setNavHeight();
+  window.addEventListener("resize", setNavHeight);
+  if (document.fonts?.ready) document.fonts.ready.then(setNavHeight);
 }
 
 function renderSourceFooter() {
