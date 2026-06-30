@@ -82,10 +82,12 @@ function renderNav() {
   const el = document.getElementById("site-nav");
   if (!el) return;
   el.className = "nav";
+  const page = document.body.dataset.page;
+  const authorsActive = page === "authors" || page === "author";
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
       <a class="nav-brand" href="index.html">문장숲 책길</a>
-      <a class="nav-link" href="authors.html">작가의 숲</a>
+      <a class="nav-link${authorsActive ? " is-active" : ""}" href="authors.html"${authorsActive ? ' aria-current="page"' : ""}>작가의 숲</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;

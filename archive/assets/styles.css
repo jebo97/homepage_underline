@@ -97,6 +97,7 @@ main { flex: 1 1 auto; }
 .nav-links { display: flex; align-items: baseline; gap: 1.25rem; min-width: 0; }
 .nav-link { font-size: 0.875rem; letter-spacing: -0.01em; color: var(--slate-500); white-space: nowrap; transition: color .2s; }
 .nav-link:hover { color: var(--accent); }
+.nav-link.is-active { color: var(--accent); font-weight: 700; }
 
 /* 저자명 인라인 링크 */
 a.alink { color: inherit; transition: color .2s; }
