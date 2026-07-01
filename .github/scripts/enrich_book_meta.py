@@ -55,6 +55,7 @@ NAVER_FORCE_CATALOG = {
     "마시멜로 이야기(어린이를 위한)": "32493599085",  # 성인판 오매칭 방지, 어린이판(깊은책속옹달샘)으로 지정
     "여행의 이유": "46931760625",  # 문학동네 구판 대신 현재 출판사 복복서가 2024판
     "설민석의 삼국지 1": "32455467972",  # 라이트 에디션 대신 전문서점 판매 원판(세계사 2019)
+    "원피스 110: 시대의 일렁임": "52466229260",  # 카탈로그 제목('원피스 ONE PIECE 110') 권번호 파싱 불가 → 직접 지정
 }
 
 # 제목은 같지만 저자가 다른 책으로 오매칭되는 제목들 — 네이버 조회를 건너뛰고 강제로 비운다.
@@ -85,7 +86,8 @@ def load_env_local() -> None:
 _KEEP = re.compile(r"[^0-9a-z가-힣]")
 _TAGS = re.compile(r"<[^>]+>")
 _PARENS = re.compile(r"\([^)]*\)")
-_VOL = re.compile(r"[가-힣]\s+(\d{1,2})\s*(?:$|[:\-–—])")  # 끝 또는 부제 구분자(:,-) 앞의 권번호
+_VOL = re.compile(r"[가-힣]\s+(\d{1,3})\s*(?:$|[:\-–—])")  # 끝 또는 부제 구분자(:,-) 앞의 권번호(1~3자리; 원피스 100+ 등)
+_VOL_KWON = re.compile(r"(\d{1,3})\s*권")  # 'N권' 형태 권번호(예: '원피스 ONE PIECE 102권')
 _EDITION = re.compile(r"큰글자|큰글씨|세트|합본|박스|특별판|한정판|영문판")
 
 
@@ -107,6 +109,11 @@ def parse_title(s):
     if m:
         vol = int(m.group(1))
         text = cleaned[: m.start() + 1]  # 한글 글자까지 포함
+    else:
+        m2 = _VOL_KWON.search(cleaned)  # 'N권' 형태(중간에 영문이 껴도 인식)
+        if m2:
+            vol = int(m2.group(1))
+            text = cleaned[: m2.start()]
     return {"core": _KEEP.sub("", text.lower()), "vol": vol}
 
 
@@ -205,9 +212,12 @@ def _author_matches(item, author):
 def get_naver_book(title, author, publisher, client_id, client_secret, force_catalog=None):
     no_parens = re.sub(r"\s+", " ", _PARENS.sub("", title)).strip()
     compact = re.sub(r"\s+", "", title)
+    # 부제 제거('원피스 106: 천재의 꿈' → '원피스 106'): 네이버 카탈로그에 부제가 없어 검색 0건인 경우 대비
+    no_subtitle = re.split(r"[:\-–—]", no_parens, 1)[0].strip()
     candidates = [
         no_parens,
         title,
+        no_subtitle if no_subtitle != no_parens else None,
         compact,
         f"{title} {author}" if author else None,
         author,
