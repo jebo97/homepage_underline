@@ -904,12 +904,15 @@ async function renderAuthor() {
     const c = normalizeCategory(r.category);
     if (EXCLUDED_FIELDS.has(c)) continue;
     let e = catMap.get(c);
-    if (!e) { e = { weeks: 0, titles: new Set() }; catMap.set(c, e); }
+    if (!e) { e = { weeks: 0, titles: new Map() }; catMap.set(c, e); }
     e.weeks += 1;
-    e.titles.add(r.title);
+    e.titles.set(r.title, (e.titles.get(r.title) ?? 0) + 1);
   }
-  const byCategory = [...catMap.entries()].map(([category, e]) => ({ category, weeks: e.weeks, books: e.titles.size }))
-    .sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
+  const byCategory = [...catMap.entries()].map(([category, e]) => ({
+    category, weeks: e.weeks, books: e.titles.size,
+    titleList: [...e.titles.entries()].map(([title, weeks]) => ({ title, weeks }))
+      .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title)),
+  })).sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
 
   const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
   // 통계 카드는 폭이 좁아 한 줄에 들어가도록 끝 연도를 2자리로 줄인다(예: 2010–24). 앞 연도가 4자리라 날짜로 오인되지 않음.
@@ -946,12 +949,26 @@ async function renderAuthor() {
         </a>`).join("")}</div>
     </section>` : "";
 
+  const catRow = ({ category, weeks, books, titleList }) => {
+    const cn = esc(FIELD_DISPLAY_NAMES[category] ?? category);
+    const cw = `${books}권 누적 ${weeks}주`;
+    // 책이 한 권이면 바로 그 책으로 이동, 여러 권이면 펼쳐서 목록 표시
+    if (books <= 1) {
+      const only = titleList[0];
+      return `<a class="cat-row cat-link" href="${esc(bookHref(only.title))}">
+        <span class="cn">${cn}</span><span class="cw">${cw}</span></a>`;
+    }
+    return `<details class="cat-item">
+      <summary class="cat-row cat-toggle"><span class="cn">${cn}</span><span class="cw">${cw}</span></summary>
+      <div class="cat-books">${titleList.map((b) => `
+        <a class="cat-book" href="${esc(bookHref(b.title))}"><span class="cbt">${esc(b.title)}</span><span class="cbw">${b.weeks}주</span></a>`).join("")}</div>
+    </details>`;
+  };
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad">
       <h2 class="section-heading">숲길 갈래별 기록</h2>
-      <p class="section-note">분야별 차트 기준으로, 전체 기록과 주수가 다를 수 있어요.</p>
-      <div class="cat-list">${byCategory.map(({ category, weeks, books }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${books}권 누적 ${weeks}주</span></div>`).join("")}</div>
+      <p class="section-note">분야별 차트 기준이라 전체 기록과 주수가 다를 수 있어요. 갈래를 누르면 그 숲길에 오른 책들을 볼 수 있어요.</p>
+      <div class="cat-list">${byCategory.map(catRow).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
