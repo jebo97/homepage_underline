@@ -201,13 +201,28 @@ async function getLongStayBooks() {
   return aggregate(rows).slice(0, 5);
 }
 
+// 홈 통계·연도범위를 DB에서 자동 계산 (데이터 추가 시 코드 수정 없이 갱신)
+let _maxYearCache = null;
+async function getMaxYear() {
+  if (_maxYearCache) return _maxYearCache;
+  const { data } = await supabase.from("bestsellers").select("year").order("year", { ascending: false }).limit(1);
+  _maxYearCache = (data && data[0] && data[0].year) || END_YEAR;
+  return _maxYearCache;
+}
+async function getTotalRows() {
+  const { count } = await supabase.from("bestsellers").select("*", { count: "exact", head: true });
+  return count || 0;
+}
+
 async function renderHome() {
   const root = document.getElementById("page-root");
   document.title = "문장숲 책길";
-  const years = Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, i) => START_YEAR + i);
-  const [rankings, longStayBooks] = await Promise.all([
+  const maxYear = await getMaxYear();
+  const years = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => START_YEAR + i);
+  const [rankings, longStayBooks, totalRows] = await Promise.all([
     Promise.all(years.map((y) => getYearRanking(y))),
     getLongStayBooks(),
+    getTotalRows(),
   ]);
 
   // 대표작 선정 (page.tsx 알고리즘 포팅)
@@ -227,10 +242,13 @@ async function renderHome() {
     return chosen;
   });
 
+  const spanYears = maxYear - START_YEAR + 1;
+  const rowsLabel = (totalRows || 0).toLocaleString();
+  const longestWeeks = longStayBooks[0]?.weeks ?? 0;
   const STATS = [
-    { value: "21", unit: "년", name: "21년의 책길", desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", imageKey: "bookmark" },
-    { value: "51,640", unit: "", name: "51,640개의 책길 기록", desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", imageKey: "note" },
-    { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png", imageKey: "book" },
+    { value: String(spanYears), unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", imageKey: "bookmark" },
+    { value: rowsLabel, unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", imageKey: "note" },
+    { value: String(longestWeeks), unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png", imageKey: "book" },
     { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png", imageKey: "hashtag" },
   ];
 
@@ -382,14 +400,15 @@ async function getYearData(year) {
 async function renderYear() {
   const root = document.getElementById("page-root");
   const year = Number(new URLSearchParams(location.search).get("y"));
-  if (!Number.isInteger(year) || year < START_YEAR || year > END_YEAR) {
+  const maxYear = await getMaxYear();
+  if (!Number.isInteger(year) || year < START_YEAR || year > maxYear) {
     root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도입니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
   document.title = `${year}년에 열린 책길 · 문장숲 책길`;
   const { highlight, top10, byField } = await getYearData(year);
   const hasPrev = year > START_YEAR;
-  const hasNext = year < END_YEAR;
+  const hasNext = year < maxYear;
 
   const prevPill = hasPrev
     ? `<a class="pill" href="${esc(yearHref(year - 1))}">← ${year - 1}년 책길</a>`
