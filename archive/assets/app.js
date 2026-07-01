@@ -612,7 +612,7 @@ async function renderBook() {
       <h2 class="section-heading">숲길 갈래별 기록</h2>
       <p class="section-note">분야별 차트 기준으로, 종합 기록과 주수가 다를 수 있어요.</p>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문 책</span></div>`).join("")}</div>
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">누적 ${weeks}주</span></div>`).join("")}</div>
     </section>` : "";
 
   // 6. 같은 숲길에서 함께 오른 책들 (분야별 차트)
@@ -882,7 +882,7 @@ async function renderAuthor() {
       <h2 class="section-heading">숲길 갈래별 기록</h2>
       <p class="section-note">분야별 차트 기준으로, 전체 기록과 주수가 다를 수 있어요.</p>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${weeks}주 머문 책</span></div>`).join("")}</div>
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">누적 ${weeks}주</span></div>`).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
