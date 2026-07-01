@@ -98,7 +98,7 @@ function renderNav() {
     <div class="nav-links">
       <a class="nav-link${homeActive ? " is-active" : ""}" href="index.html"${homeActive ? ' aria-current="page"' : ""}>문장숲 책길</a>
       <a class="nav-link${authorsActive ? " is-active" : ""}" href="authors.html"${authorsActive ? ' aria-current="page"' : ""}>작가의 숲</a>
-      <a class="nav-link${publishersActive ? " is-active" : ""}" href="publishers.html"${publishersActive ? ' aria-current="page"' : ""}>숲을 가꾼 손</a>
+      <a class="nav-link${publishersActive ? " is-active" : ""}" href="publishers.html"${publishersActive ? ' aria-current="page"' : ""}>출판사의 정원</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;
@@ -1040,7 +1040,7 @@ async function getPublisherStats(minYear = null) {
   });
 }
 
-const PUBLISHER_SORT_LABELS = { chartin: "오래 머문 순", one: "가장 앞에 선 순", books: "남긴 책 순" };
+const PUBLISHER_SORT_LABELS = { chartin: "오래 피운 책 순", one: "앞자리를 지킨 책 순", books: "많이 심은 책 순" };
 
 async function renderPublishers() {
   const root = document.getElementById("page-root");
@@ -1060,7 +1060,7 @@ async function renderPublishers() {
     rows = stats.slice(0, 50);
   } catch (e) { error = e; }
 
-  const tabs = [["chartin", "오래 머문 순"], ["one", "가장 앞에 선 순"], ["books", "남긴 책 순"], ["recent", "지금 가꾸는 손"]];
+  const tabs = [["chartin", "오래 피운 책 순"], ["one", "앞자리를 지킨 책 순"], ["books", "많이 심은 책 순"], ["recent", "지금 가꾸는 손"]];
   const toggles = tabs.map(([k, label]) => {
     const cls = "pill" + (k === "recent" ? " pill-recent" : "") + (k === by ? " pill-on" : "");
     return k === by
@@ -1083,21 +1083,21 @@ async function renderPublishers() {
           <span class="weeks">${metricFor(p)}</span>
         </a>`;
       }).join("")}</div>`
-    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 이 숲을 가꾼 손이 모이지 않았어요."}</p>`;
+    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 이 정원에 모인 기록이 없어요."}</p>`;
 
   root.innerHTML = `
     <main class="book-road-page">
       <div class="wrap wrap-3xl">
         <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
-          <h1 class="book-title-lg">숲을 가꾼 손</h1>
+          <h1 class="book-title-lg">출판사의 정원</h1>
           <p class="book-hero-desc">${isRecent
-            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 숲을 부지런히 가꾸고 있는 출판사예요.`
-            : "2006년부터 이어진 책길에서 가장 많은 책을 오래 지켜온 출판사들을 모았습니다."}</p>
+            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 정원을 부지런히 가꾸고 있는 출판사예요.`
+            : "책길에 오래 머문 책들을 세상에 내보낸 출판사들의 기록을 모았습니다."}</p>
           <div class="year-nav author-sorts">${toggles}</div>
         </header>
         <section class="section-pad book-now">
-          <p class="section-note" style="padding-left:0">${isRecent ? `최근 5년 · 오래 머문 순` : `‘${PUBLISHER_SORT_LABELS[by] ?? PUBLISHER_SORT_LABELS.chartin}’`} 상위 ${rows.length}곳 · 이름을 누르면 그 출판사가 가꾼 책길을 볼 수 있어요.</p>
+          <p class="section-note" style="padding-left:0">${isRecent ? `최근 5년 · 오래 피운 책 순` : `‘${PUBLISHER_SORT_LABELS[by] ?? PUBLISHER_SORT_LABELS.chartin}’`} 상위 ${rows.length}곳 · 이름을 누르면 그 출판사가 피워낸 책길을 볼 수 있어요.</p>
           ${listHTML}
         </section>
       </div>
@@ -1112,7 +1112,7 @@ async function renderPublisher() {
   const root = document.getElementById("page-root");
   const name = new URLSearchParams(location.search).get("name") || "";
   if (!name) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾을 수 없습니다. <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾을 수 없습니다. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
     return;
   }
   document.title = `${name} · 문장숲 책길`;
@@ -1123,7 +1123,7 @@ async function renderPublisher() {
       .eq("publisher", name)
       .order("id", { ascending: true }));
   if (all.length === 0) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
     return;
   }
 
@@ -1158,14 +1158,14 @@ async function renderPublisher() {
   const yearRangeShort = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${String(lastYear).slice(-2)}`;
 
   const statBoxes = oneWeeks > 0
-    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "펴낸 책"], [yearRangeShort, "", "기록된 해"]]
-    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "펴낸 책"], [yearRangeShort, "", "기록된 해"]];
+    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지 주수"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]]
+    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]];
   const statHTML = statBoxes.map(([v, u, c]) =>
     `<div class="box"><div class="big">${v}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("");
 
   const booksHTML = books.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">이 출판사가 펴낸 책길</h2>
+      <h2 class="section-heading">이 출판사가 피워낸 책길</h2>
       <p class="section-note">이 출판사가 책길에 올린 책들을 오래 머문 순서로 정리했어요.</p>
       <div class="companions">${books.map((b, i) => `
         <a class="companion" href="${esc(bookHref(b.title))}">
@@ -1177,7 +1177,7 @@ async function renderPublisher() {
 
   const yearlyHTML = yearly.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">해마다 머문 책길</h2>
+      <h2 class="section-heading">해마다 피어난 정원</h2>
       <p class="section-note">이 출판사의 책들이 해마다 책길에 머문 주수를 보여줍니다.</p>
       <div class="bars">${yearly.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
@@ -1193,10 +1193,10 @@ async function renderPublisher() {
     <main class="book-road-page">
       <div class="wrap wrap-3xl">
         <header class="book-page-header">
-          <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a>
+          <a class="back-link" href="publishers.html">← 출판사의 정원</a>
           <h1 class="book-title-lg">${esc(name)}</h1>
-          <p class="book-meta">${bookCount}권 · ${yearRange} 책길 기록</p>
-          <p class="book-hero-desc">이 출판사가 문장숲 책길에 펴낸 흐름을 모았습니다.</p>
+          <p class="book-meta">${bookCount}권 · ${yearRange} 정원 기록</p>
+          <p class="book-hero-desc">이 출판사가 문장숲 책길에 피워낸 흐름을 모았습니다.</p>
         </header>
         <section class="section-pad book-now">
           <div class="book-stats">${statHTML}</div>
