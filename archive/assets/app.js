@@ -789,18 +789,17 @@ async function getRecentAuthorStats(minYear) {
 
 async function renderAuthors() {
   const root = document.getElementById("page-root");
-  const params = new URLSearchParams(location.search);
-  const by = params.get("by") || "chartin";
-  const range = params.get("range") === "recent" ? "recent" : "all";
-  const sort = AUTHOR_SORTS[by] ?? AUTHOR_SORTS.chartin;
+  const by = new URLSearchParams(location.search).get("by") || "chartin";
+  const isRecent = by === "recent";
+  const sort = AUTHOR_SORTS[by] ?? AUTHOR_SORTS.chartin;  // recent 는 오래 머문(chartin) 기준
 
-  let rows, error = null;
   const maxYear = await getMaxYear();
   const minYear = maxYear - 4;  // 최근 5년
-  if (range === "recent") {
+  let rows, error = null;
+  if (isRecent) {
     try {
       const stats = await getRecentAuthorStats(minYear);
-      stats.sort((a, b) => (b[sort.col] - a[sort.col]) || (b.one_weeks - a.one_weeks) || a.author.localeCompare(b.author));
+      stats.sort((a, b) => (b.chartin_weeks - a.chartin_weeks) || (b.one_weeks - a.one_weeks) || a.author.localeCompare(b.author));
       rows = stats.slice(0, 50);
     } catch (e) { rows = []; error = e; }
   } else {
@@ -809,19 +808,16 @@ async function renderAuthors() {
     rows = res.data ?? []; error = res.error;
   }
 
-  const rangeToggle = [["all", "전체 기간"], ["recent", `최근 5년`]].map(([k, label]) =>
-    k === range
-      ? `<span class="pill pill-on">${label}</span>`
-      : `<a class="pill" href="authors.html?range=${k}&by=${by}">${label}</a>`
-  ).join("");
-  const toggles = Object.entries(AUTHOR_SORTS).map(([k, v]) =>
-    k === by
-      ? `<span class="pill pill-on">${v.label}</span>`
-      : `<a class="pill" href="authors.html?range=${range}&by=${k}">${v.label}</a>`
-  ).join("");
+  const tabs = [["chartin", "오래 머문 순"], ["one", "가장 앞에 선 순"], ["books", "남긴 책 순"], ["recent", "지금 걷는 작가"]];
+  const toggles = tabs.map(([k, label]) => {
+    const cls = "pill" + (k === "recent" ? " pill-recent" : "") + (k === by ? " pill-on" : "");
+    return k === by
+      ? `<span class="${cls}">${label}</span>`
+      : `<a class="${cls}" href="authors.html?by=${k}">${label}</a>`;
+  }).join("");
   const metricFor = (a) =>
-    by === "books" ? `${a.book_count}권`
-    : by === "one" ? `${a.one_weeks}주 1위`
+    (!isRecent && by === "books") ? `${a.book_count}권`
+    : (!isRecent && by === "one") ? `${a.one_weeks}주 1위`
     : `${a.chartin_weeks}주 차트인`;
   const listHTML = rows.length > 0
     ? `<div class="companions">${rows.map((a, i) => {
@@ -843,14 +839,13 @@ async function renderAuthors() {
         <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">작가의 숲</h1>
-          <p class="book-hero-desc">${range === "recent"
-            ? `최근 5년(${minYear}–${maxYear}) 종합 기록으로 본 순위 — 요즘 책길에 활발히 오른 작가들이에요.`
+          <p class="book-hero-desc">${isRecent
+            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 숲을 활발히 걷고 있는 작가들이에요.`
             : "2006년부터 이어진 책길에 가장 오래 머물고, 가장 앞에 오래 선 작가들을 모았습니다."}</p>
-          <div class="year-nav author-sorts">${rangeToggle}</div>
-          <div class="year-nav author-sorts" style="margin-top:.5rem">${toggles}</div>
+          <div class="year-nav author-sorts">${toggles}</div>
         </header>
         <section class="section-pad book-now">
-          <p class="section-note" style="padding-left:0">${range === "recent" ? `최근 5년 · ` : ""}‘${esc(sort.label)}’ 상위 ${rows.length}명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
+          <p class="section-note" style="padding-left:0">${isRecent ? `최근 5년 · 오래 머문 순` : `‘${esc(sort.label)}’`} 상위 ${rows.length}명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
           ${listHTML}
         </section>
       </div>

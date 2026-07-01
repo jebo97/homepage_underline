@@ -1051,6 +1051,10 @@ a.alink:hover { color: var(--accent); }
 
 /* 작가의 숲 목록 · 검색 페이지(밝은 톤) */
 .pill.pill-on { border-color: rgba(231, 185, 40, 0.55); color: #9b7619; background: rgba(255, 211, 61, 0.16); font-weight: 700; }
+/* '지금 걷는 작가' 탭 — 앞 셋(골드 정렬)과 성격이 달라 네이비 계열로 구분(온브랜드) */
+.pill.pill-recent { border-color: rgba(27, 42, 74, 0.28); color: var(--navy); background: rgba(27, 42, 74, 0.06); }
+.pill.pill-recent:hover { border-color: rgba(27, 42, 74, 0.5); color: var(--navy); }
+.pill.pill-recent.pill-on { border-color: var(--navy); color: #fff9ee; background: var(--navy); font-weight: 700; }
 .author-sorts { margin-top: 2rem; flex-wrap: wrap; }
 .book-road-page .results-count { margin: 0 0 1.6rem; color: #687386; font-size: 0.9rem; }
 .book-road-page .empty, .book-road-page .loading { padding: 4rem 0; text-align: center; color: #98a1b0; font-size: 1rem; }
