@@ -630,7 +630,9 @@ async function renderBook() {
   const recordHTML = generalWeeks > 0 ? `
     <div class="book-stats">${statBoxes.map(([v, u, c]) =>
       `<div class="box"><div class="big">${v ?? "—"}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("")}</div>`
-    : `<p class="muted">아직 책길에 머문 기록이 없어요</p>`;
+    : byCategory.length > 0
+      ? `<p class="muted">종합 차트엔 오르지 않았지만, 아래 <b>숲길 갈래별 기록</b>에 이 책의 발자취가 있어요.</p>`
+      : `<p class="muted">아직 책길에 머문 기록이 없어요</p>`;
 
   // 4. 연도별 책길 흐름
   const yearlyHTML = (generalWeeks > 0 && yearlyGeneral.length) ? `
