@@ -10,7 +10,7 @@ const SUPABASE_ANON_KEY =
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const START_YEAR = 2006;
-const END_YEAR = 2025;
+const END_YEAR = 2026;
 const APP_STORE_URL = "https://apps.apple.com/kr/app/id6760542925";
 const HOME_URL = "/"; // 메인 홈페이지 (mjgg.airpage.org)
 
@@ -228,8 +228,8 @@ async function renderHome() {
   });
 
   const STATS = [
-    { value: "20", unit: "년", name: "20년의 책길", desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", imageKey: "bookmark" },
-    { value: "50,401", unit: "", name: "50,401개의 책길 기록", desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", imageKey: "note" },
+    { value: "21", unit: "년", name: "21년의 책길", desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", imageKey: "bookmark" },
+    { value: "51,640", unit: "", name: "51,640개의 책길 기록", desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", imageKey: "note" },
     { value: "164", unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png", imageKey: "book" },
     { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png", imageKey: "hashtag" },
   ];
