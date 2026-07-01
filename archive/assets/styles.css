@@ -1054,6 +1054,17 @@ a.alink:hover { color: var(--accent); }
 .book-road-page .cat-book .cbt { color: var(--navy); font-weight: 600; font-size: 0.9rem; word-break: keep-all; }
 .book-road-page .cat-book .cbw { flex-shrink: 0; color: #9b7619; font-weight: 700; font-size: 0.78rem; white-space: nowrap; }
 
+/* 숲길별 강한 출판사 */
+.book-road-page .field-pub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+.book-road-page .field-pub { display: flex; flex-direction: column; gap: 0.35rem; padding: 1rem 1.15rem; border-radius: 0.85rem; background: rgba(255, 255, 255, 0.62); border: 1px solid rgba(138, 98, 61, 0.14); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.book-road-page .field-pub:hover { transform: translateY(-2px); border-color: rgba(231, 185, 40, 0.45); box-shadow: 0 12px 26px rgba(27, 42, 74, 0.07); }
+.book-road-page .field-pub .fp-field { color: #9b7619; font-weight: 800; font-size: 0.8rem; }
+.book-road-page .field-pub .fp-lead { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+.book-road-page .field-pub .fp-pub { color: var(--navy); font-weight: 800; font-size: 1.05rem; word-break: keep-all; }
+.book-road-page .field-pub .fp-weeks { flex-shrink: 0; color: #9b7619; font-weight: 800; font-size: 0.82rem; white-space: nowrap; }
+.book-road-page .field-pub .fp-runners { color: #8a95a5; font-size: 0.8rem; }
+@media (max-width: 639px) { .book-road-page .field-pub-grid { grid-template-columns: 1fr; } }
+
 /* 함께 책길에 오른 책들 */
 .book-road-page .companions { display: flex; flex-direction: column; gap: 0.6rem; }
 .book-road-page .companion { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-radius: 0.9rem; background: rgba(255, 255, 255, 0.66); border: 1px solid rgba(138, 98, 61, 0.14); box-shadow: 0 8px 20px rgba(27, 42, 74, 0.04); transition: transform .2s, border-color .2s, box-shadow .2s; }
