@@ -6,7 +6,7 @@ DB 읽기 실패·빈 테이블이면 None 을 반환해, 호출부가 하드코
 
 import re
 
-KINDS = ("force_catalog", "naver_query", "skip", "author", "title", "title_regex", "author_prefix")
+KINDS = ("force_catalog", "naver_query", "skip", "author", "title", "title_regex", "author_prefix", "book_author")
 
 
 def load_overrides(sb):
@@ -25,7 +25,7 @@ def load_overrides(sb):
     if not rows:
         return None
     out = {"force_catalog": {}, "naver_query": {}, "skip": set(),
-           "author": {}, "title": {}, "title_regex": [], "author_prefix": {}}
+           "author": {}, "title": {}, "title_regex": [], "author_prefix": {}, "book_author": {}}
     for r in rows:
         k, p, v = r.get("kind"), r.get("pattern"), r.get("value")
         if not k or p is None:
@@ -37,6 +37,6 @@ def load_overrides(sb):
                 out["title_regex"].append((re.compile(p), v or ""))
             except re.error:
                 pass
-        elif k in ("force_catalog", "naver_query", "author", "title", "author_prefix"):
+        elif k in ("force_catalog", "naver_query", "author", "title", "author_prefix", "book_author"):
             out[k][p] = v
     return out
