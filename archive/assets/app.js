@@ -340,6 +340,9 @@ const FIELD_DISPLAY_NAMES = {
   "교양과학": "호기심 숲길",
 };
 
+// 숲길 갈래별 기록에서 제외할 분야(정의된 숲길이 아닌 분류)
+const EXCLUDED_FIELDS = new Set(["종교", "유아"]);
+
 function aggregate(rows, includePublisher = true) {
   const map = new Map();
   for (const r of rows) {
@@ -500,6 +503,7 @@ async function getBookData(title) {
   for (const r of history) {
     if (r.category === "종합") continue;
     const cat = normalizeCategory(r.category);
+    if (EXCLUDED_FIELDS.has(cat)) continue;
     catMap.set(cat, (catMap.get(cat) ?? 0) + 1);
   }
   const byCategory = [...catMap.entries()]
@@ -837,6 +841,7 @@ async function renderAuthor() {
   for (const r of all) {
     if (r.category === "종합") continue;
     const c = normalizeCategory(r.category);
+    if (EXCLUDED_FIELDS.has(c)) continue;
     catMap.set(c, (catMap.get(c) ?? 0) + 1);
   }
   const byCategory = [...catMap.entries()].map(([category, weeks]) => ({ category, weeks }))
