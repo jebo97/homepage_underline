@@ -48,6 +48,14 @@ function authorLink(name, cls = "") {
 function stripTags(s) {
   return String(s ?? "").replace(/<[^>]+>/g, "");
 }
+function publisherHref(name) {
+  return `publisher.html?name=${encodeURIComponent(name)}`;
+}
+// 출판사명을 출판사 페이지 링크로. 빈 값이면 링크 없이 텍스트만.
+function publisherLink(name, cls = "") {
+  if (!name) return "";
+  return `<a${cls ? ` class="${cls}"` : ""} href="${esc(publisherHref(name))}">${esc(name)}</a>`;
+}
 
 // PostgREST 1000행 제한 대응 페이지네이션
 async function fetchAll(buildQuery) {
@@ -85,10 +93,12 @@ function renderNav() {
   const page = document.body.dataset.page;
   const homeActive = page === "home";
   const authorsActive = page === "authors" || page === "author";
+  const publishersActive = page === "publishers" || page === "publisher";
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
       <a class="nav-link${homeActive ? " is-active" : ""}" href="index.html"${homeActive ? ' aria-current="page"' : ""}>문장숲 책길</a>
       <a class="nav-link${authorsActive ? " is-active" : ""}" href="authors.html"${authorsActive ? ' aria-current="page"' : ""}>작가의 숲</a>
+      <a class="nav-link${publishersActive ? " is-active" : ""}" href="publishers.html"${publishersActive ? ' aria-current="page"' : ""}>숲을 가꾼 손</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;
@@ -662,7 +672,7 @@ async function renderBook() {
         <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">${esc(title)}</h1>
-          <p class="book-meta">${authorLink(author, "alink")}${publisher ? ` · ${esc(publisher)}` : ""}</p>
+          <p class="book-meta">${authorLink(author, "alink")}${publisher ? ` · ${publisherLink(publisher, "alink")}` : ""}</p>
           <span class="book-badge">책길 기록</span>
           <p class="book-hero-desc">이 책이 문장숲 책길에 남긴 흐름을 모았습니다.</p>
         </header>
@@ -853,6 +863,46 @@ async function renderAuthors() {
     </main>`;
 }
 
+// 분야별(종합 제외) 차트 기록을 갈래별로 집계. 갈래마다 책 목록(제목→주수)을 담는다.
+// 저자·출판사 페이지가 공유한다.
+function buildByCategory(all) {
+  const catMap = new Map();
+  for (const r of all) {
+    if (r.category === "종합") continue;
+    const c = normalizeCategory(r.category);
+    if (EXCLUDED_FIELDS.has(c)) continue;
+    let e = catMap.get(c);
+    if (!e) { e = { weeks: 0, titles: new Map() }; catMap.set(c, e); }
+    e.weeks += 1;
+    e.titles.set(r.title, (e.titles.get(r.title) ?? 0) + 1);
+  }
+  return [...catMap.entries()].map(([category, e]) => ({
+    category, weeks: e.weeks, books: e.titles.size,
+    titleList: [...e.titles.entries()].map(([title, weeks]) => ({ title, weeks }))
+      .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title)),
+  })).sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
+}
+
+// 숲길 갈래별 기록 섹션 HTML. 갈래를 누르면 그 숲길에 오른 책 목록이 펼쳐진다.
+function catSectionHTML(byCategory) {
+  if (!byCategory.length) return "";
+  const catRow = ({ category, weeks, books, titleList }) => {
+    const cn = esc(FIELD_DISPLAY_NAMES[category] ?? category);
+    const cw = `${books}권 누적 ${weeks}주`;
+    return `<details class="cat-item">
+      <summary class="cat-row cat-toggle"><span class="cn">${cn}</span><span class="cw">${cw}</span></summary>
+      <div class="cat-books">${titleList.map((b) => `
+        <a class="cat-book" href="${esc(bookHref(b.title))}"><span class="cbt">${esc(b.title)}</span><span class="cbw">${b.weeks}주</span></a>`).join("")}</div>
+    </details>`;
+  };
+  return `
+    <section class="section-pad">
+      <h2 class="section-heading">숲길 갈래별 기록</h2>
+      <p class="section-note">분야별 차트 기준이라 전체 기록과 주수가 다를 수 있어요. 갈래를 누르면 그 숲길에 오른 책들을 볼 수 있어요.</p>
+      <div class="cat-list">${byCategory.map(catRow).join("")}</div>
+    </section>`;
+}
+
 // ====================================================================
 // 저자 페이지
 // ====================================================================
@@ -898,21 +948,7 @@ async function renderAuthor() {
   const maxY = Math.max(1, ...yearly.map((y) => y.weeks));
 
   // 분야별 차트인 주수 + 책 권수 (종합 제외)
-  const catMap = new Map();
-  for (const r of all) {
-    if (r.category === "종합") continue;
-    const c = normalizeCategory(r.category);
-    if (EXCLUDED_FIELDS.has(c)) continue;
-    let e = catMap.get(c);
-    if (!e) { e = { weeks: 0, titles: new Map() }; catMap.set(c, e); }
-    e.weeks += 1;
-    e.titles.set(r.title, (e.titles.get(r.title) ?? 0) + 1);
-  }
-  const byCategory = [...catMap.entries()].map(([category, e]) => ({
-    category, weeks: e.weeks, books: e.titles.size,
-    titleList: [...e.titles.entries()].map(([title, weeks]) => ({ title, weeks }))
-      .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title)),
-  })).sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
+  const byCategory = buildByCategory(all);
 
   const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
   // 통계 카드는 폭이 좁아 한 줄에 들어가도록 끝 연도를 2자리로 줄인다(예: 2010–24). 앞 연도가 4자리라 날짜로 오인되지 않음.
@@ -949,22 +985,7 @@ async function renderAuthor() {
         </a>`).join("")}</div>
     </section>` : "";
 
-  const catRow = ({ category, weeks, books, titleList }) => {
-    const cn = esc(FIELD_DISPLAY_NAMES[category] ?? category);
-    const cw = `${books}권 누적 ${weeks}주`;
-    // 한 권이든 여러 권이든 펼쳐서 목록을 보여주고, 책을 누르면 그 책 페이지로 이동
-    return `<details class="cat-item">
-      <summary class="cat-row cat-toggle"><span class="cn">${cn}</span><span class="cw">${cw}</span></summary>
-      <div class="cat-books">${titleList.map((b) => `
-        <a class="cat-book" href="${esc(bookHref(b.title))}"><span class="cbt">${esc(b.title)}</span><span class="cbw">${b.weeks}주</span></a>`).join("")}</div>
-    </details>`;
-  };
-  const catHTML = byCategory.length > 0 ? `
-    <section class="section-pad">
-      <h2 class="section-heading">숲길 갈래별 기록</h2>
-      <p class="section-note">분야별 차트 기준이라 전체 기록과 주수가 다를 수 있어요. 갈래를 누르면 그 숲길에 오른 책들을 볼 수 있어요.</p>
-      <div class="cat-list">${byCategory.map(catRow).join("")}</div>
-    </section>` : "";
+  const catHTML = catSectionHTML(byCategory);
 
   root.innerHTML = `
     <main class="book-road-page">
@@ -988,6 +1009,208 @@ async function renderAuthor() {
 }
 
 // ====================================================================
+// 숲을 가꾼 손 (출판사)
+// ====================================================================
+// 종합 차트 기준 출판사별 집계(클라이언트 즉석). 별도 요약 테이블 없이 매번 계산 →
+// 주간 데이터가 늘면 자동 반영. minYear 를 주면 그 이후만(최근 N년) 집계한다.
+async function getPublisherStats(minYear = null) {
+  const rows = await fetchAll(() => {
+    let q = supabase.from("bestsellers").select("title, publisher, rank, year")
+      .eq("category", "종합").order("id", { ascending: true });
+    if (minYear != null) q = q.gte("year", minYear);
+    return q;
+  });
+  const m = new Map();
+  for (const r of rows) {
+    const p = r.publisher;
+    if (!p) continue;
+    let e = m.get(p);
+    if (!e) { e = { publisher: p, chartin_weeks: 0, one_weeks: 0, titles: new Map(), first_year: r.year, last_year: r.year }; m.set(p, e); }
+    e.chartin_weeks += 1;
+    if (r.rank === 1) e.one_weeks += 1;
+    e.titles.set(r.title, (e.titles.get(r.title) ?? 0) + 1);
+    e.first_year = Math.min(e.first_year, r.year);
+    e.last_year = Math.max(e.last_year, r.year);
+  }
+  return [...m.values()].map((e) => {
+    const top = [...e.titles.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+    return { publisher: e.publisher, chartin_weeks: e.chartin_weeks, one_weeks: e.one_weeks,
+             book_count: e.titles.size, first_year: e.first_year, last_year: e.last_year,
+             top_title: top ? top[0] : "" };
+  });
+}
+
+const PUBLISHER_SORT_LABELS = { chartin: "오래 머문 순", one: "가장 앞에 선 순", books: "남긴 책 순" };
+
+async function renderPublishers() {
+  const root = document.getElementById("page-root");
+  const by = new URLSearchParams(location.search).get("by") || "chartin";
+  const isRecent = by === "recent";
+  const maxYear = await getMaxYear();
+  const minYear = maxYear - 4;  // 최근 5년
+
+  let rows = [], error = null;
+  try {
+    const stats = await getPublisherStats(isRecent ? minYear : null);
+    const cmp = {
+      one: (a, b) => (b.one_weeks - a.one_weeks) || (b.chartin_weeks - a.chartin_weeks),
+      books: (a, b) => (b.book_count - a.book_count) || (b.chartin_weeks - a.chartin_weeks),
+    }[by] || ((a, b) => (b.chartin_weeks - a.chartin_weeks) || (b.one_weeks - a.one_weeks));
+    stats.sort((a, b) => cmp(a, b) || a.publisher.localeCompare(b.publisher));
+    rows = stats.slice(0, 50);
+  } catch (e) { error = e; }
+
+  const tabs = [["chartin", "오래 머문 순"], ["one", "가장 앞에 선 순"], ["books", "남긴 책 순"], ["recent", "지금 가꾸는 손"]];
+  const toggles = tabs.map(([k, label]) => {
+    const cls = "pill" + (k === "recent" ? " pill-recent" : "") + (k === by ? " pill-on" : "");
+    return k === by
+      ? `<span class="${cls}">${label}</span>`
+      : `<a class="${cls}" href="publishers.html?by=${k}">${label}</a>`;
+  }).join("");
+  const metricFor = (p) =>
+    (!isRecent && by === "books") ? `${p.book_count}권`
+    : (!isRecent && by === "one") ? `${p.one_weeks}주 1위`
+    : `${p.chartin_weeks}주 차트인`;
+  const listHTML = rows.length > 0
+    ? `<div class="companions">${rows.map((p, i) => {
+        const yr = p.first_year === p.last_year ? `${p.first_year}` : `${p.first_year}–${p.last_year}`;
+        return `<a class="companion" href="${esc(publisherHref(p.publisher))}">
+          <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
+          <span class="info">
+            <span class="ct">${esc(p.publisher)}</span>
+            <span class="ca">대표작 《${esc(p.top_title)}》 · ${p.book_count}권 · ${yr}</span>
+          </span>
+          <span class="weeks">${metricFor(p)}</span>
+        </a>`;
+      }).join("")}</div>`
+    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 이 숲을 가꾼 손이 모이지 않았어요."}</p>`;
+
+  root.innerHTML = `
+    <main class="book-road-page">
+      <div class="wrap wrap-3xl">
+        <header class="book-page-header">
+          <a class="back-link" href="index.html">← 문장숲 책길로</a>
+          <h1 class="book-title-lg">숲을 가꾼 손</h1>
+          <p class="book-hero-desc">${isRecent
+            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 숲을 부지런히 가꾸고 있는 출판사예요.`
+            : "2006년부터 이어진 책길에서 가장 많은 책을 오래 지켜온 출판사들을 모았습니다."}</p>
+          <div class="year-nav author-sorts">${toggles}</div>
+        </header>
+        <section class="section-pad book-now">
+          <p class="section-note" style="padding-left:0">${isRecent ? `최근 5년 · 오래 머문 순` : `‘${PUBLISHER_SORT_LABELS[by] ?? PUBLISHER_SORT_LABELS.chartin}’`} 상위 ${rows.length}곳 · 이름을 누르면 그 출판사가 가꾼 책길을 볼 수 있어요.</p>
+          ${listHTML}
+        </section>
+      </div>
+      ${slimCtaHTML()}
+    </main>`;
+}
+
+// ====================================================================
+// 출판사 페이지
+// ====================================================================
+async function renderPublisher() {
+  const root = document.getElementById("page-root");
+  const name = new URLSearchParams(location.search).get("name") || "";
+  if (!name) {
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾을 수 없습니다. <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a></p></div></main>`;
+    return;
+  }
+  document.title = `${name} · 문장숲 책길`;
+
+  const all = await fetchAll(() =>
+    supabase.from("bestsellers")
+      .select("title, year, category, rank, week, author")
+      .eq("publisher", name)
+      .order("id", { ascending: true }));
+  if (all.length === 0) {
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a></p></div></main>`;
+    return;
+  }
+
+  const general = all.filter((r) => r.category === "종합");
+  const chartinWeeks = general.length;
+  const oneWeeks = general.filter((r) => r.rank === 1).length;
+  const years = (general.length ? general : all).map((r) => r.year);
+  const firstYear = Math.min(...years);
+  const lastYear = Math.max(...years);
+
+  // 펴낸 책별 종합 차트인 주수(+저자)
+  const byTitle = new Map();
+  for (const r of general) {
+    let e = byTitle.get(r.title);
+    if (!e) { e = { weeks: 0, author: r.author }; byTitle.set(r.title, e); }
+    e.weeks += 1;
+  }
+  const books = [...byTitle.entries()]
+    .map(([title, e]) => ({ title, weeks: e.weeks, author: e.author }))
+    .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title));
+  const bookCount = books.length;
+
+  // 연도별 종합 차트인 주수
+  const yearMap = new Map();
+  for (const r of general) yearMap.set(r.year, (yearMap.get(r.year) ?? 0) + 1);
+  const yearly = [...yearMap.entries()].map(([year, weeks]) => ({ year, weeks })).sort((a, b) => a.year - b.year);
+  const maxY = Math.max(1, ...yearly.map((y) => y.weeks));
+
+  const byCategory = buildByCategory(all);
+
+  const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
+  const yearRangeShort = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${String(lastYear).slice(-2)}`;
+
+  const statBoxes = oneWeeks > 0
+    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "펴낸 책"], [yearRangeShort, "", "기록된 해"]]
+    : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "펴낸 책"], [yearRangeShort, "", "기록된 해"]];
+  const statHTML = statBoxes.map(([v, u, c]) =>
+    `<div class="box"><div class="big">${v}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("");
+
+  const booksHTML = books.length > 0 ? `
+    <section class="section-pad">
+      <h2 class="section-heading">이 출판사가 펴낸 책길</h2>
+      <p class="section-note">이 출판사가 책길에 올린 책들을 오래 머문 순서로 정리했어요.</p>
+      <div class="companions">${books.map((b, i) => `
+        <a class="companion" href="${esc(bookHref(b.title))}">
+          <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
+          <span class="info"><span class="ct">${esc(b.title)}</span>${b.author ? `<span class="ca">${esc(b.author)}</span>` : ""}</span>
+          <span class="weeks">${b.weeks}주 차트인</span>
+        </a>`).join("")}</div>
+    </section>` : "";
+
+  const yearlyHTML = yearly.length > 0 ? `
+    <section class="section-pad">
+      <h2 class="section-heading">해마다 머문 책길</h2>
+      <p class="section-note">이 출판사의 책들이 해마다 책길에 머문 주수를 보여줍니다.</p>
+      <div class="bars">${yearly.map(({ year, weeks }) => `
+        <a class="bar-row" href="${esc(yearHref(year))}">
+          <span class="bar-year">${year}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
+          <span class="bar-weeks">${weeks}주</span>
+        </a>`).join("")}</div>
+    </section>` : "";
+
+  const catHTML = catSectionHTML(byCategory);
+
+  root.innerHTML = `
+    <main class="book-road-page">
+      <div class="wrap wrap-3xl">
+        <header class="book-page-header">
+          <a class="back-link" href="publishers.html">← 숲을 가꾼 손</a>
+          <h1 class="book-title-lg">${esc(name)}</h1>
+          <p class="book-meta">${bookCount}권 · ${yearRange} 책길 기록</p>
+          <p class="book-hero-desc">이 출판사가 문장숲 책길에 펴낸 흐름을 모았습니다.</p>
+        </header>
+        <section class="section-pad book-now">
+          <div class="book-stats">${statHTML}</div>
+        </section>
+        ${booksHTML}
+        ${yearlyHTML}
+        ${catHTML}
+        <p class="disclaimer">출판사 표기는 차트 등재 당시 데이터 기준이며, 판권 이동·상호 변경·표기 차이로 일부 다르게 묶일 수 있습니다.</p>
+      </div>
+      ${slimCtaHTML()}
+    </main>`;
+}
+
+// ====================================================================
 // 라우터
 // ====================================================================
 async function main() {
@@ -1001,6 +1224,8 @@ async function main() {
     else if (page === "search") await renderSearch();
     else if (page === "authors") await renderAuthors();
     else if (page === "author") await renderAuthor();
+    else if (page === "publishers") await renderPublishers();
+    else if (page === "publisher") await renderPublisher();
   } catch (e) {
     console.error(e);
     const root = document.getElementById("page-root");
