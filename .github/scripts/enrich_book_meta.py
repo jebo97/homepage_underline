@@ -348,6 +348,23 @@ def main():
 
     supabase = create_client(SUPABASE_URL, key)
 
+    # 교정 규칙을 DB(book_overrides)에서 읽어 하드코딩 기본값 위에 덮어쓴다.
+    # (읽기 실패/빈 테이블이면 하드코딩 폴백 유지 → CI 안전)
+    try:
+        import overrides as _ov
+        _o = _ov.load_overrides(supabase)
+        if _o:
+            if _o["force_catalog"]:
+                globals()["NAVER_FORCE_CATALOG"] = _o["force_catalog"]
+            if _o["naver_query"]:
+                globals()["NAVER_TITLE_OVERRIDES"] = _o["naver_query"]
+            if _o["skip"]:
+                globals()["NAVER_SKIP_TITLES"] = _o["skip"]
+            print(f"교정 규칙(DB) 적용: force={len(NAVER_FORCE_CATALOG)} "
+                  f"skip={len(NAVER_SKIP_TITLES)} naver_query={len(NAVER_TITLE_OVERRIDES)}")
+    except Exception as _e:  # noqa: BLE001
+        print(f"[경고] book_overrides 읽기 실패, 코드 기본값 사용: {_e}")
+
     print("고유 제목·대표정보 수집 중…")
     reps = fetch_representatives(supabase)
     titles = sorted(reps.keys())
