@@ -836,15 +836,18 @@ async function renderAuthor() {
   const yearly = [...yearMap.entries()].map(([year, weeks]) => ({ year, weeks })).sort((a, b) => a.year - b.year);
   const maxY = Math.max(1, ...yearly.map((y) => y.weeks));
 
-  // 분야별 차트인 주수 (종합 제외)
+  // 분야별 차트인 주수 + 책 권수 (종합 제외)
   const catMap = new Map();
   for (const r of all) {
     if (r.category === "종합") continue;
     const c = normalizeCategory(r.category);
     if (EXCLUDED_FIELDS.has(c)) continue;
-    catMap.set(c, (catMap.get(c) ?? 0) + 1);
+    let e = catMap.get(c);
+    if (!e) { e = { weeks: 0, titles: new Set() }; catMap.set(c, e); }
+    e.weeks += 1;
+    e.titles.add(r.title);
   }
-  const byCategory = [...catMap.entries()].map(([category, weeks]) => ({ category, weeks }))
+  const byCategory = [...catMap.entries()].map(([category, e]) => ({ category, weeks: e.weeks, books: e.titles.size }))
     .sort((a, b) => b.weeks - a.weeks || a.category.localeCompare(b.category));
 
   const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${lastYear}`;
@@ -886,8 +889,8 @@ async function renderAuthor() {
     <section class="section-pad">
       <h2 class="section-heading">숲길 갈래별 기록</h2>
       <p class="section-note">분야별 차트 기준으로, 전체 기록과 주수가 다를 수 있어요.</p>
-      <div class="cat-list">${byCategory.map(({ category, weeks }) => `
-        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">누적 ${weeks}주</span></div>`).join("")}</div>
+      <div class="cat-list">${byCategory.map(({ category, weeks, books }) => `
+        <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">${books}권 누적 ${weeks}주</span></div>`).join("")}</div>
     </section>` : "";
 
   root.innerHTML = `
