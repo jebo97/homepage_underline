@@ -761,37 +761,76 @@ const AUTHOR_SORTS = {
   books: { col: "book_count", label: "남긴 책 순" },
 };
 
+// 최근 N년 종합 기록으로 작가 순위를 즉석 집계(신진·상승세 작가용). author_stats(전체기간)와 별개.
+async function getRecentAuthorStats(minYear) {
+  const rows = await fetchAll(() => supabase
+    .from("bestsellers")
+    .select("title, author, rank, year")
+    .eq("category", "종합").gte("year", minYear)
+    .order("id", { ascending: true }));
+  const m = new Map();
+  for (const r of rows) {
+    if (!r.author) continue;
+    let e = m.get(r.author);
+    if (!e) { e = { author: r.author, chartin_weeks: 0, one_weeks: 0, titles: new Map(), first_year: r.year, last_year: r.year }; m.set(r.author, e); }
+    e.chartin_weeks += 1;
+    if (r.rank === 1) e.one_weeks += 1;
+    e.titles.set(r.title, (e.titles.get(r.title) ?? 0) + 1);
+    e.first_year = Math.min(e.first_year, r.year);
+    e.last_year = Math.max(e.last_year, r.year);
+  }
+  return [...m.values()].map((e) => {
+    const top = [...e.titles.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+    return { author: e.author, chartin_weeks: e.chartin_weeks, one_weeks: e.one_weeks,
+             book_count: e.titles.size, first_year: e.first_year, last_year: e.last_year,
+             top_title: top ? top[0] : "" };
+  });
+}
+
 async function renderAuthors() {
   const root = document.getElementById("page-root");
-  const by = new URLSearchParams(location.search).get("by") || "chartin";
+  const params = new URLSearchParams(location.search);
+  const by = params.get("by") || "chartin";
+  const range = params.get("range") === "recent" ? "recent" : "all";
   const sort = AUTHOR_SORTS[by] ?? AUTHOR_SORTS.chartin;
 
-  const { data, error } = await supabase
-    .from("author_stats")
-    .select("*")
-    .order(sort.col, { ascending: false })
-    .order("one_weeks", { ascending: false })
-    .limit(50);
+  let rows, error = null;
+  const maxYear = await getMaxYear();
+  const minYear = maxYear - 4;  // 최근 5년
+  if (range === "recent") {
+    try {
+      const stats = await getRecentAuthorStats(minYear);
+      stats.sort((a, b) => (b[sort.col] - a[sort.col]) || (b.one_weeks - a.one_weeks) || a.author.localeCompare(b.author));
+      rows = stats.slice(0, 50);
+    } catch (e) { rows = []; error = e; }
+  } else {
+    const res = await supabase.from("author_stats").select("*")
+      .order(sort.col, { ascending: false }).order("one_weeks", { ascending: false }).limit(50);
+    rows = res.data ?? []; error = res.error;
+  }
 
+  const rangeToggle = [["all", "전체 기간"], ["recent", `최근 5년`]].map(([k, label]) =>
+    k === range
+      ? `<span class="pill pill-on">${label}</span>`
+      : `<a class="pill" href="authors.html?range=${k}&by=${by}">${label}</a>`
+  ).join("");
   const toggles = Object.entries(AUTHOR_SORTS).map(([k, v]) =>
     k === by
       ? `<span class="pill pill-on">${v.label}</span>`
-      : `<a class="pill" href="authors.html?by=${k}">${v.label}</a>`
+      : `<a class="pill" href="authors.html?range=${range}&by=${k}">${v.label}</a>`
   ).join("");
-
-  const rows = (data ?? []);
   const metricFor = (a) =>
     by === "books" ? `${a.book_count}권`
     : by === "one" ? `${a.one_weeks}주 1위`
     : `${a.chartin_weeks}주 차트인`;
   const listHTML = rows.length > 0
     ? `<div class="companions">${rows.map((a, i) => {
-        const range = a.first_year === a.last_year ? `${a.first_year}` : `${a.first_year}–${a.last_year}`;
+        const yr = a.first_year === a.last_year ? `${a.first_year}` : `${a.first_year}–${a.last_year}`;
         return `<a class="companion" href="${esc(authorHref(a.author))}">
           <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
           <span class="info">
             <span class="ct">${esc(a.author)}</span>
-            <span class="ca">대표작 《${esc(a.top_title)}》 · ${a.book_count}권 · ${range}</span>
+            <span class="ca">대표작 《${esc(a.top_title)}》 · ${a.book_count}권 · ${yr}</span>
           </span>
           <span class="weeks">${metricFor(a)}</span>
         </a>`;
@@ -804,11 +843,14 @@ async function renderAuthors() {
         <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">작가의 숲</h1>
-          <p class="book-hero-desc">2006년부터 이어진 책길에 가장 오래 머물고, 가장 앞에 오래 선 작가들을 모았습니다.</p>
-          <div class="year-nav author-sorts">${toggles}</div>
+          <p class="book-hero-desc">${range === "recent"
+            ? `최근 5년(${minYear}–${maxYear}) 종합 기록으로 본 순위 — 요즘 책길에 활발히 오른 작가들이에요.`
+            : "2006년부터 이어진 책길에 가장 오래 머물고, 가장 앞에 오래 선 작가들을 모았습니다."}</p>
+          <div class="year-nav author-sorts">${rangeToggle}</div>
+          <div class="year-nav author-sorts" style="margin-top:.5rem">${toggles}</div>
         </header>
         <section class="section-pad book-now">
-          <p class="section-note" style="padding-left:0">‘${esc(sort.label)}’ 상위 50명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
+          <p class="section-note" style="padding-left:0">${range === "recent" ? `최근 5년 · ` : ""}‘${esc(sort.label)}’ 상위 ${rows.length}명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
           ${listHTML}
         </section>
       </div>
