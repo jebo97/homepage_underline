@@ -1042,12 +1042,12 @@ a.alink:hover { color: var(--accent); }
 
 /* 갈래별 기록: 펼쳐지는 목록 + 바로가기 */
 .book-road-page .cat-item { border-radius: 0.85rem; }
-.book-road-page .cat-toggle, .book-road-page .cat-link { cursor: pointer; list-style: none; transition: border-color .2s, background-color .2s; }
+.book-road-page .cat-toggle { cursor: pointer; list-style: none; transition: border-color .2s, background-color .2s; }
 .book-road-page .cat-toggle::-webkit-details-marker { display: none; }
 .book-road-page .cat-toggle .cn::before { content: "▸ "; color: #b79150; font-weight: 700; }
 .book-road-page details[open] > .cat-toggle .cn::before { content: "▾ "; }
 .book-road-page details[open] > .cat-toggle { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-.book-road-page .cat-toggle:hover, .book-road-page .cat-link:hover { border-color: rgba(231, 185, 40, 0.5); background: rgba(255, 255, 255, 0.85); }
+.book-road-page .cat-toggle:hover { border-color: rgba(231, 185, 40, 0.5); background: rgba(255, 255, 255, 0.85); }
 .book-road-page .cat-books { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.6rem 0.7rem 0.7rem; background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(138, 98, 61, 0.12); border-top: none; border-radius: 0 0 0.85rem 0.85rem; }
 .book-road-page .cat-book { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; padding: 0.6rem 0.8rem; border-radius: 0.6rem; background: rgba(255, 255, 255, 0.7); transition: background-color .2s; }
 .book-road-page .cat-book:hover { background: rgba(231, 185, 40, 0.12); }

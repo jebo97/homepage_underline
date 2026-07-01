@@ -952,12 +952,7 @@ async function renderAuthor() {
   const catRow = ({ category, weeks, books, titleList }) => {
     const cn = esc(FIELD_DISPLAY_NAMES[category] ?? category);
     const cw = `${books}권 누적 ${weeks}주`;
-    // 책이 한 권이면 바로 그 책으로 이동, 여러 권이면 펼쳐서 목록 표시
-    if (books <= 1) {
-      const only = titleList[0];
-      return `<a class="cat-row cat-link" href="${esc(bookHref(only.title))}">
-        <span class="cn">${cn}</span><span class="cw">${cw}</span></a>`;
-    }
+    // 한 권이든 여러 권이든 펼쳐서 목록을 보여주고, 책을 누르면 그 책 페이지로 이동
     return `<details class="cat-item">
       <summary class="cat-row cat-toggle"><span class="cn">${cn}</span><span class="cw">${cw}</span></summary>
       <div class="cat-books">${titleList.map((b) => `
