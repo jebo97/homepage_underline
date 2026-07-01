@@ -1065,6 +1065,16 @@ a.alink:hover { color: var(--accent); }
 .book-road-page .field-pub .fp-runners { color: #8a95a5; font-size: 0.8rem; }
 @media (max-width: 639px) { .book-road-page .field-pub-grid { grid-template-columns: 1fr; } }
 
+/* 출판사 소개 */
+.book-road-page .publisher-intro { }
+.book-road-page .publisher-intro .intro-label { display: inline-block; margin-bottom: 0.5rem; padding: 0.25rem 0.7rem; border-radius: 9999px; background: rgba(231, 185, 40, 0.16); color: #9b7619; font-size: 0.75rem; font-weight: 800; }
+.book-road-page .publisher-intro .intro-body { margin-top: 0.2rem; }
+.book-road-page .publisher-intro .intro-body p { color: var(--navy); font-size: 1rem; line-height: 1.85; margin: 0 0 0.7rem; word-break: keep-all; }
+.book-road-page .publisher-intro .intro-body p:last-child { margin-bottom: 0; }
+.book-road-page .publisher-intro .intro-keywords { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+.book-road-page .publisher-intro .intro-chip { padding: 0.35rem 0.8rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.66); border: 1px solid rgba(138, 98, 61, 0.18); color: var(--navy); font-size: 0.82rem; font-weight: 600; }
+.book-road-page .publisher-intro .intro-source { margin-top: 1rem; color: #9aa3b0; font-size: 0.78rem; }
+
 /* 함께 책길에 오른 책들 */
 .book-road-page .companions { display: flex; flex-direction: column; gap: 0.6rem; }
 .book-road-page .companion { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-radius: 0.9rem; background: rgba(255, 255, 255, 0.66); border: 1px solid rgba(138, 98, 61, 0.14); box-shadow: 0 8px 20px rgba(27, 42, 74, 0.04); transition: transform .2s, border-color .2s, box-shadow .2s; }

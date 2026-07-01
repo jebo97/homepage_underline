@@ -1155,6 +1155,13 @@ async function renderPublisher() {
   }
   document.title = `${name} · 문장숲 책길`;
 
+  // 출판사 소개(편집 문구). 테이블/행이 없으면 조용히 생략.
+  let intro = null;
+  try {
+    const { data } = await supabase.from("publisher_intros").select("body, keywords").eq("publisher", name).maybeSingle();
+    intro = data;
+  } catch (e) { /* 테이블 미생성 등은 무시 */ }
+
   const all = await fetchAll(() =>
     supabase.from("bestsellers")
       .select("title, year, category, rank, week, author")
@@ -1227,6 +1234,15 @@ async function renderPublisher() {
 
   const catHTML = catSectionHTML(byCategory);
 
+  const introHTML = intro && intro.body ? `
+    <section class="section-pad publisher-intro">
+      <span class="intro-label">출판사 소개</span>
+      <h2 class="section-heading">이 정원이 키워온 책의 결</h2>
+      <div class="intro-body">${intro.body.split(/\n+/).map((p) => p.trim()).filter(Boolean).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+      ${intro.keywords ? `<div class="intro-keywords">${intro.keywords.split(",").map((k) => k.trim()).filter(Boolean).map((k) => `<span class="intro-chip">${esc(k)}</span>`).join("")}</div>` : ""}
+      <p class="intro-source">출판사 공식 홈페이지 소개를 바탕으로 문장숲 톤에 맞게 정리했습니다.</p>
+    </section>` : "";
+
   root.innerHTML = `
     <main class="book-road-page">
       <div class="wrap wrap-3xl">
@@ -1239,6 +1255,7 @@ async function renderPublisher() {
         <section class="section-pad book-now">
           <div class="book-stats">${statHTML}</div>
         </section>
+        ${introHTML}
         ${booksHTML}
         ${yearlyHTML}
         ${catHTML}
