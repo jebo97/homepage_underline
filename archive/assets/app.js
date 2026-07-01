@@ -271,7 +271,7 @@ async function renderHome() {
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
-        ${ERA[year] ? `<span class="year-era">${esc(ERA[year])}</span>` : ""}
+        ${eraFor(year, maxYear) ? `<span class="year-era">${esc(eraFor(year, maxYear))}</span>` : ""}
         ${titleHTML}
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
         ${book ? `<span class="year-weeks">${book.weeks}주 차트인</span>` : ""}
@@ -347,6 +347,11 @@ const ERA = {
   2021: "마음을 쉬게 한 이야기의 해", 2022: "따뜻한 이야기가 머문 해", 2023: "더 나은 나를 향한 해",
   2024: "한강, 노벨문학상의 해", 2025: "한국 소설이 빛난 해",
 };
+// 아직 진행 중인 최신 연도는 회고 키워드 대신 진행형 표현(연도 무관 자동 적용)
+const IN_PROGRESS_ERA = "올해의 책길을 걷는 중";
+function eraFor(year, maxYear) {
+  return ERA[year] || (year === maxYear ? IN_PROGRESS_ERA : "");
+}
 const FIELD_DISPLAY_NAMES = {
   "소설": "이야기 숲길",
   "에세이": "마음 숲길",
@@ -465,7 +470,7 @@ async function renderYear() {
           </div>
           <h1 class="page-title year-page-title">${year}년에 열린 책길</h1>
           <p class="year-subtitle">그해 독자들이 남긴 책길의 흐름을 모았습니다.</p>
-          <p class="era">${esc(ERA[year] ?? "")}</p>
+          <p class="era">${esc(eraFor(year, maxYear))}</p>
         </header>
         ${highlightHTML}
         <section class="section-pad">
