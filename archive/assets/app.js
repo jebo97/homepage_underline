@@ -695,26 +695,29 @@ async function renderBook() {
 // ====================================================================
 async function searchBooks(query) {
   const pattern = `%${query}%`;
+  // 종합뿐 아니라 전체 분야에서 찾는다(예: '작별'은 소설 분야에만 올라 종합엔 없음).
+  // 분야가 겹쳐도 주수가 부풀지 않게 (연도,주차) 단위로 센다.
   const rows = await fetchAll(() =>
     supabase.from("bestsellers")
-      .select("title, author, publisher, year")
-      .eq("category", "종합")
+      .select("title, author, publisher, year, week")
       .or(`title.ilike.${pattern},author.ilike.${pattern}`)
       .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지); 결과는 아래서 재정렬
   );
   const map = new Map();
   for (const r of rows) {
     const key = `${r.title}|${r.author ?? ""}|${r.publisher ?? ""}`;
-    const entry = map.get(key);
-    if (entry) {
-      entry.totalWeeks += 1;
-      entry.firstYear = Math.min(entry.firstYear, r.year);
-      entry.lastYear = Math.max(entry.lastYear, r.year);
-    } else {
-      map.set(key, { title: r.title, author: r.author, publisher: r.publisher, totalWeeks: 1, firstYear: r.year, lastYear: r.year });
+    let entry = map.get(key);
+    if (!entry) {
+      entry = { title: r.title, author: r.author, publisher: r.publisher, weekSet: new Set(), firstYear: r.year, lastYear: r.year };
+      map.set(key, entry);
     }
+    entry.weekSet.add(`${r.year}|${r.week}`);
+    entry.firstYear = Math.min(entry.firstYear, r.year);
+    entry.lastYear = Math.max(entry.lastYear, r.year);
   }
-  return [...map.values()].sort((a, b) => b.totalWeeks - a.totalWeeks || a.title.localeCompare(b.title));
+  return [...map.values()]
+    .map((e) => ({ title: e.title, author: e.author, publisher: e.publisher, totalWeeks: e.weekSet.size, firstYear: e.firstYear, lastYear: e.lastYear }))
+    .sort((a, b) => b.totalWeeks - a.totalWeeks || a.title.localeCompare(b.title));
 }
 
 async function renderSearch() {
