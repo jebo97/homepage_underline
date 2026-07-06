@@ -753,6 +753,7 @@
     .hero-scroll-chev { width: 30px; height: 30px; animation: heroBob 1.9s ease-in-out infinite; filter: drop-shadow(0 2px 7px rgba(255, 253, 248, 0.85)); }
     @keyframes heroBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
     @media (prefers-reduced-motion: reduce) { .hero-scroll-chev { animation: none; } }
+    @media (max-width: 767px) { .hero-scroll { position: static; justify-self: center; transform: none; margin: 20px auto 0; bottom: auto; left: auto; } }
   </style>
 </head>
 <body>
