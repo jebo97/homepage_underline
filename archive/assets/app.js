@@ -178,7 +178,7 @@ function bookRoadCtaHTML({
           <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
         </div>
         <div class="cta-still-life">
-          <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" onerror="this.hidden=true" />
+          <img src="/archive/images/note-card-cta.jpg" alt="문장 카드와 노트 이미지" loading="lazy" onerror="this.hidden=true" />
         </div>
       </div>
     </div>
@@ -350,7 +350,7 @@ async function renderHome() {
               <a class="cta-btn" href="${esc(HOME_URL)}">밑줄긋기에서 기록하기</a>
             </div>
             <div class="cta-still-life">
-              <img src="/archive/images/note-card-cta.png" alt="문장 카드와 노트 이미지" loading="lazy" />
+              <img src="/archive/images/note-card-cta.jpg" alt="문장 카드와 노트 이미지" loading="lazy" />
             </div>
           </div>
           <p class="archive-update-note">주간 베스트셀러 기록은 계속 업데이트됩니다.<br />새로운 책길은 매주 조용히 더해집니다.</p>

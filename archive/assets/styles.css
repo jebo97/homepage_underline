@@ -15,7 +15,7 @@
   --muted: #8792A8;
   --line: rgba(255, 211, 61, 0.28);
   /* TODO: 문장숲 책길 히어로 배경 이미지로 교체 */
-  --book-road-hero-image: url("/archive/images/book-road-hero.png");
+  --book-road-hero-image: url("/archive/images/book-road-hero.jpg");
 
   --bg: #0f172a;
   --fg: #f1f5f9;
