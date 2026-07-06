@@ -597,6 +597,8 @@ async function getBookData(title) {
   const history = data ?? [];
   const author = history[0]?.author ?? null;
   const publisher = history[0]?.publisher ?? null;
+  // 차트에 오른 모든 출판사(첫 등장 순). 판권 이동·재출간으로 여러 곳일 수 있음.
+  const publishers = [...new Set(history.map((r) => r.publisher).filter(Boolean))];
   const general = history.filter((r) => r.category === "종합");
   const generalWeeks = general.length;
   const bestRank = general.length ? Math.min(...general.map((r) => r.rank)) : null;
@@ -648,7 +650,7 @@ async function getBookData(title) {
       .sort((a, b) => b.weeks - a.weeks || a.title.localeCompare(b.title))
       .slice(0, 5);
   }
-  return { author, publisher, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, mainField, fieldMates };
+  return { author, publisher, publishers, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, mainField, fieldMates };
 }
 
 // 사전 적재된 네이버 메타데이터 (book_meta). 없거나 미매칭이면 null.
@@ -677,7 +679,9 @@ async function renderBook() {
   }
   document.title = `${title} · 문장숲 책길`;
   const [data, naver] = await Promise.all([getBookData(title), getNaverMeta(title)]);
-  const { author, publisher, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, mainField, fieldMates } = data;
+  const { author, publisher, publishers, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, mainField, fieldMates } = data;
+  const publisherHTML = (publishers && publishers.length ? publishers : (publisher ? [publisher] : []))
+    .map((p) => publisherLink(p, "alink")).join(" · ");
   const maxYearlyWeeks = Math.max(1, ...yearlyGeneral.map((y) => y.weeks));
   const fullDescription = naver?.description ? stripTags(naver.description) : "";
   const description = fullDescription.slice(0, 200);
@@ -752,7 +756,7 @@ async function renderBook() {
         <header class="book-page-header">
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">${esc(title)}</h1>
-          <p class="book-meta">${authorLink(author, "alink")}${publisher ? ` · ${publisherLink(publisher, "alink")}` : ""}</p>
+          <p class="book-meta">${authorLink(author, "alink")}${publisherHTML ? ` · ${publisherHTML}` : ""}</p>
           <span class="book-badge">책길 기록</span>
           <p class="book-hero-desc">이 책이 문장숲 책길에 남긴 흐름을 모았습니다.</p>
         </header>
