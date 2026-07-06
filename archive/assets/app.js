@@ -14,6 +14,20 @@ const END_YEAR = 2026;
 const APP_STORE_URL = "https://apps.apple.com/kr/app/id6760542925";
 const HOME_URL = "/"; // 메인 홈페이지 (mjgg.airpage.org)
 
+// 홈 통계 카드용 라인 아이콘(인라인 SVG, 선 색은 CSS color=--accent). 이미지 대신 사용.
+const _ICON = (inner) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const STAT_ICONS = {
+  // 굽이진 책길 + 이정표 점
+  path: _ICON(`<path d="M5 20C11 20 8 12.5 13 11S15 5 19 4.5"/><circle cx="5" cy="20" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="4.5" r="1.5" fill="currentColor" stroke="none"/>`),
+  // 쌓인 기록선
+  records: _ICON(`<path d="M5 6.5h14M5 10.5h14M5 14.5h14M5 18.5h8"/>`),
+  // 펼친 책
+  book: _ICON(`<path d="M12 6.8C9.7 5.2 6.3 5.2 4.2 6.4v12.4C6.3 17.6 9.7 17.6 12 19.2m0-12.4c2.3-1.6 5.7-1.6 7.8-.4v12.4c-2.1-1.2-5.5-1.2-7.8.4m0-12.4v12.4"/>`),
+  // 갈라지는 길
+  branch: _ICON(`<path d="M12 20v-4.5M12 15.5c-4.2 0-4.2-4-4.2-7.7M12 15.5c4.2 0 4.2-4 4.2-7.7"/><circle cx="12" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="7.8" cy="7.4" r="1.2" fill="currentColor" stroke="none"/><circle cx="16.2" cy="7.4" r="1.2" fill="currentColor" stroke="none"/>`),
+};
+
 // ---------- 카테고리 정규화 (categories.ts 포팅) ----------
 const FIELD_CATEGORIES = [
   "소설", "에세이", "인문", "역사문화",
@@ -256,17 +270,15 @@ async function renderHome() {
   const rowsLabel = (totalRows || 0).toLocaleString();
   const longestWeeks = longStayBooks[0]?.weeks ?? 0;
   const STATS = [
-    { value: String(spanYears), unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", image: "/archive/images/stats/bookmark.png", imageKey: "bookmark" },
-    { value: rowsLabel, unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", image: "/archive/images/stats/note-card.png", imageKey: "note" },
-    { value: String(longestWeeks), unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", image: "/archive/images/stats/book-tab.png", imageKey: "book" },
-    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", image: "/archive/images/stats/hashtag-card.png", imageKey: "hashtag" },
+    { value: String(spanYears), unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
+    { value: rowsLabel, unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records" },
+    { value: String(longestWeeks), unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
+    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "branch" },
   ];
 
   const statsHTML = STATS.map((s) => `
     <div class="stat-card">
-      <span class="stat-image-slot stat-image-${esc(s.imageKey)}">
-        <img src="${esc(s.image)}" alt="" loading="lazy" onerror="this.hidden=true" />
-      </span>
+      <span class="stat-icon" aria-hidden="true">${STAT_ICONS[s.icon] ?? ""}</span>
       <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
       <div class="stat-label">${esc(s.desc)}</div>
