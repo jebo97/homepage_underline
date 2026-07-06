@@ -16,16 +16,16 @@ const HOME_URL = "/"; // 메인 홈페이지 (mjgg.airpage.org)
 
 // 홈 통계 카드용 라인 아이콘(인라인 SVG, 선 색은 CSS color=--accent). 이미지 대신 사용.
 const _ICON = (inner) =>
-  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
 const STAT_ICONS = {
-  // 굽이진 책길 + 이정표 점
-  path: _ICON(`<path d="M5 20C11 20 8 12.5 13 11S15 5 19 4.5"/><circle cx="5" cy="20" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="4.5" r="1.5" fill="currentColor" stroke="none"/>`),
-  // 쌓인 기록선
-  records: _ICON(`<path d="M5 6.5h14M5 10.5h14M5 14.5h14M5 18.5h8"/>`),
-  // 펼친 책
-  book: _ICON(`<path d="M12 6.8C9.7 5.2 6.3 5.2 4.2 6.4v12.4C6.3 17.6 9.7 17.6 12 19.2m0-12.4c2.3-1.6 5.7-1.6 7.8-.4v12.4c-2.1-1.2-5.5-1.2-7.8.4m0-12.4v12.4"/>`),
-  // 갈라지는 길
-  branch: _ICON(`<path d="M12 20v-4.5M12 15.5c-4.2 0-4.2-4-4.2-7.7M12 15.5c4.2 0 4.2-4 4.2-7.7"/><circle cx="12" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="7.8" cy="7.4" r="1.2" fill="currentColor" stroke="none"/><circle cx="16.2" cy="7.4" r="1.2" fill="currentColor" stroke="none"/>`),
+  // 굽이진 책길 + 이정표 점 + 작은 잎
+  path: _ICON(`<path d="M6.5 20c3.5 0 2-4.5 5-5.5s2-4 4.5-5.5"/><circle cx="6.5" cy="20" r="1.5" fill="currentColor" stroke="none"/><path d="M15.6 9.9c-.1-2.1 1.5-3.8 3.7-3.8.1 2.1-1.5 3.8-3.7 3.8z" fill="currentColor" stroke="none"/>`),
+  // 동글동글 체크리스트(기록)
+  records: _ICON(`<circle cx="6" cy="7" r="1.3" fill="currentColor" stroke="none"/><path d="M10 7h9"/><circle cx="6" cy="12" r="1.3" fill="currentColor" stroke="none"/><path d="M10 12h9"/><circle cx="6" cy="17" r="1.3" fill="currentColor" stroke="none"/><path d="M10 17h6"/>`),
+  // 통통한 펼친 책
+  book: _ICON(`<path d="M12 7.5C10 6 7 6 5 7.1v9.6c2-1.1 5-1.1 7 .3 2-1.4 5-1.4 7-.3V7.1C17 6 14 6 12 7.5Zm0 0v9.4"/>`),
+  // 귀여운 잎사귀(숲)
+  leaf: _ICON(`<path d="M6 18.5C6 11.3 10.6 6.2 18 6c.2 7.2-4.8 12.3-12 12.5Z"/><path d="M7 17.5C10.3 14.3 13.6 10.8 16.5 8.2"/>`),
 };
 
 // ---------- 카테고리 정규화 (categories.ts 포팅) ----------
@@ -273,7 +273,7 @@ async function renderHome() {
     { value: String(spanYears), unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
     { value: rowsLabel, unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records" },
     { value: String(longestWeeks), unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
-    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "branch" },
+    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "leaf" },
   ];
 
   const statsHTML = STATS.map((s) => `

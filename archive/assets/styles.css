@@ -358,8 +358,8 @@ html { scroll-behavior: smooth; }
   opacity: 0.9;
 }
 .stat-icon svg {
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
 }
 .stat-card:hover .stat-icon { opacity: 1; }
 .stat-card::after {
