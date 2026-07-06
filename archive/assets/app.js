@@ -63,16 +63,32 @@ function initReveal() {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduce || !("IntersectionObserver" in window)) return;  // 그대로 표시
   document.documentElement.classList.add("js-reveal");
+  const targets = [...document.querySelectorAll(
+    "main .section-pad, main .stats-grid, main .section-years, main .section-longstay, main .book-road-cta")];
+  if (!targets.length) return;
+  const revealNow = (el) => {
+    if (el.classList.contains("reveal-in")) return;
+    el.classList.add("reveal-in");
+    el.querySelectorAll(".stat-num[data-to]").forEach(countUp);
+  };
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
-      e.target.classList.add("reveal-in");
+      revealNow(e.target);
       io.unobserve(e.target);
-      e.target.querySelectorAll(".stat-num[data-to]").forEach(countUp);
     }
-  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-  document.querySelectorAll("main .section-pad, main .stats-grid, main .section-years, main .section-longstay, main .book-road-cta")
-    .forEach((t) => { t.classList.add("reveal"); io.observe(t); });
+  }, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
+  targets.forEach((t) => t.classList.add("reveal"));
+  // 이미 화면에 보이는 섹션은 즉시 등장, 나머지는 스크롤 시 등장(관찰).
+  requestAnimationFrame(() => {
+    const vh = window.innerHeight || 800;
+    targets.forEach((t) => {
+      if (t.getBoundingClientRect().top < vh * 0.92) revealNow(t);
+      else io.observe(t);
+    });
+  });
+  // 안전장치: 어떤 이유로든 안 걸린 섹션도 일정 시간 뒤 반드시 표시.
+  setTimeout(() => targets.forEach(revealNow), 1600);
 }
 
 // ---------- 카테고리 정규화 (categories.ts 포팅) ----------
