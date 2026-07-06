@@ -941,9 +941,52 @@ async function renderAuthors() {
           <p class="section-note" style="padding-left:0">${isRecent ? `최근 5년 · 오래 머문 순` : `‘${esc(sort.label)}’`} 상위 ${rows.length}명 · 이름을 누르면 작가가 걸어온 책길을 볼 수 있어요.</p>
           ${listHTML}
         </section>
+        <section id="author-field-strength" class="section-pad">
+          ${sh("bookmark", "숲길별 오래 머문 작가")}
+          <p class="section-note">여덟 갈래 숲길에서 가장 오래 책길에 머문 작가예요.</p>
+          <p class="loading">숲길별 기록을 살펴보는 중…</p>
+        </section>
       </div>
       ${slimCtaHTML()}
     </main>`;
+
+  // 분야(비종합) 데이터는 4만여 행이라, 목록을 먼저 그린 뒤 백그라운드로 채운다(await 안 함).
+  renderAuthorFieldStrength();
+}
+
+// 숲길(분야)별로 가장 오래 머문 작가를 집계해 위 섹션에 채운다. 별도 테이블 없이 즉석 계산.
+async function renderAuthorFieldStrength() {
+  const box = document.getElementById("author-field-strength");
+  if (!box) return;
+  try {
+    const rows = await fetchAll(() => supabase.from("bestsellers")
+      .select("category, author").neq("category", "종합").order("id", { ascending: true }));
+    const fields = new Map();  // 정규화 분야 → Map(작가→주수)
+    for (const r of rows) {
+      if (!r.author) continue;
+      const f = normalizeCategory(r.category);
+      if (EXCLUDED_FIELDS.has(f) || !FIELD_DISPLAY_NAMES[f]) continue;
+      let am = fields.get(f);
+      if (!am) { am = new Map(); fields.set(f, am); }
+      am.set(r.author, (am.get(r.author) ?? 0) + 1);
+    }
+    const cards = FIELD_CATEGORIES.filter((f) => fields.has(f)).map((f) => {
+      const ranked = [...fields.get(f).entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      return { name: FIELD_DISPLAY_NAMES[f], top: ranked[0], runners: ranked.slice(1, 3) };
+    });
+    if (!cards.length) { box.style.display = "none"; return; }
+    box.innerHTML = `
+      ${sh("bookmark", "숲길별 오래 머문 작가")}
+      <p class="section-note">여덟 갈래 숲길에서 가장 오래 책길에 머문 작가예요. (분야별 차트 기준)</p>
+      <div class="field-pub-grid">${cards.map((c) => `
+        <a class="field-pub" href="${esc(authorHref(c.top[0]))}">
+          <span class="fp-field">${esc(c.name)}</span>
+          <span class="fp-lead"><span class="fp-pub">${esc(c.top[0])}</span><span class="fp-weeks">${c.top[1]}주</span></span>
+          ${c.runners.length ? `<span class="fp-runners">${c.runners.map((r) => `${esc(r[0])} ${r[1]}주`).join(" · ")}</span>` : ""}
+        </a>`).join("")}</div>`;
+  } catch (e) {
+    box.innerHTML = `${sh("bookmark", "숲길별 오래 머문 작가")}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
+  }
 }
 
 // 분야별(종합 제외) 차트 기록을 갈래별로 집계. 갈래마다 책 목록(제목→주수)을 담는다.
