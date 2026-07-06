@@ -754,6 +754,9 @@
     @keyframes heroBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
     @media (prefers-reduced-motion: reduce) { .hero-scroll-chev { animation: none; } }
     @media (max-width: 767px) { .hero-scroll { position: static; justify-self: center; transform: none; margin: 20px auto 0; bottom: auto; left: auto; } }
+    .nav-leaf { display: inline-flex; align-items: center; padding: 6px 8px; border-radius: 999px; color: var(--color-navy); opacity: 0.4; transition: opacity .25s, color .25s, transform .25s, background .2s; }
+    .nav-leaf svg { width: 20px; height: 20px; display: block; }
+    .nav-leaf:hover { opacity: 1; color: #5f8a3a; transform: rotate(-10deg); background: rgba(255, 214, 0, 0.22); }
   </style>
 </head>
 <body>
@@ -765,7 +768,9 @@
           <span>밑줄긋기</span>
         </a>
         <nav class="nav-links" aria-label="메뉴">
-            <a href="/archive">문장숲 책길</a>
+            <a href="/archive" class="nav-leaf" aria-label="문장숲 책길" title="문장숲 책길로">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18.5C6 11.3 10.6 6.2 18 6c.2 7.2-4.8 12.3-12 12.5Z"/><path d="M7 17.5C10.3 14.3 13.6 10.8 16.5 8.2"/></svg>
+          </a>
           <a class="nav-cta" href="#start">앱 다운로드</a>
         </nav>
       </div>
