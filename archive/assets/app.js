@@ -942,8 +942,8 @@ async function renderAuthors() {
           ${listHTML}
         </section>
         <section id="author-field-strength" class="section-pad">
-          ${sh("bookmark", "숲길별 오래 머문 작가")}
-          <p class="section-note">여덟 갈래 숲길에서 가장 오래 책길에 머문 작가예요.</p>
+          ${sh(by === "one" ? "star" : by === "books" ? "pen" : "bookmark", (AUTHOR_FIELD[by] ?? AUTHOR_FIELD.chartin).title)}
+          <p class="section-note">${(AUTHOR_FIELD[by] ?? AUTHOR_FIELD.chartin).note}</p>
           <p class="loading">숲길별 기록을 살펴보는 중…</p>
         </section>
       </div>
@@ -951,41 +951,75 @@ async function renderAuthors() {
     </main>`;
 
   // 분야(비종합) 데이터는 4만여 행이라, 목록을 먼저 그린 뒤 백그라운드로 채운다(await 안 함).
-  renderAuthorFieldStrength();
+  renderAuthorFieldStrength(by, minYear);
 }
 
-// 숲길(분야)별로 가장 오래 머문 작가를 집계해 위 섹션에 채운다. 별도 테이블 없이 즉석 계산.
-async function renderAuthorFieldStrength() {
+// 숲길별 상위 집계(공통). entityKey='author'|'publisher', metric='chartin'|'one'|'books',
+// minYear 지정 시 그 이후만(최근 N년). 각 갈래의 대표 + 2·3위를 돌려준다.
+function computeFieldTops(rows, entityKey, metric, minYear) {
+  const fields = new Map();  // 분야 → Map(대상 → {chartin, one, titles})
+  for (const r of rows) {
+    const name = r[entityKey];
+    if (!name) continue;
+    if (minYear != null && (r.year ?? 0) < minYear) continue;
+    const f = normalizeCategory(r.category);
+    if (EXCLUDED_FIELDS.has(f) || !FIELD_DISPLAY_NAMES[f]) continue;
+    let em = fields.get(f);
+    if (!em) { em = new Map(); fields.set(f, em); }
+    let e = em.get(name);
+    if (!e) { e = { chartin: 0, one: 0, titles: new Set() }; em.set(name, e); }
+    e.chartin += 1;
+    if (r.rank === 1) e.one += 1;
+    e.titles.add(r.title);
+  }
+  const unit = metric === "one" ? "주 1위" : metric === "books" ? "권" : "주";
+  const val = (e) => metric === "one" ? e.one : metric === "books" ? e.titles.size : e.chartin;
+  return FIELD_CATEGORIES.filter((f) => fields.has(f)).map((f) => {
+    const ranked = [...fields.get(f).entries()]
+      .map(([name, e]) => ({ name, v: val(e), c: e.chartin }))
+      .filter((x) => x.v > 0)
+      .sort((a, b) => (b.v - a.v) || (b.c - a.c) || a.name.localeCompare(b.name));
+    return { name: FIELD_DISPLAY_NAMES[f], unit, top: ranked[0], runners: ranked.slice(1, 3) };
+  }).filter((card) => card.top);
+}
+// 탭 → (제목, 지표) 매핑
+const AUTHOR_FIELD = {
+  chartin: { metric: "chartin", title: "숲길별 오래 머문 작가", note: "여덟 갈래 숲길에서 가장 오래 책길에 머문 작가예요." },
+  one:     { metric: "one",     title: "숲길별 가장 앞에 선 작가", note: "여덟 갈래 숲길에서 1위에 가장 오래 선 작가예요." },
+  books:   { metric: "books",   title: "숲길별 많은 책을 남긴 작가", note: "여덟 갈래 숲길에 가장 많은 책을 올린 작가예요." },
+  recent:  { metric: "chartin", title: "숲길별 지금 걷는 작가", note: "최근 5년 기준, 숲길마다 가장 오래 머문 작가예요." },
+};
+const PUBLISHER_FIELD = {
+  chartin: { metric: "chartin", title: "숲길별 오래 피운 출판사", note: "여덟 갈래 숲길에서 가장 오래 책을 피워낸 출판사예요." },
+  one:     { metric: "one",     title: "숲길별 앞자리를 지킨 출판사", note: "여덟 갈래 숲길에서 1위에 가장 오래 선 책을 낸 출판사예요." },
+  books:   { metric: "books",   title: "숲길별 많이 심은 출판사", note: "여덟 갈래 숲길에 가장 많은 책을 올린 출판사예요." },
+};
+function fieldTopsHTML(cards, hrefFn, iconKey, title, note) {
+  return `
+    ${sh(iconKey, title)}
+    <p class="section-note">${note} (분야별 차트 기준)</p>
+    <div class="field-pub-grid">${cards.map((c) => `
+      <a class="field-pub" href="${esc(hrefFn(c.top.name))}">
+        <span class="fp-field">${esc(c.name)}</span>
+        <span class="fp-lead"><span class="fp-pub">${esc(c.top.name)}</span><span class="fp-weeks">${c.top.v}${c.unit}</span></span>
+        ${c.runners.length ? `<span class="fp-runners">${c.runners.map((r) => `${esc(r.name)} ${r.v}${c.unit}`).join(" · ")}</span>` : ""}
+      </a>`).join("")}</div>`;
+}
+
+// 숲길별 대표 작가(탭 지표에 맞춰). 별도 테이블 없이 즉석 계산.
+async function renderAuthorFieldStrength(by, minYear) {
   const box = document.getElementById("author-field-strength");
   if (!box) return;
+  const cfg = AUTHOR_FIELD[by] ?? AUTHOR_FIELD.chartin;
+  const iconKey = by === "one" ? "star" : by === "books" ? "pen" : "bookmark";
   try {
     const rows = await fetchAll(() => supabase.from("bestsellers")
-      .select("category, author").neq("category", "종합").order("id", { ascending: true }));
-    const fields = new Map();  // 정규화 분야 → Map(작가→주수)
-    for (const r of rows) {
-      if (!r.author) continue;
-      const f = normalizeCategory(r.category);
-      if (EXCLUDED_FIELDS.has(f) || !FIELD_DISPLAY_NAMES[f]) continue;
-      let am = fields.get(f);
-      if (!am) { am = new Map(); fields.set(f, am); }
-      am.set(r.author, (am.get(r.author) ?? 0) + 1);
-    }
-    const cards = FIELD_CATEGORIES.filter((f) => fields.has(f)).map((f) => {
-      const ranked = [...fields.get(f).entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-      return { name: FIELD_DISPLAY_NAMES[f], top: ranked[0], runners: ranked.slice(1, 3) };
-    });
+      .select("category, author, rank, title, year").neq("category", "종합").order("id", { ascending: true }));
+    const cards = computeFieldTops(rows, "author", cfg.metric, by === "recent" ? minYear : null);
     if (!cards.length) { box.style.display = "none"; return; }
-    box.innerHTML = `
-      ${sh("bookmark", "숲길별 오래 머문 작가")}
-      <p class="section-note">여덟 갈래 숲길에서 가장 오래 책길에 머문 작가예요. (분야별 차트 기준)</p>
-      <div class="field-pub-grid">${cards.map((c) => `
-        <a class="field-pub" href="${esc(authorHref(c.top[0]))}">
-          <span class="fp-field">${esc(c.name)}</span>
-          <span class="fp-lead"><span class="fp-pub">${esc(c.top[0])}</span><span class="fp-weeks">${c.top[1]}주</span></span>
-          ${c.runners.length ? `<span class="fp-runners">${c.runners.map((r) => `${esc(r[0])} ${r[1]}주`).join(" · ")}</span>` : ""}
-        </a>`).join("")}</div>`;
+    box.innerHTML = fieldTopsHTML(cards, authorHref, iconKey, cfg.title, cfg.note);
   } catch (e) {
-    box.innerHTML = `${sh("bookmark", "숲길별 오래 머문 작가")}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
+    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
   }
 }
 
@@ -1222,8 +1256,8 @@ async function renderPublishers() {
           ${listHTML}
         </section>
         <section id="field-strength" class="section-pad">
-          ${sh("star", "숲길별 강한 출판사")}
-          <p class="section-note">여덟 갈래 숲길에서 가장 오래 책을 피워낸 출판사예요.</p>
+          ${sh(by === "one" ? "star" : by === "books" ? "pen" : "bookmark", (PUBLISHER_FIELD[by] ?? PUBLISHER_FIELD.chartin).title)}
+          <p class="section-note">${(PUBLISHER_FIELD[by] ?? PUBLISHER_FIELD.chartin).note}</p>
           <p class="loading">숲길별 기록을 살펴보는 중…</p>
         </section>
       </div>
@@ -1231,41 +1265,23 @@ async function renderPublishers() {
     </main>`;
 
   // 분야(비종합) 데이터는 4만여 행이라, 랭킹을 먼저 그린 뒤 백그라운드로 채운다(await 안 함).
-  renderFieldStrength();
+  renderFieldStrength(by);
 }
 
-// 숲길(분야)별로 가장 오래 머문 출판사를 집계해 위 섹션에 채운다. 별도 테이블 없이 즉석 계산.
-async function renderFieldStrength() {
+// 숲길별 대표 출판사(탭 지표에 맞춰). 별도 테이블 없이 즉석 계산.
+async function renderFieldStrength(by) {
   const box = document.getElementById("field-strength");
   if (!box) return;
+  const cfg = PUBLISHER_FIELD[by] ?? PUBLISHER_FIELD.chartin;
+  const iconKey = by === "one" ? "star" : by === "books" ? "pen" : "bookmark";
   try {
     const rows = await fetchAll(() => supabase.from("bestsellers")
-      .select("category, publisher").neq("category", "종합").order("id", { ascending: true }));
-    const fields = new Map();  // 정규화 분야 → Map(출판사→주수)
-    for (const r of rows) {
-      if (!r.publisher) continue;
-      const f = normalizeCategory(r.category);
-      if (EXCLUDED_FIELDS.has(f) || !FIELD_DISPLAY_NAMES[f]) continue;
-      let pm = fields.get(f);
-      if (!pm) { pm = new Map(); fields.set(f, pm); }
-      pm.set(r.publisher, (pm.get(r.publisher) ?? 0) + 1);
-    }
-    const cards = FIELD_CATEGORIES.filter((f) => fields.has(f)).map((f) => {
-      const ranked = [...fields.get(f).entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-      return { name: FIELD_DISPLAY_NAMES[f], top: ranked[0], runners: ranked.slice(1, 3) };
-    });
+      .select("category, publisher, rank, title, year").neq("category", "종합").order("id", { ascending: true }));
+    const cards = computeFieldTops(rows, "publisher", cfg.metric, null);
     if (!cards.length) { box.style.display = "none"; return; }
-    box.innerHTML = `
-      ${sh("star", "숲길별 강한 출판사")}
-      <p class="section-note">여덟 갈래 숲길에서 가장 오래 책을 피워낸 출판사예요. (분야별 차트 기준)</p>
-      <div class="field-pub-grid">${cards.map((c) => `
-        <a class="field-pub" href="${esc(publisherHref(c.top[0]))}">
-          <span class="fp-field">${esc(c.name)}</span>
-          <span class="fp-lead"><span class="fp-pub">${esc(c.top[0])}</span><span class="fp-weeks">${c.top[1]}주</span></span>
-          ${c.runners.length ? `<span class="fp-runners">${c.runners.map((r) => `${esc(r[0])} ${r[1]}주`).join(" · ")}</span>` : ""}
-        </a>`).join("")}</div>`;
+    box.innerHTML = fieldTopsHTML(cards, publisherHref, iconKey, cfg.title, cfg.note);
   } catch (e) {
-    box.innerHTML = `<h2 class="section-heading">숲길별 강한 출판사</h2><p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
+    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
   }
 }
 
