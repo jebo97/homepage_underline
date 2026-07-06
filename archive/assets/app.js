@@ -324,7 +324,6 @@ async function renderHome() {
             <div class="search-block">${searchFormHTML("large")}</div>
           </div>
           <a class="hero-scroll" href="#stats" aria-label="아래로 더 보기">
-            <span class="hero-scroll-text">아래로 더 보기</span>
             <svg class="hero-scroll-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
           </a>
         </header>
