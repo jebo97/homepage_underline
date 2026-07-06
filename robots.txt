@@ -1,0 +1,8 @@
+# 밑줄긋기 / 문장숲 책길
+User-agent: *
+Allow: /
+
+# 검색 결과 페이지는 색인 제외(중복·저품질 방지)
+Disallow: /archive/search.html
+
+Sitemap: https://mjgg.airpage.org/sitemap.xml

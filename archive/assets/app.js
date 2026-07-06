@@ -103,6 +103,32 @@ function normalizeCategory(category) {
 }
 
 // ---------- 공용 유틸 ----------
+// 상세 페이지(책·연도·저자·출판사)의 canonical / og:url / og:title / description 를
+// 실제 콘텐츠에 맞춰 갱신(구글은 JS 렌더 후 이 값을 색인에 사용).
+function setPageMeta({ title, description } = {}) {
+  const url = location.href.split("#")[0];
+  const set = (sel, attr, val) => {
+    let el = document.head.querySelector(sel);
+    if (!el) {
+      el = document.createElement(sel.startsWith("link") ? "link" : "meta");
+      if (sel.startsWith("link")) el.setAttribute("rel", "canonical");
+      else if (sel.includes("property")) el.setAttribute("property", sel.match(/"([^"]+)"/)[1]);
+      else el.setAttribute("name", sel.match(/"([^"]+)"/)[1]);
+      document.head.appendChild(el);
+    }
+    el.setAttribute(attr, val);
+  };
+  set('link[rel="canonical"]', "href", url);
+  set('meta[property="og:url"]', "content", url);
+  if (title) {
+    document.title = title;
+    set('meta[property="og:title"]', "content", title);
+  }
+  if (description) {
+    set('meta[name="description"]', "content", description);
+    set('meta[property="og:description"]', "content", description);
+  }
+}
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
@@ -498,7 +524,10 @@ async function renderYear() {
     root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도입니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
-  document.title = `${year}년에 열린 책길 · 문장숲 책길`;
+  setPageMeta({
+    title: `${year}년에 열린 책길 · 문장숲 책길`,
+    description: `${year}년 교보문고 베스트셀러 책길. 그해 독자들이 오래 머문 책과 분야별 흐름을 기록했습니다.`,
+  });
   const { highlight, top10, byField } = await getYearData(year);
   const hasPrev = year > START_YEAR;
   const hasNext = year < maxYear;
@@ -677,9 +706,12 @@ async function renderBook() {
     root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">책을 찾을 수 없습니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
-  document.title = `${title} · 문장숲 책길`;
+  setPageMeta({ title: `${title} · 문장숲 책길` });
   const [data, naver] = await Promise.all([getBookData(title), getNaverMeta(title)]);
   const { author, publisher, publishers, generalWeeks, oneWeeks, bestRank, firstYear, yearlyGeneral, byCategory, mainField, fieldMates } = data;
+  setPageMeta({
+    description: `${title}${author ? " · " + author : ""}${publisher ? " (" + publisher + ")" : ""} — 교보문고 베스트셀러 차트인 기록과 함께 오른 흐름을 살펴봅니다.`,
+  });
   const publisherHTML = (publishers && publishers.length ? publishers : (publisher ? [publisher] : []))
     .map((p) => publisherLink(p, "alink")).join(" · ");
   const maxYearlyWeeks = Math.max(1, ...yearlyGeneral.map((y) => y.weeks));
@@ -1077,7 +1109,10 @@ async function renderAuthor() {
     root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
     return;
   }
-  document.title = `${name} · 문장숲 책길`;
+  setPageMeta({
+    title: `${name} · 문장숲 책길`,
+    description: `${name} 작가의 교보문고 베스트셀러 차트인 기록 — 오른 책과 연도별 흐름을 정리했습니다.`,
+  });
 
   const all = await fetchAll(() =>
     supabase.from("bestsellers")
@@ -1299,7 +1334,10 @@ async function renderPublisher() {
     root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾을 수 없습니다. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
     return;
   }
-  document.title = `${name} · 문장숲 책길`;
+  setPageMeta({
+    title: `${name} · 문장숲 책길`,
+    description: `${name} 출판사가 베스트셀러에 올린 책들의 기록 — 오래 사랑받은 책과 연도별 흐름을 정리했습니다.`,
+  });
 
   // 출판사 소개(편집 문구). 테이블/행이 없으면 조용히 생략.
   let intro = null;
