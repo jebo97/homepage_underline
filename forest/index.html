@@ -748,6 +748,11 @@
       .nav-links a { padding: 6px 8px; }
       .nav-links .nav-cta { display: none; }
     }
+    .hero-scroll { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 2; display: inline-flex; color: var(--color-navy); opacity: 0.72; transition: opacity .2s; }
+    .hero-scroll:hover { opacity: 1; }
+    .hero-scroll-chev { width: 30px; height: 30px; animation: heroBob 1.9s ease-in-out infinite; filter: drop-shadow(0 2px 7px rgba(255, 253, 248, 0.85)); }
+    @keyframes heroBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+    @media (prefers-reduced-motion: reduce) { .hero-scroll-chev { animation: none; } }
   </style>
 </head>
 <body>
@@ -783,7 +788,10 @@
             </div>
           </div>
         </div>
-      </section>
+            <a class="hero-scroll" href="#world" aria-label="아래로 더 보기">
+        <svg class="hero-scroll-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </a>
+    </section>
 
       <section class="section" id="world">
         <div class="container story-grid">
