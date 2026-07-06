@@ -323,8 +323,12 @@ async function renderHome() {
             <p class="hero-source">교보문고 베스트셀러 데이터를 참고해 개인이 정리한 아카이브입니다.</p>
             <div class="search-block">${searchFormHTML("large")}</div>
           </div>
+          <a class="hero-scroll" href="#stats" aria-label="아래로 더 보기">
+            <span class="hero-scroll-text">아래로 더 보기</span>
+            <svg class="hero-scroll-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
         </header>
-        <section class="stats-grid">${statsHTML}</section>
+        <section class="stats-grid" id="stats">${statsHTML}</section>
         <section class="section-years">
           <h2 class="section-heading">해마다 열린 책길</h2>
           <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
