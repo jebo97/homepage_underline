@@ -888,7 +888,10 @@
     .delay-2 { transition-delay: 0.2s; }
     .delay-3 { transition-delay: 0.3s; }
 
-    @media (max-width: 600px){ .nav-archive-link{ display:none !important; } }
+    .forest-link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1040px; margin: 0 auto; }
+    .forest-link-grid .forest-link-card { max-width: none; margin: 0; display: flex; flex-direction: column; }
+    .forest-link-grid .forest-link-desc { flex: 1; }
+    @media (max-width: 700px){ .forest-link-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -900,7 +903,6 @@
       <span style="font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;color:#1B2A4A;letter-spacing:-0.3px;white-space:nowrap;">밑줄긋기</span>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
-              <a href="/archive" class="nav-archive-link" style="font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;color:#1B2A4A;text-decoration:none;white-space:nowrap;padding:7px 8px;">문장숲 책길</a>
       <a href="https://apps.apple.com/kr/app/id6760542925" target="_blank" rel="noopener" style="background:#1B2A4A;color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:100px;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         App Store
@@ -1229,30 +1231,28 @@
       </div>
     </div>
   </section>
-  <section class="forest-link-section">
-    <div class="forest-link-card fade-up">
-      <div class="section-label">Sentence Forest</div>
-      <h2 class="section-title forest-link-title">문장숲에서 만나요</h2>
-      <p class="section-desc forest-link-desc">
-        밑줄긋기에는 문장을 돌보는 친구들이 살고 있어요.<br/>
-        마음에 닿은 문장을 발견하는 노아,<br/>
-        그 문장을 차분히 정리하는 결.<br/>
-        노아와 결이 기다리는 문장숲으로 오세요.
-      </p>
-      <a class="forest-link-button" href="/forest">문장숲 보러가기</a>
-    </div>
-  </section>
-
-  <!-- ARCHIVE LINK -->
-  <section class="forest-link-section">
-    <div class="forest-link-card fade-up">
-      <div class="section-label">Sentence Forest Book Road</div>
-      <h2 class="section-title forest-link-title">문장숲 책길</h2>
-      <p class="section-desc forest-link-desc">
-        2006년부터 이어진 20년의 베스트셀러가 흐르는 책의 길.<br/>
-        오래 사랑받은 책과 작가, 출판사의 기록을 거닐어 보세요.
-      </p>
-      <a class="forest-link-button" href="/archive">책길 둘러보기</a>
+    <section class="forest-link-section">
+    <div class="forest-link-grid">
+      <div class="forest-link-card fade-up">
+        <div class="section-label">Sentence Forest</div>
+        <h2 class="section-title forest-link-title">문장숲에서 만나요</h2>
+        <p class="section-desc forest-link-desc">
+          밑줄긋기에는 문장을 돌보는 친구들이 살고 있어요.<br/>
+          마음에 닿은 문장을 발견하는 노아,<br/>
+          그 문장을 차분히 정리하는 결.<br/>
+          노아와 결이 기다리는 문장숲으로 오세요.
+        </p>
+        <a class="forest-link-button" href="/forest">문장숲 보러가기</a>
+      </div>
+      <div class="forest-link-card fade-up">
+        <div class="section-label">ARCHIVE</div>
+        <h2 class="section-title forest-link-title">문장숲 책길</h2>
+        <p class="section-desc forest-link-desc">
+          2006년부터 이어진 20년의 베스트셀러가 흐르는 책의 길.<br/>
+          오래 사랑받은 책과 작가, 출판사의 기록을 거닐어 보세요.
+        </p>
+        <a class="forest-link-button" href="/archive">책길 둘러보기</a>
+      </div>
     </div>
   </section>
 

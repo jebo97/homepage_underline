@@ -212,6 +212,8 @@
       font-weight: 800;
       text-decoration: none;
     }
+    .cta-textlinks { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin: -12px 0 24px; }
+    .cta-textlinks .text-link { margin: 0; }
     .text-link::after {
       content: "→";
       margin-left: 6px;
@@ -896,8 +898,10 @@
             <span class="section-kicker">Start</span>
             <h2>오늘 마음에 남은 한 문장이 있다면</h2>
             <p class="lead">밑줄긋기에 조용히 남겨보세요.<br>밑줄 하나가, 나만의 문장숲이 됩니다.</p>
+            <div class="cta-textlinks">
             <a href="/" class="text-link">밑줄긋기 더 알아보기</a>
-          <a href="/archive" class="text-link">문장숲 책길 둘러보기</a>
+            <a href="/archive" class="text-link">문장숲 책길 둘러보기</a>
+          </div>
             <div class="cta-actions">
               <a href="https://apps.apple.com/kr/app/id6760542925" target="_blank" rel="noopener" class="btn btn-app-store">App Store에서 받기</a>
               <a href="https://play.google.com/store/apps/details?id=com.mjgg.underline" target="_blank" rel="noopener" class="btn btn-google-play">Google Play에서 받기</a>
