@@ -741,6 +741,12 @@
       *, *::before, *::after { transition: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
+    @media (max-width: 540px) {
+      .header-inner { gap: 10px; }
+      .nav-links { gap: 6px; font-size: 13px; }
+      .nav-links a { padding: 6px 8px; }
+      .nav-links .nav-cta { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -753,8 +759,7 @@
         </a>
         <nav class="nav-links" aria-label="메뉴">
             <a href="/archive">문장숲 책길</a>
-          <a class="nav-cta" href="https://apps.apple.com/kr/app/id6760542925" target="_blank" rel="noopener">App Store</a>
-          <a class="nav-cta is-play" href="https://play.google.com/store/apps/details?id=com.mjgg.underline" target="_blank" rel="noopener">Google Play</a>
+          <a class="nav-cta" href="#start">앱 다운로드</a>
         </nav>
       </div>
     </header>
