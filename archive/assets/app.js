@@ -28,6 +28,53 @@ const STAT_ICONS = {
   leaf: _ICON(`<path d="M6 18.5C6 11.3 10.6 6.2 18 6c.2 7.2-4.8 12.3-12 12.5Z"/><path d="M7 17.5C10.3 14.3 13.6 10.8 16.5 8.2"/>`),
 };
 
+// 섹션 제목용 라인 아이콘(제목 앞 작은 마크)
+const HEAD_ICONS = {
+  bookmark: _ICON(`<path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.8L6 20V5.5a1 1 0 0 1 1-1z"/>`),
+  chart: _ICON(`<path d="M5 5v14h14"/><path d="M9 15.5v-3M13 15.5v-6.5M17 15.5v-4"/>`),
+  leaf: _ICON(`<path d="M6 18.5C6 11.3 10.6 6.2 18 6c.2 7.2-4.8 12.3-12 12.5Z"/><path d="M7 17.5C10.3 14.3 13.6 10.8 16.5 8.2"/>`),
+  book: _ICON(`<path d="M12 7.5C10 6 7 6 5 7.1v9.6c2-1.1 5-1.1 7 .3 2-1.4 5-1.4 7-.3V7.1C17 6 14 6 12 7.5Zm0 0v9.4"/>`),
+  people: _ICON(`<circle cx="9" cy="8.5" r="2.6"/><path d="M4.5 19c0-2.8 2-4.8 4.5-4.8s4.5 2 4.5 4.8"/><path d="M15.6 6.3a2.6 2.6 0 0 1 0 5.2"/><path d="M16 14.4c2.2.4 3.8 2.2 3.8 4.6"/>`),
+  star: _ICON(`<path d="M12 4.4l2.2 4.6 5 .5-3.7 3.4 1 4.9L12 19.9 7.5 22.4l1-4.9-3.7-3.4 5-.5z"/>`),
+  pen: _ICON(`<path d="M4 20l1-3.6L15.6 5.8a2 2 0 0 1 2.8 2.8L7.6 19z"/><path d="M13.6 7.8l2.8 2.8"/>`),
+  quote: _ICON(`<path d="M9 7C6.6 7 5 9 5 11.4s1.6 3.6 3.6 3.3C8.6 17 7.4 18.3 5.6 18.8M19 7c-2.4 0-4 2-4 4.4s1.6 3.6 3.6 3.3C18.6 17 17.4 18.3 15.6 18.8"/>`),
+};
+// 섹션 제목 HTML (아이콘 + 텍스트)
+function sh(key, text) {
+  const ic = HEAD_ICONS[key] ? `<span class="sh-ic" aria-hidden="true">${HEAD_ICONS[key]}</span>` : "";
+  return `<h2 class="section-heading">${ic}${text}</h2>`;
+}
+
+// 숫자 카운트업(0→목표). reduced-motion/미지원이면 호출되지 않고 최종값이 그대로 보임.
+function countUp(el) {
+  const to = Number(el.dataset.to);
+  if (!isFinite(to)) return;
+  const dur = 950, t0 = performance.now();
+  const step = (now) => {
+    const p = Math.min(1, (now - t0) / dur);
+    el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = to.toLocaleString();
+  };
+  requestAnimationFrame(step);
+}
+// 스크롤 등장(fade-up) + 진입 시 카운트업/막대 성장 트리거
+function initReveal() {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;  // 그대로 표시
+  document.documentElement.classList.add("js-reveal");
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.classList.add("reveal-in");
+      io.unobserve(e.target);
+      e.target.querySelectorAll(".stat-num[data-to]").forEach(countUp);
+    }
+  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+  document.querySelectorAll("main .section-pad, main .stats-grid, main .section-years, main .section-longstay, main .book-road-cta")
+    .forEach((t) => { t.classList.add("reveal"); io.observe(t); });
+}
+
 // ---------- 카테고리 정규화 (categories.ts 포팅) ----------
 const FIELD_CATEGORIES = [
   "소설", "에세이", "인문", "역사문화",
@@ -270,16 +317,16 @@ async function renderHome() {
   const rowsLabel = (totalRows || 0).toLocaleString();
   const longestWeeks = longStayBooks[0]?.weeks ?? 0;
   const STATS = [
-    { value: String(spanYears), unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
-    { value: rowsLabel, unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records" },
-    { value: String(longestWeeks), unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
-    { value: "8", unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "leaf" },
+    { num: spanYears, unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
+    { num: (totalRows || 0), unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records" },
+    { num: longestWeeks, unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
+    { num: 8, unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "leaf" },
   ];
 
   const statsHTML = STATS.map((s) => `
     <div class="stat-card">
       <span class="stat-icon" aria-hidden="true">${STAT_ICONS[s.icon] ?? ""}</span>
-      <div class="stat-value">${esc(s.value)}<span class="stat-unit">${esc(s.unit)}</span></div>
+      <div class="stat-value"><span class="stat-num" data-to="${s.num}">${s.num.toLocaleString()}</span><span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
       <div class="stat-label">${esc(s.desc)}</div>
     </div>`).join("");
@@ -329,13 +376,13 @@ async function renderHome() {
         </header>
         <section class="stats-grid" id="stats">${statsHTML}</section>
         <section class="section-years">
-          <h2 class="section-heading">해마다 열린 책길</h2>
+          ${sh("chart", "해마다 열린 책길")}
           <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
           <p class="section-source">대표 책길이 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
         <section class="section-longstay">
-          <h2 class="section-heading">오래 머문 책</h2>
+          ${sh("bookmark", "오래 머문 책")}
           <p class="section-note">잠깐의 순위보다 오래 남은 기록을 봅니다.<br />여러 계절 동안 독자 곁에 머문 책들을 모았습니다.</p>
           <div class="longstay-grid">${longStayHTML}</div>
         </section>
@@ -499,12 +546,12 @@ async function renderYear() {
         </header>
         ${highlightHTML}
         <section class="section-pad">
-          <h2 class="section-heading">그해 책길에 오래 머문 책</h2>
+          ${sh("bookmark", "그해 책길에 오래 머문 책")}
           <p class="section-note year-section-note">그해 베스트셀러 목록에 오래 남아 있던 책들을 차트인 주수 기준으로 정리했습니다.</p>
           ${top10HTML}
         </section>
         <section class="section-pad year-field-section">
-          <h2 class="section-heading">숲길 갈래별 오래 1위에 선 책</h2>
+          ${sh("leaf", "숲길 갈래별 오래 1위에 선 책")}
           <p class="section-note year-section-note">각 분야에서 1위 자리에 가장 오래 선 책들을 모았습니다.</p>
           <div class="field-grid">${byFieldHTML}</div>
         </section>
@@ -622,7 +669,7 @@ async function renderBook() {
   // 2. 현재 책 정보 (네이버) — 보조 정보, 위계 낮춤
   const naverHTML = naver ? `
     <section class="section-pad book-now">
-      <h2 class="section-heading">현재 책 정보</h2>
+      ${sh("book", "현재 책 정보")}
       <p class="section-note">네이버 책 기준 현재 정보예요. 당시 기록과 다를 수 있어요.</p>
       <div class="naver-card">
         <div class="naver-body">
@@ -652,11 +699,11 @@ async function renderBook() {
   // 4. 연도별 책길 흐름
   const yearlyHTML = (generalWeeks > 0 && yearlyGeneral.length) ? `
     <section class="section-pad">
-      <h2 class="section-heading">연도별 책길 흐름</h2>
+      ${sh("chart", "연도별 책길 흐름")}
       <div class="bars">${yearlyGeneral.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
           <span class="bar-year">${year}</span>
-          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxYearlyWeeks) * 100)}%"></span></span>
+          <span class="bar-track"><span class="bar-fill" style="--w:${Math.max(6, (weeks / maxYearlyWeeks) * 100)}%"></span></span>
           <span class="bar-weeks">${weeks}주</span>
         </a>`).join("")}</div>
     </section>` : "";
@@ -664,7 +711,7 @@ async function renderBook() {
   // 5. 숲길 갈래별 기록 (분야별 차트 기준 — 종합과 별개)
   const catHTML = byCategory.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">숲길 갈래별 기록</h2>
+      ${sh("leaf", "숲길 갈래별 기록")}
       <p class="section-note">분야별 차트 기준으로, 종합 기록과 주수가 다를 수 있어요.</p>
       <div class="cat-list">${byCategory.map(({ category, weeks }) => `
         <div class="cat-row"><span class="cn">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span><span class="cw">누적 ${weeks}주</span></div>`).join("")}</div>
@@ -674,7 +721,7 @@ async function renderBook() {
   const fieldName = FIELD_DISPLAY_NAMES[mainField] ?? mainField;
   const compHTML = fieldMates.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">${esc(fieldName)}에서 함께 오른 책들</h2>
+      ${sh("people", `${esc(fieldName)}에서 함께 오른 책들`)}
       <p class="section-note">이 책과 같은 해, 같은 숲길에 오래 머문 책들이에요.</p>
       <div class="companions">${fieldMates.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
@@ -695,7 +742,7 @@ async function renderBook() {
         </header>
         ${naverHTML}
         <section class="section-pad">
-          <h2 class="section-heading">이 책이 머문 책길 기록</h2>
+          ${sh("bookmark", "이 책이 머문 책길 기록")}
           ${recordHTML}
         </section>
         ${yearlyHTML}
@@ -917,7 +964,7 @@ function catSectionHTML(byCategory) {
   };
   return `
     <section class="section-pad">
-      <h2 class="section-heading">숲길 갈래별 기록</h2>
+      ${sh("leaf", "숲길 갈래별 기록")}
       <p class="section-note">분야별 차트 기준이라 전체 기록과 주수가 다를 수 있어요. 갈래를 누르면 그 숲길에 오른 책들을 볼 수 있어요.</p>
       <div class="cat-list">${byCategory.map(catRow).join("")}</div>
     </section>`;
@@ -983,7 +1030,7 @@ async function renderAuthor() {
 
   const booksHTML = books.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">이 작가가 남긴 책길</h2>
+      ${sh("pen", "이 작가가 남긴 책길")}
       <p class="section-note">문장숲 책길에 오른 책들을 오래 머문 순서로 정리했습니다.</p>
       <div class="companions">${books.map((b, i) => `
         <a class="companion" href="${esc(bookHref(b.title))}">
@@ -995,12 +1042,12 @@ async function renderAuthor() {
 
   const yearlyHTML = yearly.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">해마다 머문 책길</h2>
+      ${sh("chart", "해마다 머문 책길")}
       <p class="section-note">이 작가의 책들이 해마다 책길에 머문 주수를 보여줍니다.</p>
       <div class="bars">${yearly.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
           <span class="bar-year">${year}</span>
-          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
+          <span class="bar-track"><span class="bar-fill" style="--w:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
           <span class="bar-weeks">${weeks}주</span>
         </a>`).join("")}</div>
     </section>` : "";
@@ -1116,7 +1163,7 @@ async function renderPublishers() {
           ${listHTML}
         </section>
         <section id="field-strength" class="section-pad">
-          <h2 class="section-heading">숲길별 강한 출판사</h2>
+          ${sh("star", "숲길별 강한 출판사")}
           <p class="section-note">여덟 갈래 숲길에서 가장 오래 책을 피워낸 출판사예요.</p>
           <p class="loading">숲길별 기록을 살펴보는 중…</p>
         </section>
@@ -1150,7 +1197,7 @@ async function renderFieldStrength() {
     });
     if (!cards.length) { box.style.display = "none"; return; }
     box.innerHTML = `
-      <h2 class="section-heading">숲길별 강한 출판사</h2>
+      ${sh("star", "숲길별 강한 출판사")}
       <p class="section-note">여덟 갈래 숲길에서 가장 오래 책을 피워낸 출판사예요. (분야별 차트 기준)</p>
       <div class="field-pub-grid">${cards.map((c) => `
         <a class="field-pub" href="${esc(publisherHref(c.top[0]))}">
@@ -1230,7 +1277,7 @@ async function renderPublisher() {
 
   const booksHTML = books.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">이 출판사가 피워낸 책길</h2>
+      ${sh("pen", "이 출판사가 피워낸 책길")}
       <p class="section-note">이 출판사가 책길에 올린 책들을 오래 머문 순서로 정리했어요.</p>
       <div class="companions">${books.map((b, i) => `
         <a class="companion" href="${esc(bookHref(b.title))}">
@@ -1242,12 +1289,12 @@ async function renderPublisher() {
 
   const yearlyHTML = yearly.length > 0 ? `
     <section class="section-pad">
-      <h2 class="section-heading">해마다 피어난 정원</h2>
+      ${sh("chart", "해마다 피어난 정원")}
       <p class="section-note">이 출판사의 책들이 해마다 책길에 머문 주수를 보여줍니다.</p>
       <div class="bars">${yearly.map(({ year, weeks }) => `
         <a class="bar-row" href="${esc(yearHref(year))}">
           <span class="bar-year">${year}</span>
-          <span class="bar-track"><span class="bar-fill" style="width:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
+          <span class="bar-track"><span class="bar-fill" style="--w:${Math.max(6, (weeks / maxY) * 100)}%"></span></span>
           <span class="bar-weeks">${weeks}주</span>
         </a>`).join("")}</div>
     </section>` : "";
@@ -1257,7 +1304,7 @@ async function renderPublisher() {
   const introHTML = intro && intro.body ? `
     <section class="section-pad publisher-intro">
       <span class="intro-label">출판사 소개</span>
-      <h2 class="section-heading">이 정원이 키워온 책의 결</h2>
+      ${sh("quote", "이 정원이 키워온 책의 결")}
       <div class="intro-body">${intro.body.split(/\n+/).map((p) => p.trim()).filter(Boolean).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
       ${intro.keywords ? `<div class="intro-keywords">${intro.keywords.split(",").map((k) => k.trim()).filter(Boolean).map((k) => `<span class="intro-chip">${esc(k)}</span>`).join("")}</div>` : ""}
       <p class="intro-source">출판사 공식 홈페이지 소개를 바탕으로 문장숲 톤에 맞게 정리했습니다.</p>
@@ -1301,6 +1348,7 @@ async function main() {
     else if (page === "author") await renderAuthor();
     else if (page === "publishers") await renderPublishers();
     else if (page === "publisher") await renderPublisher();
+    initReveal();
   } catch (e) {
     console.error(e);
     const root = document.getElementById("page-root");

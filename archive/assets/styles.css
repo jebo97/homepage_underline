@@ -1213,3 +1213,20 @@ html { scroll-behavior: smooth; }
 /* ---------- 로딩/상태 ---------- */
 .loading { padding: 6rem 1.5rem; text-align: center; color: var(--slate-500); font-size: 0.875rem; }
 .nav-pad-top { padding-top: 5rem; }
+
+/* ---------- 섹션 제목 아이콘 + 생동감(스크롤 등장·데이터 애니메이션) ---------- */
+.section-heading .sh-ic {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.05em; height: 1.05em; margin-right: 0.5rem;
+  color: var(--accent); vertical-align: -0.15em;
+}
+.section-heading .sh-ic svg { width: 100%; height: 100%; }
+
+/* 막대 폭은 --w 로 지정(기본: 즉시 전체 폭) */
+.bar-fill { width: var(--w, 0%); }
+
+/* JS 활성(prefers-reduced-motion 아님 + IO 지원) 시에만 애니메이션 */
+.js-reveal .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.js-reveal .reveal.reveal-in { opacity: 1; transform: none; }
+.js-reveal .bar-fill { width: 0; transition: width 1s cubic-bezier(.22,.61,.36,1) .12s; }
+.js-reveal .reveal-in .bar-fill { width: var(--w, 0%); }
