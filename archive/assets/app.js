@@ -379,7 +379,7 @@ async function renderHome() {
       <div class="wrap wrap-5xl">
         <header class="home-header">
           <div class="home-copy">
-            <p class="hero-eyebrow">Sentence Forest Book Road</p>
+            <p class="hero-eyebrow">ARCHIVE</p>
             <h1 class="page-title">문장숲 책길</h1>
             <p class="hero-lead">많은 독자들이 지나간 책의 길을 따라,<br />오늘 내 마음에 남을 문장을 찾아보세요.</p>
             <p class="subtitle">2006년부터 쌓인 주간 베스트셀러 기록으로<br />시간이 지나도 오래 남은 책의 흐름을 들여다봅니다.</p>
