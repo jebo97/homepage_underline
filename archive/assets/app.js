@@ -34,7 +34,7 @@ const HEAD_ICONS = {
   chart: _ICON(`<path d="M5 5v14h14"/><path d="M9 15.5v-3M13 15.5v-6.5M17 15.5v-4"/>`),
   leaf: _ICON(`<path d="M6 18.5C6 11.3 10.6 6.2 18 6c.2 7.2-4.8 12.3-12 12.5Z"/><path d="M7 17.5C10.3 14.3 13.6 10.8 16.5 8.2"/>`),
   book: _ICON(`<path d="M12 7.5C10 6 7 6 5 7.1v9.6c2-1.1 5-1.1 7 .3 2-1.4 5-1.4 7-.3V7.1C17 6 14 6 12 7.5Zm0 0v9.4"/>`),
-  people: _ICON(`<circle cx="9" cy="8.5" r="2.6"/><path d="M4.5 19c0-2.8 2-4.8 4.5-4.8s4.5 2 4.5 4.8"/><path d="M15.6 6.3a2.6 2.6 0 0 1 0 5.2"/><path d="M16 14.4c2.2.4 3.8 2.2 3.8 4.6"/>`),
+  together: _ICON(`<path d="M12 3.5l7.5 3.8-7.5 3.8-7.5-3.8z"/><path d="M4.5 12l7.5 3.8 7.5-3.8"/><path d="M4.5 16.4l7.5 3.8 7.5-3.8"/>`),
   star: _ICON(`<path d="M12 4.4l2.2 4.6 5 .5-3.7 3.4 1 4.9L12 19.9 7.5 22.4l1-4.9-3.7-3.4 5-.5z"/>`),
   pen: _ICON(`<path d="M4 20l1-3.6L15.6 5.8a2 2 0 0 1 2.8 2.8L7.6 19z"/><path d="M13.6 7.8l2.8 2.8"/>`),
   quote: _ICON(`<path d="M9 7C6.6 7 5 9 5 11.4s1.6 3.6 3.6 3.3C8.6 17 7.4 18.3 5.6 18.8M19 7c-2.4 0-4 2-4 4.4s1.6 3.6 3.6 3.3C18.6 17 17.4 18.3 15.6 18.8"/>`),
@@ -49,7 +49,7 @@ function sh(key, text) {
 function countUp(el) {
   const to = Number(el.dataset.to);
   if (!isFinite(to)) return;
-  const dur = 950, t0 = performance.now();
+  const dur = 1500, t0 = performance.now();
   const step = (now) => {
     const p = Math.min(1, (now - t0) / dur);
     el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString();
@@ -158,7 +158,7 @@ function searchFormHTML(variant, value = "") {
     </form>`;
   }
   return `<form class="search-form large" action="search.html" method="get">
-    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="책 제목이나 작가 이름으로 책길을 찾아보세요" aria-label="책 제목, 저자 검색" />
+    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="제목·작가·출판사로 찾아보세요" aria-label="책 제목, 저자, 출판사 검색" />
     <button class="search-btn" type="submit">${searchButtonContent}</button>
   </form>`;
 }
@@ -737,7 +737,7 @@ async function renderBook() {
   const fieldName = FIELD_DISPLAY_NAMES[mainField] ?? mainField;
   const compHTML = fieldMates.length > 0 ? `
     <section class="section-pad">
-      ${sh("people", `${esc(fieldName)}에서 함께 오른 책들`)}
+      ${sh("together", `${esc(fieldName)}에서 함께 오른 책들`)}
       <p class="section-note">이 책과 같은 해, 같은 숲길에 오래 머문 책들이에요.</p>
       <div class="companions">${fieldMates.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
@@ -780,7 +780,7 @@ async function searchBooks(query) {
   const rows = await fetchAll(() =>
     supabase.from("bestsellers")
       .select("title, author, publisher, year, week")
-      .or(`title.ilike.${pattern},author.ilike.${pattern}`)
+      .or(`title.ilike.${pattern},author.ilike.${pattern},publisher.ilike.${pattern}`)
       .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지); 결과는 아래서 재정렬
   );
   const map = new Map();
