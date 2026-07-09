@@ -148,9 +148,9 @@ function yearHref(year) {
 function authorHref(name) {
   return `author.html?name=${encodeURIComponent(name)}`;
 }
-// 저자명을 저자 페이지 링크로. 빈 값이면 "저자 미상" 텍스트.
+// 저자명을 저자 페이지 링크로. 빈 값이면 "작가 미상" 텍스트.
 function authorLink(name, cls = "") {
-  if (!name) return `<span${cls ? ` class="${cls}"` : ""}>저자 미상</span>`;
+  if (!name) return `<span${cls ? ` class="${cls}"` : ""}>작가 미상</span>`;
   return `<a${cls ? ` class="${cls}"` : ""} href="${esc(authorHref(name))}">${esc(name)}</a>`;
 }
 function stripTags(s) {
@@ -199,12 +199,12 @@ function searchFormHTML(variant, value = "") {
   const searchButtonContent = `<span class="search-label">검색</span><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="15.8" y1="15.8" x2="21" y2="21"></line></svg>`;
   if (variant === "small") {
     return `<form class="search-form small" action="search.html" method="get">
-      <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="검색" aria-label="책 제목, 저자 검색" />
+      <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="검색" aria-label="책 제목, 작가 검색" />
       <button class="search-btn" type="submit" aria-label="검색">${searchButtonContent}</button>
     </form>`;
   }
   return `<form class="search-form large" action="search.html" method="get">
-    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="제목·작가·출판사로 찾아보세요" aria-label="책 제목, 저자, 출판사 검색" />
+    <input class="search-input" type="search" name="q" value="${esc(value)}" placeholder="제목·작가·출판사로 찾아보세요" aria-label="책 제목, 작가, 출판사 검색" />
     <button class="search-btn" type="submit">${searchButtonContent}</button>
   </form>`;
 }
@@ -410,7 +410,7 @@ async function renderHome() {
         ${index === 0 ? `<span class="longstay-badge">가장 오래 머문 책</span>` : ""}
       </span>
       <span class="longstay-title line-clamp-2">${esc(book.title)}</span>
-      <span class="longstay-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
+      <span class="longstay-author line-clamp-1">${esc(book.author ?? "작가 미상")}</span>
       <span class="longstay-weeks">${book.weeks}주 차트인</span>
     </a>`).join("");
 
@@ -535,7 +535,7 @@ async function renderYear() {
   const year = Number(new URLSearchParams(location.search).get("y"));
   const maxYear = await getMaxYear();
   if (!Number.isInteger(year) || year < START_YEAR || year > maxYear) {
-    root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도입니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-5xl nav-pad-top"><p class="empty">존재하지 않는 연도예요. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
   setPageMeta({
@@ -557,7 +557,7 @@ async function renderYear() {
     <a class="highlight-card" href="${esc(bookHref(highlight.title))}">
       <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">그해 가장 오래 1위에 선 책</span></div>
       <h2 class="highlight-title">${esc(highlight.title)}</h2>
-      <p class="highlight-meta">${esc(highlight.author ?? "저자 미상")}${highlight.publisher ? ` · ${esc(highlight.publisher)}` : ""}</p>
+      <p class="highlight-meta">${esc(highlight.author ?? "작가 미상")}${highlight.publisher ? ` · ${esc(highlight.publisher)}` : ""}</p>
       <p class="highlight-copy">${highlight.weeks}주 동안 책길의 가장 앞에 서 있었어요.</p>
       <div class="badge-accent">${highlight.weeks}주 1위</div>
     </a>` : "";
@@ -568,7 +568,7 @@ async function renderYear() {
           <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
           <div class="info">
             <a href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
-            <p>${esc(book.author ?? "저자 미상")}</p>
+            <p>${esc(book.author ?? "작가 미상")}</p>
           </div>
           <span class="weeks">${book.weeks}주 차트인</span>
         </li>`).join("")}</ol>`
@@ -579,7 +579,7 @@ async function renderYear() {
       <span class="field-name">${esc(FIELD_DISPLAY_NAMES[category] ?? category)}</span>
       ${book ? `
         <a class="ft line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
-        <p class="fa">${esc(book.author ?? "저자 미상")}</p>
+        <p class="fa">${esc(book.author ?? "작가 미상")}</p>
         <p class="fw">${book.weeks}주 1위</p>`
       : `<p class="field-empty-msg">이 숲길에는 아직 기록이 없어요</p>`}
     </div>`).join("");
@@ -717,7 +717,7 @@ async function renderBook() {
   const root = document.getElementById("page-root");
   const title = new URLSearchParams(location.search).get("title") || "";
   if (!title) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">책을 찾을 수 없습니다. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">책을 찾지 못했어요. <a class="back-link" href="index.html">← 문장숲 책길로</a></p></div></main>`;
     return;
   }
   setPageMeta({ title: `${title} · 문장숲 책길` });
@@ -795,7 +795,7 @@ async function renderBook() {
       <p class="section-note">이 책과 같은 해, 같은 숲길에 오래 머문 책들이에요.</p>
       <div class="companions">${fieldMates.map((book) => `
         <a class="companion" href="${esc(bookHref(book.title))}">
-          <span class="info"><span class="ct">${esc(book.title)}</span><span class="ca">${esc(book.author ?? "저자 미상")}</span></span>
+          <span class="info"><span class="ct">${esc(book.title)}</span><span class="ca">${esc(book.author ?? "작가 미상")}</span></span>
           <span class="weeks">${book.weeks}주</span>
         </a>`).join("")}</div>
     </section>` : "";
@@ -818,7 +818,7 @@ async function renderBook() {
         ${yearlyHTML}
         ${catHTML}
         ${compHTML}
-        <p class="disclaimer">베스트셀러 기록의 출판사·저자 표기는 차트 등재 당시 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
+        <p class="disclaimer">베스트셀러 기록의 출판사·작가 표기는 차트 등재 당시 기준이며, 판권 이동·개정판 출간 등으로 현재 정보와 다를 수 있습니다.</p>
       </div>
       ${slimCtaHTML()}
     </main>`;
@@ -880,7 +880,7 @@ async function renderSearch() {
   const results = await searchBooks(query);
   const box = document.getElementById("search-results");
   if (results.length === 0) {
-    box.innerHTML = `<p class="empty">‘${esc(query)}’의 책길은 아직 찾지 못했어요.</p>`;
+    box.innerHTML = `<p class="empty">‘${esc(query)}’와 이어지는 책길을 아직 찾지 못했어요.</p>`;
     return;
   }
   box.innerHTML = `
@@ -888,13 +888,13 @@ async function renderSearch() {
     <div class="companions">${results.map((book) => {
       const period = book.firstYear === book.lastYear
         ? `${book.firstYear}` : `${book.firstYear}–${book.lastYear}`;
-      const meta = `${esc(book.author ?? "저자 미상")}${book.publisher ? ` · ${esc(book.publisher)}` : ""} · ${period}`;
+      const meta = `${esc(book.author ?? "작가 미상")}${book.publisher ? ` · ${esc(book.publisher)}` : ""} · ${period}`;
       return `<a class="companion" href="${esc(bookHref(book.title))}">
         <span class="info">
           <span class="ct">${esc(book.title)}</span>
           <span class="ca">${meta}</span>
         </span>
-        <span class="weeks">${book.totalWeeks}주 머문 책</span>
+        <span class="weeks">${book.totalWeeks}주 차트인</span>
       </a>`;
     }).join("")}</div>`;
 }
@@ -1124,7 +1124,7 @@ async function renderAuthor() {
   const root = document.getElementById("page-root");
   const name = new URLSearchParams(location.search).get("name") || "";
   if (!name) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">저자를 찾을 수 없습니다. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">작가를 찾지 못했어요. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
     return;
   }
   setPageMeta({
@@ -1139,7 +1139,7 @@ async function renderAuthor() {
       .order("id", { ascending: true })  // 안정적 페이징(중복/누락 방지)
   );
   if (all.length === 0) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 아직 없어요. <a class="back-link" href="authors.html">← 작가의 숲</a></p></div></main>`;
     return;
   }
 
@@ -1219,7 +1219,7 @@ async function renderAuthor() {
         ${booksHTML}
         ${yearlyHTML}
         ${catHTML}
-        <p class="disclaimer">저자 표기는 차트 등재 당시 데이터 기준이며, 동명이인·공저 표기 차이로 일부 다르게 묶일 수 있습니다.</p>
+        <p class="disclaimer">작가 표기는 차트 등재 당시 데이터 기준이며, 동명이인·공저 표기 차이로 일부 다르게 묶일 수 있습니다.</p>
       </div>
       ${slimCtaHTML()}
     </main>`;
@@ -1349,7 +1349,7 @@ async function renderPublisher() {
   const root = document.getElementById("page-root");
   const name = new URLSearchParams(location.search).get("name") || "";
   if (!name) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾을 수 없습니다. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">출판사를 찾지 못했어요. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
     return;
   }
   setPageMeta({
@@ -1370,7 +1370,7 @@ async function renderPublisher() {
       .eq("publisher", name)
       .order("id", { ascending: true }));
   if (all.length === 0) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 없습니다. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">‘${esc(name)}’의 기록이 아직 없어요. <a class="back-link" href="publishers.html">← 출판사의 정원</a></p></div></main>`;
     return;
   }
 
@@ -1405,7 +1405,7 @@ async function renderPublisher() {
   const yearRangeShort = firstYear === lastYear ? `${firstYear}` : `${firstYear}–${String(lastYear).slice(-2)}`;
 
   const statBoxes = oneWeeks > 0
-    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지 주수"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]]
+    ? [[chartinWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]]
     : [[chartinWeeks, "주", "총 차트인 주수"], [bookCount, "권", "책길에 오른 책"], [yearRangeShort, "", "기록된 해"]];
   const statHTML = statBoxes.map(([v, u, c]) =>
     `<div class="box"><div class="big">${v}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("");
@@ -1512,7 +1512,7 @@ async function renderFields() {
       <span class="fpc-head"><span class="fpc-name">${esc(c.name)}</span><span class="fpc-genre">${esc(c.field)}</span></span>
       <span class="fpc-top">
         <span class="fpc-top-title line-clamp-2">${esc(c.top.title)}</span>
-        <span class="fpc-top-meta">${esc(c.top.author ?? "저자 미상")} · ${c.top.weeks}주</span>
+        <span class="fpc-top-meta">${esc(c.top.author ?? "작가 미상")} · ${c.top.weeks}주</span>
       </span>
       ${c.runners.length ? `<span class="fpc-runners line-clamp-1">${c.runners.map((r) => esc(r.title)).join(" · ")}</span>` : ""}
       <span class="fpc-count">${c.bookCount.toLocaleString()}권 · ${c.recordCount.toLocaleString()}개 기록</span>
@@ -1542,7 +1542,7 @@ async function renderField() {
   const field = new URLSearchParams(location.search).get("f") || "";
   const raws = CATEGORY_RAW[field];
   if (!raws || !FIELD_DISPLAY_NAMES[field]) {
-    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">존재하지 않는 숲길입니다. <a class="back-link" href="fields.html">← 여덟 숲길</a></p></div></main>`;
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">존재하지 않는 숲길이에요. <a class="back-link" href="fields.html">← 여덟 숲길</a></p></div></main>`;
     return;
   }
   const name = FIELD_DISPLAY_NAMES[field];
@@ -1587,7 +1587,7 @@ async function renderField() {
       <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
       <div class="info">
         <a href="${esc(bookHref(b.title))}">${esc(b.title)}</a>
-        <p>${esc(b.author ?? "저자 미상")}</p>
+        <p>${esc(b.author ?? "작가 미상")}</p>
       </div>
       <span class="weeks">${b.weeks}주 차트인</span>
     </li>`).join("")}</ol>`;
@@ -1597,7 +1597,7 @@ async function renderField() {
       <span class="dot"></span>
       <a class="year-num" href="${esc(yearHref(y))}">${y}</a>
       <a class="book-title line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
-      <span class="book-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
+      <span class="book-author line-clamp-1">${esc(book.author ?? "작가 미상")}</span>
       <span class="year-weeks">${book.weeks}주 차트인</span>
     </div>`).join("")}</div>`;
 
@@ -1648,7 +1648,7 @@ async function main() {
   } catch (e) {
     console.error(e);
     const root = document.getElementById("page-root");
-    if (root) root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">불러오는 중 오류가 발생했습니다.</p></div></main>`;
+    if (root) root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">불러오는 중 문제가 생겼어요.</p></div></main>`;
   }
 }
 
