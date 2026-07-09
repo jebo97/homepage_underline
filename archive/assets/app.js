@@ -221,9 +221,9 @@ function renderNav() {
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
       <a class="nav-link${homeActive ? " is-active" : ""}" href="index.html"${homeActive ? ' aria-current="page"' : ""}>문장숲 책길</a>
+      <a class="nav-link${fieldsActive ? " is-active" : ""}" href="fields.html"${fieldsActive ? ' aria-current="page"' : ""}>여덟 숲길</a>
       <a class="nav-link${authorsActive ? " is-active" : ""}" href="authors.html"${authorsActive ? ' aria-current="page"' : ""}>작가의 숲</a>
       <a class="nav-link${publishersActive ? " is-active" : ""}" href="publishers.html"${publishersActive ? ' aria-current="page"' : ""}>출판사의 정원</a>
-      <a class="nav-link${fieldsActive ? " is-active" : ""}" href="fields.html"${fieldsActive ? ' aria-current="page"' : ""}>여덟 숲길</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;
