@@ -107,7 +107,7 @@ a.alink:hover { color: #9b7619; text-decoration-color: #9b7619; }
 
 /* 은근한 한 줄 CTA (첫 화면 외 페이지) */
 .slim-cta {
-  margin: 0;
+  margin: 3rem 0 0;
   padding: 2.75rem 0 3.5rem;
   text-align: center;
   border-top: 1px solid var(--line);
