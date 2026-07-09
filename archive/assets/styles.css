@@ -1166,7 +1166,9 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 .book-road-page .search-form.large .search-input:focus { border-color: rgba(231, 185, 40, 0.6); }
 
 /* 주의 문구 */
-.book-road-page .disclaimer { margin-top: 4rem; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 2rem 0 1rem; color: #98a1b0; font-size: 0.8rem; line-height: 1.7; text-align: center; }
+/* padding-bottom은 0으로 두고 아래 여백은 slim-cta의 margin-top(3rem)에 맡겨,
+   디스클레이머 텍스트가 위/아래 구분선과 3rem씩 대칭이 되게 함 */
+.book-road-page .disclaimer { margin: 4rem 0 0; border-top: 1px solid rgba(138, 98, 61, 0.14); padding: 3rem 0 0; color: #98a1b0; font-size: 0.8rem; line-height: 1.7; text-align: center; }
 
 /* 밝은 페이지(연도·책 상세)용 슬림 CTA 보정 */
 .year-road-page .slim-cta, .book-road-page .slim-cta { border-top-color: rgba(138, 98, 61, 0.18); }
