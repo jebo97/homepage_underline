@@ -437,6 +437,13 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 .year-road-page .year-card .year-num { font-size: 1.125rem; }
 .year-road-page .year-card .book-title { font-size: 1rem; }
 .year-road-page .year-card .year-weeks { font-size: 0.78rem; }
+/* 폰트가 작아진 만큼 카드 높이·여백도 줄여 빈 느낌 방지 */
+.year-road-page .year-card { min-height: 0; padding: 1.25rem 1.4rem; }
+.year-road-page .year-card .dot { top: 1.45rem; left: 1.4rem; }
+.year-road-page .year-card .year-num { padding-left: 1.1rem; }
+.year-road-page .year-card .book-title { margin-top: 0.5rem; }
+.year-road-page .year-card .year-weeks { padding-top: 0.7rem; }
+.year-road-page .year-card::after { bottom: 0.9rem; }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
