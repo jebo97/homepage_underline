@@ -1,13 +1,18 @@
 // 베스트셀러 아카이브 — 정적 프론트엔드 (Supabase 직접 호출)
 // 기존 Next.js 서버 컴포넌트 로직을 브라우저용으로 포팅.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// supabase-js 전체(auth·realtime·storage·functions) 대신 PostgREST 쿼리 빌더만 로컬 번들로 사용.
+// 아카이브는 읽기 전용이라 나머지 모듈이 불필요 → esm.sh CDN 폭포(6개 모듈) 제거로 로딩 경량화.
+// .from().select().eq().order().range()... API는 supabase-js와 동일하므로 쿼리 코드는 그대로.
+import { PostgrestClient } from "./vendor/postgrest.mjs";
 
 // 공개(anon) 키 — 클라이언트 노출용. 데이터 보호는 Supabase RLS(읽기 전용)가 담당.
 const SUPABASE_URL = "https://xvizopylegaghrcecjgl.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2aXpvcHlsZWdhZ2hyY2VjamdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MTk2NTIsImV4cCI6MjA5Nzk5NTY1Mn0.sm4s_hGNKHWBTZZZEd2MCTtrbO0R2a7wPtIvQ_1P6Zg";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = new PostgrestClient(`${SUPABASE_URL}/rest/v1`, {
+  headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+});
 
 const START_YEAR = 2006;
 const END_YEAR = 2026;
@@ -174,6 +179,21 @@ async function fetchAll(buildQuery) {
   return rows;
 }
 
+// 총 개수를 알 때 페이지들을 병렬로 가져와 순차 왕복을 없앤다.
+// id 정렬로 페이지 경계 중복·누락 방지(Supabase 페이지네이션 원칙).
+async function fetchAllParallel(buildQuery, total) {
+  const PAGE = 1000;
+  const pages = Math.max(1, Math.ceil((total || 0) / PAGE));
+  const reqs = [];
+  for (let i = 0; i < pages; i++) {
+    reqs.push(
+      buildQuery().order("id").range(i * PAGE, i * PAGE + PAGE - 1)
+        .then(({ data, error }) => { if (error) { console.error(error.message); return []; } return data ?? []; })
+    );
+  }
+  return (await Promise.all(reqs)).flat();
+}
+
 // ---------- 공통 레이아웃 (nav / source footer) ----------
 function searchFormHTML(variant, value = "") {
   const searchButtonContent = `<span class="search-label">검색</span><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7"></circle><line x1="15.8" y1="15.8" x2="21" y2="21"></line></svg>`;
@@ -286,34 +306,6 @@ function slimCtaHTML() {
 // ====================================================================
 // 홈
 // ====================================================================
-async function getYearRanking(year) {
-  const { data, error } = await supabase
-    .from("bestsellers")
-    .select("title, author")
-    .eq("year", year)
-    .eq("category", "종합")
-    .limit(1000);
-  if (error) { console.error(`${year} 종합 조회 실패:`, error.message); return []; }
-  const counts = new Map();
-  for (const r of data ?? []) {
-    const key = `${r.title}|${r.author ?? ""}`;
-    const entry = counts.get(key);
-    if (entry) entry.weeks += 1;
-    else counts.set(key, { book: r, weeks: 1 });
-  }
-  return [...counts.values()]
-    .sort((a, b) => b.weeks - a.weeks || a.book.title.localeCompare(b.book.title))
-    .map((e) => ({ ...e.book, weeks: e.weeks }));
-}
-
-async function getLongStayBooks() {
-  const rows = await fetchAll(() => supabase
-    .from("bestsellers")
-    .select("title, author, publisher")
-    .eq("category", "종합"));
-  return aggregate(rows).slice(0, 5);
-}
-
 // 홈 통계·연도범위를 DB에서 자동 계산 (데이터 추가 시 코드 수정 없이 갱신)
 let _maxYearCache = null;
 async function getMaxYear() {
@@ -332,11 +324,25 @@ async function renderHome() {
   document.title = "문장숲 책길";
   const maxYear = await getMaxYear();
   const years = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => START_YEAR + i);
-  const [rankings, longStayBooks, totalRows] = await Promise.all([
-    Promise.all(years.map((y) => getYearRanking(y))),
-    getLongStayBooks(),
+
+  // 종합 데이터를 1회만 병렬 로드 → 연도별 랭킹과 최장체류 책을 함께 계산.
+  // (기존: 연도별 20회 + 전체 11회 순차 조회로 같은 데이터를 두 번 받던 것을 통합)
+  const [genCount, totalRows] = await Promise.all([
+    supabase.from("bestsellers").select("*", { count: "exact", head: true })
+      .eq("category", "종합").then(({ count }) => count || 0),
     getTotalRows(),
   ]);
+  const general = await fetchAllParallel(
+    () => supabase.from("bestsellers").select("title, author, publisher, year").eq("category", "종합"),
+    genCount,
+  );
+  const byYear = new Map();
+  for (const r of general) {
+    const arr = byYear.get(r.year);
+    if (arr) arr.push(r); else byYear.set(r.year, [r]);
+  }
+  const rankings = years.map((y) => aggregate(byYear.get(y) ?? [], false));
+  const longStayBooks = aggregate(general).slice(0, 5);
 
   // 대표작 선정 (page.tsx 알고리즘 포팅)
   let prevTopTitle = null;
