@@ -1254,6 +1254,8 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 
 /* ---------- 푸터 ---------- */
 .source-footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; text-align: center; font-size: 0.75rem; color: var(--slate-600); }
+.source-footer p { margin: 0; }
+.source-footer .sf-credit { margin-top: 0.5rem; }
 .source-footer a { text-decoration: underline; text-underline-offset: 2px; transition: color .2s; }
 .source-footer a:hover { color: var(--accent); }
 
