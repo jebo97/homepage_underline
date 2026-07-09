@@ -403,6 +403,32 @@ html { scroll-behavior: smooth; }
 @media (min-width: 640px) { .stat-unit { font-size: 1.875rem; } }
 .stat-name { margin-top: 1rem; color: var(--slate-100); font-size: 0.95rem; font-weight: 700; }
 .stat-label { margin-top: 0.35rem; font-size: 0.75rem; line-height: 1.6; letter-spacing: 0.025em; color: rgba(255, 247, 232, 0.58); }
+/* 클릭 가능한 통계 카드(홈): 링크지만 밑줄 없이, 호버 시 기존 lift 효과 유지 */
+a.stat-card-link { text-decoration: none; cursor: pointer; }
+
+/* 여덟 숲길 허브 카드 */
+.forest-path-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+@media (min-width: 560px) { .forest-path-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .forest-path-grid { grid-template-columns: repeat(4, 1fr); } }
+.forest-path-card {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  padding: 1.4rem 1.25rem;
+  border: 1px solid rgba(138, 98, 61, 0.18);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 233, 201, 0.5));
+  box-shadow: 0 12px 26px rgba(27, 42, 74, 0.06);
+  text-decoration: none;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.forest-path-card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(27, 42, 74, 0.1); border-color: rgba(138, 98, 61, 0.34); }
+.fpc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.fpc-name { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
+.fpc-genre { flex: 0 0 auto; font-size: 0.7rem; font-weight: 700; color: #9b7619; }
+.fpc-top { display: flex; flex-direction: column; gap: 0.15rem; margin-top: 0.15rem; }
+.fpc-top-title { font-size: 0.95rem; font-weight: 700; color: #2c3446; line-height: 1.4; }
+.fpc-top-meta { font-size: 0.78rem; color: #687386; }
+.fpc-runners { font-size: 0.75rem; color: #9aa3b2; }
+.fpc-count { margin-top: 0.3rem; font-size: 0.72rem; font-weight: 700; color: #b08a2e; }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {

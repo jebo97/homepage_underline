@@ -217,11 +217,13 @@ function renderNav() {
   const homeActive = page === "home";
   const authorsActive = page === "authors" || page === "author";
   const publishersActive = page === "publishers" || page === "publisher";
+  const fieldsActive = page === "fields" || page === "field";
   el.innerHTML = `<div class="nav-inner">
     <div class="nav-links">
       <a class="nav-link${homeActive ? " is-active" : ""}" href="index.html"${homeActive ? ' aria-current="page"' : ""}>문장숲 책길</a>
       <a class="nav-link${authorsActive ? " is-active" : ""}" href="authors.html"${authorsActive ? ' aria-current="page"' : ""}>작가의 숲</a>
       <a class="nav-link${publishersActive ? " is-active" : ""}" href="publishers.html"${publishersActive ? ' aria-current="page"' : ""}>출판사의 정원</a>
+      <a class="nav-link${fieldsActive ? " is-active" : ""}" href="fields.html"${fieldsActive ? ' aria-current="page"' : ""}>여덟 숲길</a>
     </div>
     ${searchFormHTML("small")}
   </div>`;
@@ -365,19 +367,22 @@ async function renderHome() {
   const rowsLabel = (totalRows || 0).toLocaleString();
   const longestWeeks = longStayBooks[0]?.weeks ?? 0;
   const STATS = [
-    { num: spanYears, unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path" },
-    { num: (totalRows || 0), unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records" },
-    { num: longestWeeks, unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book" },
-    { num: 8, unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "leaf" },
+    { num: spanYears, unit: "년", name: `${spanYears}년의 책길`, desc: "2006년부터 이어진 독서의 흐름", icon: "path", href: "#years" },
+    { num: (totalRows || 0), unit: "", name: `${rowsLabel}개의 책길 기록`, desc: "주간 베스트셀러 데이터", icon: "records", href: "search.html" },
+    { num: longestWeeks, unit: "주", name: "가장 오래 머문 책", desc: "최장 차트인 기록", icon: "book", href: "#longstay" },
+    { num: 8, unit: "개", name: "8갈래의 숲길", desc: "분야별 독서 흐름", icon: "leaf", href: "fields.html" },
   ];
 
-  const statsHTML = STATS.map((s) => `
-    <div class="stat-card">
+  const statsHTML = STATS.map((s) => {
+    const inner = `
       <span class="stat-icon" aria-hidden="true">${STAT_ICONS[s.icon] ?? ""}</span>
       <div class="stat-value"><span class="stat-num" data-to="${s.num}">${s.num.toLocaleString()}</span><span class="stat-unit">${esc(s.unit)}</span></div>
       <div class="stat-name">${esc(s.name)}</div>
-      <div class="stat-label">${esc(s.desc)}</div>
-    </div>`).join("");
+      <div class="stat-label">${esc(s.desc)}</div>`;
+    return s.href
+      ? `<a class="stat-card stat-card-link" href="${esc(s.href)}">${inner}</a>`
+      : `<div class="stat-card">${inner}</div>`;
+  }).join("");
 
   const yearsHTML = years.map((year, i) => {
     const book = topBooks[i];
@@ -423,13 +428,13 @@ async function renderHome() {
           </a>
         </header>
         <section class="stats-grid" id="stats">${statsHTML}</section>
-        <section class="section-years">
+        <section class="section-years" id="years">
           ${sh("chart", "해마다 열린 책길")}
           <p class="section-note">그해 독자들이 가장 오래 머문 책을 따라가 보세요.<br />새롭게 떠오른 책과 오래 사랑받은 책을 함께 만날 수 있습니다.</p>
           <p class="section-source">대표 책길이 직전 연도와 같을 때는, 그다음으로 오래 머문 책을 표시합니다.</p>
           <div class="year-grid">${yearsHTML}</div>
         </section>
-        <section class="section-longstay">
+        <section class="section-longstay" id="longstay">
           ${sh("bookmark", "오래 머문 책")}
           <p class="section-note">잠깐의 순위보다 오래 남은 기록을 봅니다.<br />여러 계절 동안 독자 곁에 머문 책들을 모았습니다.</p>
           <div class="longstay-grid">${longStayHTML}</div>
@@ -1460,6 +1465,150 @@ async function renderPublisher() {
 }
 
 // ====================================================================
+// 여덟 숲길 (분야별)
+// ====================================================================
+// 각 숲길(정규화 분야) → 원본 category 목록 (별칭·하이픈 변형 포함). in_ 조회용.
+const CATEGORY_RAW = {
+  "소설": ["소설"],
+  "에세이": ["에세이", "비소설"],
+  "인문": ["인문", "인문과학"],
+  "역사문화": ["역사문화", "역사-문화"],
+  "경제경영": ["경제경영", "경제-경영"],
+  "자기계발": ["자기계발"],
+  "정치사회": ["정치사회", "정치-사회"],
+  "교양과학": ["교양과학"],
+};
+function fieldHref(field) {
+  return `field.html?f=${encodeURIComponent(field)}`;
+}
+
+// 허브: 여덟 숲길
+async function renderFields() {
+  const root = document.getElementById("page-root");
+  setPageMeta({
+    title: "여덟 숲길 · 문장숲 책길",
+    description: "소설·에세이·인문·역사문화·경제경영·자기계발·정치사회·교양과학 — 여덟 갈래 숲길별 역대 베스트셀러 기록.",
+  });
+  const nonCount = (await supabase.from("bestsellers").select("*", { count: "exact", head: true }).neq("category", "종합")).count || 0;
+  const rows = await fetchAllParallel(
+    () => supabase.from("bestsellers").select("category, title, author, year, rank").neq("category", "종합"),
+    nonCount,
+  );
+  const cards = FIELD_CATEGORIES.map((f) => {
+    const fieldRows = rows.filter((r) => normalizeCategory(r.category) === f);
+    const ranked = aggregate(fieldRows, false);
+    return {
+      field: f, name: FIELD_DISPLAY_NAMES[f] ?? f,
+      bookCount: ranked.length, recordCount: fieldRows.length,
+      top: ranked[0] ?? null, runners: ranked.slice(1, 3),
+    };
+  }).filter((c) => c.top);
+
+  const cardsHTML = cards.map((c) => `
+    <a class="forest-path-card" href="${esc(fieldHref(c.field))}">
+      <span class="fpc-head"><span class="fpc-name">${esc(c.name)}</span><span class="fpc-genre">${esc(c.field)}</span></span>
+      <span class="fpc-top">
+        <span class="fpc-top-title line-clamp-2">${esc(c.top.title)}</span>
+        <span class="fpc-top-meta">${esc(c.top.author ?? "저자 미상")} · ${c.top.weeks}주</span>
+      </span>
+      ${c.runners.length ? `<span class="fpc-runners line-clamp-1">${c.runners.map((r) => esc(r.title)).join(" · ")}</span>` : ""}
+      <span class="fpc-count">${c.bookCount.toLocaleString()}권 · ${c.recordCount.toLocaleString()}개 기록</span>
+    </a>`).join("");
+
+  root.innerHTML = `
+    <main class="book-road-page fields-page">
+      <div class="wrap wrap-5xl">
+        <header class="book-page-header">
+          <a class="back-link" href="index.html">← 문장숲 책길로</a>
+          <h1 class="book-title-lg">여덟 숲길</h1>
+          <p class="book-hero-desc">책은 저마다 다른 길을 걷습니다.<br />여덟 갈래 숲길에서 오래 사랑받은 책을 만나보세요.</p>
+        </header>
+        <section class="section-pad">
+          ${sh("leaf", "여덟 갈래 숲길")}
+          <p class="section-note" style="padding-left:0">각 숲길을 눌러, 그 갈래에서 오래 머문 책들을 따라가 보세요.</p>
+          <div class="forest-path-grid">${cardsHTML}</div>
+        </section>
+      </div>
+      ${slimCtaHTML()}
+    </main>`;
+}
+
+// 상세: 한 숲길
+async function renderField() {
+  const root = document.getElementById("page-root");
+  const field = new URLSearchParams(location.search).get("f") || "";
+  const raws = CATEGORY_RAW[field];
+  if (!raws || !FIELD_DISPLAY_NAMES[field]) {
+    root.innerHTML = `<main><div class="wrap wrap-3xl nav-pad-top"><p class="empty">존재하지 않는 숲길입니다. <a class="back-link" href="fields.html">← 여덟 숲길</a></p></div></main>`;
+    return;
+  }
+  const name = FIELD_DISPLAY_NAMES[field];
+  setPageMeta({
+    title: `${name} · 문장숲 책길`,
+    description: `${name}(${field}) 갈래에서 역대 오래 사랑받은 베스트셀러 기록.`,
+  });
+  const [maxYear, cnt] = await Promise.all([
+    getMaxYear(),
+    supabase.from("bestsellers").select("*", { count: "exact", head: true }).in("category", raws).then(({ count }) => count || 0),
+  ]);
+  const rows = await fetchAllParallel(
+    () => supabase.from("bestsellers").select("title, author, year, rank").in("category", raws),
+    cnt,
+  );
+  const ranked = aggregate(rows, false);
+  const bookCount = ranked.length;
+  const recordCount = rows.length;
+  const top = ranked.slice(0, 30);
+
+  const byYear = new Map();
+  for (const r of rows) byYear.set(r.year, (byYear.get(r.year) || 0) + 1);
+  const maxYearVal = Math.max(1, ...byYear.values());
+  const yearBars = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => START_YEAR + i)
+    .map((y) => ({ y, n: byYear.get(y) || 0 }));
+
+  const rankHTML = `<ol class="top10">${top.map((b, i) => `
+    <li>
+      <span class="rank-num">${String(i + 1).padStart(2, "0")}</span>
+      <div class="info">
+        <a href="${esc(bookHref(b.title))}">${esc(b.title)}</a>
+        <p>${esc(b.author ?? "저자 미상")}</p>
+      </div>
+      <span class="weeks">${b.weeks}주 차트인</span>
+    </li>`).join("")}</ol>`;
+
+  const barsHTML = `<div class="bars">${yearBars.map(({ y, n }) => `
+    <a class="bar-row" href="${esc(yearHref(y))}">
+      <span class="bar-year">${y}</span>
+      <span class="bar-track"><span class="bar-fill" style="--w:${n > 0 ? Math.max(3, Math.round((n / maxYearVal) * 100)) : 0}%"></span></span>
+      <span class="bar-weeks">${n}</span>
+    </a>`).join("")}</div>`;
+
+  root.innerHTML = `
+    <main class="book-road-page year-road-page">
+      <div class="wrap wrap-3xl">
+        <header class="book-page-header">
+          <a class="back-link" href="fields.html">← 여덟 숲길</a>
+          <p class="hero-eyebrow">${esc(field)}</p>
+          <h1 class="book-title-lg">${esc(name)}</h1>
+          <p class="book-meta">${bookCount.toLocaleString()}권 · ${recordCount.toLocaleString()}개 기록</p>
+          <p class="book-hero-desc">이 숲길에서 여러 계절 동안 독자 곁에 오래 머문 책들을 모았습니다.</p>
+        </header>
+        <section class="section-pad">
+          ${sh("bookmark", "이 숲길에 오래 머문 책")}
+          <p class="section-note">분야별 차트 기준으로, 차트인 주수가 많은 순서예요.</p>
+          ${rankHTML}
+        </section>
+        <section class="section-pad">
+          ${sh("chart", "해마다 이 숲길의 흐름")}
+          <p class="section-note">연도를 누르면 그해 책길로 이동합니다.</p>
+          ${barsHTML}
+        </section>
+      </div>
+      ${slimCtaHTML()}
+    </main>`;
+}
+
+// ====================================================================
 // 라우터
 // ====================================================================
 async function main() {
@@ -1475,6 +1624,8 @@ async function main() {
     else if (page === "author") await renderAuthor();
     else if (page === "publishers") await renderPublishers();
     else if (page === "publisher") await renderPublisher();
+    else if (page === "fields") await renderFields();
+    else if (page === "field") await renderField();
     initReveal();
   } catch (e) {
     console.error(e);
