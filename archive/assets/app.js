@@ -978,7 +978,7 @@ async function renderAuthors() {
           <span class="weeks">${metricFor(a)}</span>
         </a>`;
       }).join("")}</div>`
-    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 작가의 숲에 모인 기록이 없어요."}</p>`;
+    : `<p class="muted">${error ? "데이터를 불러오지 못했어요." : "아직 작가의 숲에 모인 기록이 없어요."}</p>`;
 
   root.innerHTML = `
     <main class="book-road-page">
@@ -987,7 +987,7 @@ async function renderAuthors() {
           <a class="back-link" href="index.html">← 문장숲 책길로</a>
           <h1 class="book-title-lg">작가의 숲</h1>
           <p class="book-hero-desc">${isRecent
-            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 숲을 활발히 걷고 있는 작가들이에요.`
+            ? `최근 5년(${minYear}–${maxYear}) 기준, 지금 이 숲을 활발히 걷고 있는 작가들입니다.`
             : "2006년부터 이어진 책길에 가장 오래 머물고, 가장 앞에 오래 선 작가들을 모았습니다."}</p>
           <div class="year-nav author-sorts">${toggles}</div>
         </header>
@@ -1073,7 +1073,7 @@ async function renderAuthorFieldStrength(by, minYear) {
     if (!cards.length) { box.style.display = "none"; return; }
     box.innerHTML = fieldTopsHTML(cards, authorHref, iconKey, cfg.title, cfg.note);
   } catch (e) {
-    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
+    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했어요.</p>`;
   }
 }
 
@@ -1297,7 +1297,7 @@ async function renderPublishers() {
           <span class="weeks">${metricFor(p)}</span>
         </a>`;
       }).join("")}</div>`
-    : `<p class="muted">${error ? "데이터를 불러오지 못했습니다." : "아직 이 정원에 모인 기록이 없어요."}</p>`;
+    : `<p class="muted">${error ? "데이터를 불러오지 못했어요." : "아직 이 정원에 모인 기록이 없어요."}</p>`;
 
   root.innerHTML = `
     <main class="book-road-page">
@@ -1338,7 +1338,7 @@ async function renderFieldStrength(by) {
     if (!cards.length) { box.style.display = "none"; return; }
     box.innerHTML = fieldTopsHTML(cards, publisherHref, iconKey, cfg.title, cfg.note);
   } catch (e) {
-    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했습니다.</p>`;
+    box.innerHTML = `${sh(iconKey, cfg.title)}<p class="muted">숲길별 기록을 불러오지 못했어요.</p>`;
   }
 }
 
@@ -1413,7 +1413,7 @@ async function renderPublisher() {
   const booksHTML = books.length > 0 ? `
     <section class="section-pad">
       ${sh("pen", "이 출판사가 피워낸 책길")}
-      <p class="section-note">이 출판사가 책길에 올린 책들을 오래 머문 순서로 정리했어요.</p>
+      <p class="section-note">이 출판사가 책길에 올린 책들을 오래 머문 순서로 정리했습니다.</p>
       <div class="companions">${books.map((b, i) => `
         <a class="companion" href="${esc(bookHref(b.title))}">
           <span class="comp-rank">${String(i + 1).padStart(2, "0")}</span>
