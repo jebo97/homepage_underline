@@ -1034,11 +1034,17 @@ html { scroll-behavior: smooth; }
 .book-road-page .naver-link:hover { border-color: rgba(231, 185, 40, 0.55); background: rgba(255, 211, 61, 0.12); }
 
 /* 책길 기록 stat 카드 (3 또는 4개) */
-.book-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.9rem; }
+/* 모바일 2×2 고정, 데스크톱(≥640px) 4열 한 줄 */
+.book-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+@media (min-width: 640px) { .book-stats { grid-template-columns: repeat(4, 1fr); } }
 .book-road-page .book-stats .box { background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 233, 201, 0.6)); border: 1px solid rgba(138, 98, 61, 0.18); border-radius: 1rem; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 12px 26px rgba(27, 42, 74, 0.06); }
 .book-road-page .book-stats .big { font-size: 1.7rem; font-weight: 800; color: #9b7619; }
 .book-road-page .book-stats .big .u { margin-left: 0.1rem; font-size: 1rem; font-weight: 700; }
 .book-road-page .book-stats .cap { margin-top: 0.6rem; font-size: 0.78rem; color: #687386; font-weight: 600; }
+/* '1위 기록 없음' 빈 카드: 배경·글자를 옅게 해 '없음' 상태임을 자연스럽게 */
+.book-road-page .book-stats .box-empty { background: rgba(138, 98, 61, 0.05); border-style: dashed; box-shadow: none; }
+.book-road-page .book-stats .box-empty .big { color: #b7bcca; }
+.book-road-page .book-stats .box-empty .cap { color: #98a0af; }
 
 /* 연도별 막대 */
 .book-road-page .bars { display: flex; flex-direction: column; gap: 0.7rem; }

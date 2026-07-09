@@ -743,13 +743,17 @@ async function renderBook() {
       </div>
     </section>` : "";
 
-  // 3. 이 책이 머문 책길 기록 — 1위 유지 주수가 있으면 4카드, 없으면 3카드
-  const statBoxes = oneWeeks > 0
-    ? [[generalWeeks, "주", "총 차트인 주수"], [oneWeeks, "주", "1위 유지"], [bestRank, "위", "최고 순위"], [firstYear, "년", "처음 오른 해"]]
-    : [[generalWeeks, "주", "책길에 머문 시간"], [bestRank, "위", "최고 순위"], [firstYear, "년", "처음 오른 해"]];
+  // 3. 이 책이 머문 책길 기록 — 항상 4카드(모바일 2×2 고정).
+  // 1위에 오른 적 없는 책은 2번째 칸을 'muted 없음' 카드로 채워 빈 칸이 안 생기게 한다.
+  const statBoxes = [
+    [generalWeeks, "주", "총 차트인 주수"],
+    oneWeeks > 0 ? [oneWeeks, "주", "1위 유지"] : ["—", "", "1위 기록 없음", true],
+    [bestRank, "위", "최고 순위"],
+    [firstYear, "년", "처음 오른 해"],
+  ];
   const recordHTML = generalWeeks > 0 ? `
-    <div class="book-stats">${statBoxes.map(([v, u, c]) =>
-      `<div class="box"><div class="big">${v ?? "—"}<span class="u">${u}</span></div><div class="cap">${c}</div></div>`).join("")}</div>`
+    <div class="book-stats">${statBoxes.map(([v, u, c, empty]) =>
+      `<div class="box${empty ? " box-empty" : ""}"><div class="big">${v ?? "—"}${u ? `<span class="u">${u}</span>` : ""}</div><div class="cap">${c}</div></div>`).join("")}</div>`
     : byCategory.length > 0
       ? `<p class="muted">종합 차트엔 오르지 않았지만, 아래 <b>숲길 갈래별 기록</b>에 이 책의 발자취가 있어요.</p>`
       : `<p class="muted">아직 책길에 머문 기록이 없어요</p>`;
