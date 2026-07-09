@@ -263,7 +263,7 @@ function renderSourceFooter() {
   if (!el) return;
   el.className = "source-footer";
   el.innerHTML = `<p class="sf-source">베스트셀러 데이터 출처: <a href="https://www.kyobobook.co.kr/" target="_blank" rel="noopener noreferrer">교보문고</a> (https://www.kyobobook.co.kr/)</p>
-    <p class="sf-credit">문장숲 책길은 <a href="${esc(HOME_URL)}">밑줄긋기</a>가 엮었습니다 · © 2026 APLY Inc.</p>`;
+    <p class="sf-credit">문장숲 책길은 <a href="${esc(HOME_URL)}">밑줄긋기</a>가 엮었습니다 · © 2026 혜적선</p>`;
 }
 
 function ctaFooterHTML({ narrow = false, text, label, href }) {
