@@ -407,9 +407,8 @@ html { scroll-behavior: smooth; }
 a.stat-card-link { text-decoration: none; cursor: pointer; }
 
 /* 여덟 숲길 허브 카드 */
-.forest-path-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+.forest-path-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 560px) { .forest-path-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 960px) { .forest-path-grid { grid-template-columns: repeat(4, 1fr); } }
 .forest-path-card {
   display: flex; flex-direction: column; gap: 0.5rem;
   padding: 1.4rem 1.25rem;
