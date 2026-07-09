@@ -1560,12 +1560,20 @@ async function renderField() {
   const recordCount = rows.length;
   const top = ranked.slice(0, 30);
 
-  // 해마다 이 숲길의 대표작(그해 가장 오래 머문 책) — 최신 연도부터
+  // 해를 따라 이 숲길의 책 — 최신 연도부터, 화면에 이미 나온 책은 빼고 그다음 책을 선택
+  // (같은 책이 여러 해 대표작이어도 한 번만 노출 → 더 다양한 책을 보여줌)
   const perYear = new Map();
   for (const r of rows) { const a = perYear.get(r.year); if (a) a.push(r); else perYear.set(r.year, [r]); }
-  const yearTops = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => maxYear - i)
-    .map((y) => ({ y, book: perYear.get(y) ? aggregate(perYear.get(y), false)[0] : null }))
-    .filter((x) => x.book);
+  const usedTitles = new Set();
+  const yearTops = [];
+  for (let y = maxYear; y >= START_YEAR; y--) {
+    const yr = perYear.get(y);
+    if (!yr) continue;
+    const pick = aggregate(yr, false).find((b) => !usedTitles.has(b.title));
+    if (!pick) continue;
+    usedTitles.add(pick.title);
+    yearTops.push({ y, book: pick });
+  }
 
   const rankHTML = `<ol class="top10">${top.map((b, i) => `
     <li>
@@ -1603,8 +1611,8 @@ async function renderField() {
           ${rankHTML}
         </section>
         <section class="section-pad">
-          ${sh("chart", "해마다 이 숲길의 대표작")}
-          <p class="section-note">그해 이 숲길에서 가장 오래 머문 책이에요. 제목을 누르면 책 기록으로 이동합니다.</p>
+          ${sh("chart", "해를 따라 만난 책들")}
+          <p class="section-note">그해 이 숲길에서 오래 머문 책이에요. 이미 나온 책은 빼고, 다음으로 오래 머문 책을 보여줍니다.</p>
           ${yearTopHTML}
         </section>
       </div>
