@@ -1589,15 +1589,14 @@ async function renderField() {
       <span class="weeks">${b.weeks}주 차트인</span>
     </li>`).join("")}</ol>`;
 
-  const yearTopHTML = `<ol class="top10 field-year-list">${yearTops.map(({ y, book }) => `
-    <li>
-      <span class="rank-num">${y}</span>
-      <div class="info">
-        <a href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
-        <p>${esc(book.author ?? "저자 미상")} · ${book.weeks}주</p>
-      </div>
-      <a class="weeks" href="${esc(yearHref(y))}">그해 책길 →</a>
-    </li>`).join("")}</ol>`;
+  const yearTopHTML = `<div class="year-grid">${yearTops.map(({ y, book }) => `
+    <div class="year-card">
+      <span class="dot"></span>
+      <a class="year-num" href="${esc(yearHref(y))}">${y}</a>
+      <a class="book-title line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
+      <span class="book-author line-clamp-1">${esc(book.author ?? "저자 미상")}</span>
+      <span class="year-weeks">${book.weeks}주 차트인</span>
+    </div>`).join("")}</div>`;
 
   root.innerHTML = `
     <main class="book-road-page year-road-page">

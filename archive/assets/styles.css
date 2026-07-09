@@ -428,17 +428,11 @@ a.stat-card-link { text-decoration: none; cursor: pointer; }
 .fpc-top-meta { font-size: 0.78rem; color: #687386; }
 .fpc-runners { font-size: 0.75rem; color: #9aa3b2; }
 .fpc-count { margin-top: 0.3rem; font-size: 0.72rem; font-weight: 700; color: #b08a2e; }
-/* 해를 따라 만난 책들: 앞자리는 '순위'가 아니라 '연도'이므로 골드 순위 숫자와 구별되게
-   muted 슬레이트 톤 + 작은 크기 + 자간으로 연도 라벨처럼 보이게 한다. */
-.field-year-list .rank-num {
-  width: 3.2rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: #9aa3b2;
-}
 a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 .year-road-page a.weeks:hover { background: rgba(255, 211, 61, 0.34); }
+/* 숲길 상세의 '해를 따라 만난 책들' 연도 카드: 좁은 폭(wrap-3xl)이라 최대 2열(홈은 3열) */
+.year-road-page .year-grid { grid-template-columns: 1fr; }
+@media (min-width: 640px) { .year-road-page .year-grid { grid-template-columns: repeat(2, 1fr); } }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
