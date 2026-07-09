@@ -433,6 +433,10 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 /* 숲길 상세의 '해를 따라 만난 책들' 연도 카드: 좁은 폭(wrap-3xl)이라 최대 2열(홈은 3열) */
 .year-road-page .year-grid { grid-template-columns: 1fr; }
 @media (min-width: 640px) { .year-road-page .year-grid { grid-template-columns: repeat(2, 1fr); } }
+/* 연도 카드 폰트를 '이 숲길에 오래 머문 책' 랭킹 리스트와 동일 크기로(홈 카드는 그대로) */
+.year-road-page .year-card .year-num { font-size: 1.125rem; }
+.year-road-page .year-card .book-title { font-size: 1rem; }
+.year-road-page .year-card .year-weeks { font-size: 0.78rem; }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
