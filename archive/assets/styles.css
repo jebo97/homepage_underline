@@ -94,9 +94,16 @@ main { flex: 1 1 auto; }
 .nav-link:hover { color: var(--accent); }
 .nav-link.is-active { color: var(--accent); font-weight: 700; }
 
-/* 저자명 인라인 링크 */
-a.alink { color: inherit; transition: color .2s; }
-a.alink:hover { color: var(--accent); }
+/* 저자·출판사 인라인 링크: 평소엔 은은한 골드 밑줄로 링크임을 알리고, 호버 시 진해짐 */
+a.alink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(155, 118, 25, 0.4);
+  transition: color .2s, text-decoration-color .2s;
+}
+a.alink:hover { color: #9b7619; text-decoration-color: #9b7619; }
 
 /* 은근한 한 줄 CTA (첫 화면 외 페이지) */
 .slim-cta {
