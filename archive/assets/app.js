@@ -384,12 +384,14 @@ async function renderHome() {
       : `<div class="stat-card">${inner}</div>`;
   }).join("");
 
-  const yearsHTML = years.map((year, i) => {
-    const book = topBooks[i];
-    const titleHTML = book
-      ? `<a class="book-title line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>`
-      : `<span class="book-title line-clamp-2">아직 기록이 없어요</span>`;
-    return `
+  // 대표작 선정은 시간순(오름차순)으로 계산하되, 표시는 최신 연도부터(내림차순) — 여덟 숲길과 통일
+  const yearsHTML = years.map((year, i) => ({ year, book: topBooks[i] }))
+    .reverse()
+    .map(({ year, book }) => {
+      const titleHTML = book
+        ? `<a class="book-title line-clamp-2" href="${esc(bookHref(book.title))}">${esc(book.title)}</a>`
+        : `<span class="book-title line-clamp-2">아직 기록이 없어요</span>`;
+      return `
       <div class="year-card">
         <span class="dot"></span>
         <a class="year-num" href="${esc(yearHref(year))}">${year}</a>
@@ -398,7 +400,7 @@ async function renderHome() {
         <span class="book-author line-clamp-1">${esc(book?.author ?? "—")}</span>
         ${book ? `<span class="year-weeks">${book.weeks}주 차트인</span>` : ""}
       </div>`;
-  }).join("");
+    }).join("");
 
   const longStayHTML = longStayBooks.map((book, index) => `
     <a class="longstay-card${index === 0 ? " longstay-card-featured" : ""}" href="${esc(bookHref(book.title))}">
