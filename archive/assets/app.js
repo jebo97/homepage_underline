@@ -1560,11 +1560,12 @@ async function renderField() {
   const recordCount = rows.length;
   const top = ranked.slice(0, 30);
 
-  const byYear = new Map();
-  for (const r of rows) byYear.set(r.year, (byYear.get(r.year) || 0) + 1);
-  const maxYearVal = Math.max(1, ...byYear.values());
-  const yearBars = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => START_YEAR + i)
-    .map((y) => ({ y, n: byYear.get(y) || 0 }));
+  // 해마다 이 숲길의 대표작(그해 가장 오래 머문 책) — 최신 연도부터
+  const perYear = new Map();
+  for (const r of rows) { const a = perYear.get(r.year); if (a) a.push(r); else perYear.set(r.year, [r]); }
+  const yearTops = Array.from({ length: maxYear - START_YEAR + 1 }, (_, i) => maxYear - i)
+    .map((y) => ({ y, book: perYear.get(y) ? aggregate(perYear.get(y), false)[0] : null }))
+    .filter((x) => x.book);
 
   const rankHTML = `<ol class="top10">${top.map((b, i) => `
     <li>
@@ -1576,12 +1577,15 @@ async function renderField() {
       <span class="weeks">${b.weeks}주 차트인</span>
     </li>`).join("")}</ol>`;
 
-  const barsHTML = `<div class="bars">${yearBars.map(({ y, n }) => `
-    <a class="bar-row" href="${esc(yearHref(y))}">
-      <span class="bar-year">${y}</span>
-      <span class="bar-track"><span class="bar-fill" style="--w:${n > 0 ? Math.max(3, Math.round((n / maxYearVal) * 100)) : 0}%"></span></span>
-      <span class="bar-weeks">${n}</span>
-    </a>`).join("")}</div>`;
+  const yearTopHTML = `<ol class="top10 field-year-list">${yearTops.map(({ y, book }) => `
+    <li>
+      <span class="rank-num">${y}</span>
+      <div class="info">
+        <a href="${esc(bookHref(book.title))}">${esc(book.title)}</a>
+        <p>${esc(book.author ?? "저자 미상")} · ${book.weeks}주</p>
+      </div>
+      <a class="weeks" href="${esc(yearHref(y))}">그해 책길 →</a>
+    </li>`).join("")}</ol>`;
 
   root.innerHTML = `
     <main class="book-road-page year-road-page">
@@ -1599,9 +1603,9 @@ async function renderField() {
           ${rankHTML}
         </section>
         <section class="section-pad">
-          ${sh("chart", "해마다 이 숲길의 흐름")}
-          <p class="section-note">연도를 누르면 그해 책길로 이동합니다.</p>
-          ${barsHTML}
+          ${sh("chart", "해마다 이 숲길의 대표작")}
+          <p class="section-note">그해 이 숲길에서 가장 오래 머문 책이에요. 제목을 누르면 책 기록으로 이동합니다.</p>
+          ${yearTopHTML}
         </section>
       </div>
       ${slimCtaHTML()}

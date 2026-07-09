@@ -428,6 +428,10 @@ a.stat-card-link { text-decoration: none; cursor: pointer; }
 .fpc-top-meta { font-size: 0.78rem; color: #687386; }
 .fpc-runners { font-size: 0.75rem; color: #9aa3b2; }
 .fpc-count { margin-top: 0.3rem; font-size: 0.72rem; font-weight: 700; color: #b08a2e; }
+/* 해마다 대표작 리스트: 앞자리에 연도(4자리)가 들어가므로 폭 확대 + 그해 책길 링크 pill */
+.field-year-list .rank-num { width: 2.9rem; }
+a.weeks { text-decoration: none; transition: background .2s, color .2s; }
+.year-road-page a.weeks:hover { background: rgba(255, 211, 61, 0.34); }
 
 .section-years { padding: 8rem 0 5.5rem; color: var(--navy); }
 .book-road-home .section-heading {
