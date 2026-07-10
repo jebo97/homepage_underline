@@ -535,6 +535,9 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 
 .section-longstay {
   padding: 0 0 4.8rem;
+  /* 상단 padding이 없어 앵커(#longstay) 점프 시 제목이 sticky nav에 가리므로
+     scroll-margin-top으로 nav 아래에 오도록 보정 */
+  scroll-margin-top: 7rem;
   color: var(--navy);
 }
 .section-longstay .section-note {
