@@ -997,10 +997,10 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 .weeks { flex: 0 0 auto; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--slate-400); }
 .year-road-page .weeks { border-radius: 9999px; padding: 0.42rem 0.72rem; background: rgba(255, 211, 61, 0.16); color: #9b7619; font-size: 0.78rem; font-weight: 800; white-space: nowrap; }
 
-.field-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
+.field-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: stretch; }
 @media (min-width: 640px) { .field-grid { grid-template-columns: repeat(2, 1fr); } }
 .field-card { display: flex; flex-direction: column; background: rgba(255,255,255,0.03); border-radius: 0.5rem; padding: 1.75rem; }
-.year-road-page .field-card { position: relative; overflow: hidden; padding: 1.3rem 1.4rem; border: 1px solid rgba(138, 98, 61, 0.14); border-radius: 1rem; background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 233, 201, 0.62)); box-shadow: 0 14px 30px rgba(27,42,74,0.06); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.year-road-page .field-card { position: relative; overflow: hidden; min-height: 10.9rem; padding: 1.3rem 1.4rem; border: 1px solid rgba(138, 98, 61, 0.14); border-radius: 1rem; background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 233, 201, 0.62)); box-shadow: 0 14px 30px rgba(27,42,74,0.06); transition: transform .2s, border-color .2s, box-shadow .2s; }
 .year-road-page .field-card::before {
   content: "";
   position: absolute;
@@ -1022,7 +1022,7 @@ a.weeks { text-decoration: none; transition: background .2s, color .2s; }
 .year-road-page .field-card .fa { color: #8a95a5; }
 .field-card .fw { margin-top: 0.75rem; font-size: 0.875rem; color: var(--slate-400); }
 .year-road-page .field-card .ft { margin-top: 0.7rem; }
-.year-road-page .field-card .fw { align-self: flex-end; margin-top: 0; padding-top: 0.7rem; color: #9b7619; font-weight: 800; font-size: 0.82rem; }
+.year-road-page .field-card .fw { align-self: flex-end; margin-top: auto; padding-top: 0.7rem; color: #9b7619; font-weight: 800; font-size: 0.82rem; }
 /* 빈 숲길 갈래 카드 — 비활성(회색) 톤으로 시각적 무게를 낮춤 */
 .year-road-page .field-card-empty {
   background: rgba(138, 98, 61, 0.04);
